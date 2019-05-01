@@ -1,0 +1,26 @@
+-
+    title: how i made this site
+    description: This site is built with zurb foundation, because i had read
+        that it did everything that hugo could, but that final products were
+        more lightweight and flexible. Plus i had no idea about it, and learning
+        something new is sometimes worthwhile. I was also frustrated that
+        standard hugo advice seemed to be, ''oh, just pick a template and off
+        you go,'' yet there is surprisingly little advice on how to modify any
+        given template, let alone how to start from scratch. It turned out that
+        foundation at least made starting from scratch fairly easy, and so this
+        entry is about that process.
+    date: 10 April 2019
+    link: blog/blog01.html
+- 
+    title: blah
+    description: the first hot shit
+    date: 10 April 2019
+    link: blog/blog02.html
+-
+    title: yep
+    description: the second hot shit
+    date: 10 April 2019
+-
+    title: some more
+    description: and then even a bit more stuff here as well.
+    date: 10 April 2019

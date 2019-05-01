@@ -1,0 +1,65 @@
+{{> header}}
+
+<div class = "backgroundClass">
+
+    {{> mpadge}}
+
+    <a href=blog.html, style="color:#262626;">
+        <div class="grid-y grid-margin y">
+            <div class="cell"><h2 align="center">blog</h2></div>
+            <div class="cell"><h4 align="center">R, C++, spatial, open data</h2></div>
+        </div>
+    </a>
+
+    {{> sections_header}}
+    {{#each blog}}
+    {{> blog_header}}
+    <a href="{{ link }}", style="color:#262626;">
+        <div align="center">
+            <h3>{{ title }}</h3>
+        </div>
+        <div align="center">
+            <p style="color:#888888;">{{ date }}</p>
+        </div>
+        <div align="center">
+            <p>{{ description }}</p>
+        </div>
+    </a>
+    {{> blog_footer}}
+    {{/each}}
+    {{> sections_footer}}
+
+    <div class="grid-y grid-margin y">
+        <div class="cell"><h2 align="center">code</h2></div>
+        <div class="cell">
+            <h4 align="center">a selection of R packages</h2>
+        </div>
+    </div>
+
+
+    {{> sections_header}}
+    {{#each code}}
+    {{> code_header}}
+    <a target="_blank" rel="noopener noreferrer"
+                       href="{{ link }}", style="color:#262626;">
+        <div align="center">
+            <h3>{{ title }}</h3>
+        </div>
+        <p align="center">
+        <a href="{{ cranlink }}">
+            <img src="{{ cranlogs }}" alt="CRAN Downloads"/>
+        </a> 
+        <a href="{{ roslink }}">
+            <img src="{{ rosstatus }}"/>
+        </a>
+        </p>
+        <div class="card-section" align="center">
+            <p>{{ description }}</p>
+        </div>
+    </a>
+    {{> code_footer}}
+    {{/each}}
+    {{> sections_footer}}
+
+</div>
+    {{> footer}}
