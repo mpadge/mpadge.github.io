@@ -54,10 +54,13 @@ blog_render <- function (fname, center_images = TRUE) {
     header <- c ('{{> header}}',
                  '{{> blog_entry_header}}',
                  toc,
-                 '<div class="cell medium-11 large-11">',
+                 '<div class="cell small-10 medium-10 large-10">',
+                 '<div class="sections">',
                  '{{#markdown}}')
     footer <- c ('{{/markdown}}',
-                 '</div>')
+                 '</div>',
+                 '</div>',
+                 '{{> blog_entry_footer}}')
     md <- c (yaml, header, md, footer)
     writeLines (md, conn)
     close (conn)
@@ -65,8 +68,7 @@ blog_render <- function (fname, center_images = TRUE) {
 
 find_headers <- function (md)
 {
-    ptn <- paste0 ("^", paste0 (rep ("\\#", level), collapse = ""))
-    hdrs <- gsub ("\\#+ ", "", md [grep (ptn, md)])
+    hdrs <- gsub ("\\#+ ", "", md [grep ("^\\#+", md)])
     hdrs_link <- gsub ("[[:space:]]+|[[:punct:]]+", "-", hdrs)
     hdrs_link <- gsub ("-+", "-", hdrs_link)
     
@@ -75,14 +77,24 @@ find_headers <- function (md)
 
 write_toc <- function (hdrs)
 {
-    res <- c ("", paste0 ('<div class="cell small-1 medium-1 large-1 left"',
-                      'data-sticky-container>'),
-              '<div class="sticky" data-sticky data-margin-top="10">')
+    res <- c ("",
+              '<div class="cell small-2 medium-2 large-2 left">',
+              '<nav class="sticky-container" data-sticky-container>',
+              paste0 ('<div class="sticky" data-sticky data-anchor=',
+                      '"how-i-make-this-site" data-sticky-on="large"',
+                      ' data-margin-top="10">'),
+              '<ul class="vertical menu" data-magellan>')
+
     for (h in seq (nrow (hdrs)))
-        res <- c (res, paste0 ('<a href="#', hdrs [h, 2],
+        res <- c (res, paste0 ('<li><a href="#', hdrs [h, 2],
                                '" style="color:#111111">', hdrs [h, 1],
-                               '</a><br><br>'))
-    c (res, '</div>', '</div>', "")
+                               '</a></li>'))
+
+    #for (h in seq (nrow (hdrs)))
+    #    res <- c (res, paste0 ('<a href="#', hdrs [h, 2],
+    #                           '" style="color:#111111">', hdrs [h, 1],
+    #                           '</a><br><br>'))
+    c (res, '</div>', '</nav>', '</div>', "")
 }
 
 process_headers <- function (md, level = 1)
@@ -95,9 +107,11 @@ process_headers <- function (md, level = 1)
         hdr <- gsub (repl, "", md [h])
         nm <- gsub ("[[:space:]]+|[[:punct:]]+", "-", hdr)
         nm <- gsub ("-+", "-", nm)
-        md [h] <- paste0 ('<h', level, '><a name="', nm,
-                          '" style = "color:#111111;">', hdr, '</a></h',
-                          level, '>')
+        #md [h] <- paste0 ('<h', level, '><a name="', nm,
+        #                  '" style = "color:#111111;">', hdr, '</a></h',
+        #                  level, '>')
+        md [h] <- paste0 ('<section id="', nm, '" data-magellan-target="',
+                          nm, '"><h', level, '>', hdr, '</h></section>')
     }
     return (md)
 }
