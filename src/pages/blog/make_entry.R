@@ -19,25 +19,28 @@ blog_render <- function (fname, center_images = TRUE) {
     # move image files
     path <- file.path (paste0 (fname, "_files"), "figure-gfm")
     flist <- list.files (path, full.names = TRUE)
-    newpath <- file.path ("..", "..", "assets", "img", fname)
-    if (!dir.exists (newpath))
-        dir.create (newpath, recursive = TRUE)
-    file.rename (flist, file.path (newpath, list.files (path)))
-    unlink (paste0 (fname, "_files"), recursive = TRUE)
-
-    # and change image location to newpath:
-    md <- gsub (path, newpath, md)
-    if (center_images)
+    if (length (flist) > 0)
     {
-        index <- grep (newpath, md)
-        n <- length (index)
-        # copy each of those lines both above and below:
-        md <- md [sort (c (seq (md), rep (index, each = 2)))]
-        index <- grep (newpath, md)
-        # get the index to the middle of each group of 3 repeats:
-        index <- index [3 * 1:n - 1]
-        md [index - 1] <- "<center>"
-        md [index + 1] <- "</center>"
+        newpath <- file.path ("..", "..", "assets", "img", fname)
+        if (!dir.exists (newpath))
+            dir.create (newpath, recursive = TRUE)
+        file.rename (flist, file.path (newpath, list.files (path)))
+        unlink (paste0 (fname, "_files"), recursive = TRUE)
+
+        # and change image location to newpath:
+        md <- gsub (path, newpath, md)
+        if (center_images)
+        {
+            index <- grep (newpath, md)
+            n <- length (index)
+            # copy each of those lines both above and below:
+            md <- md [sort (c (seq (md), rep (index, each = 2)))]
+            index <- grep (newpath, md)
+            # get the index to the middle of each group of 3 repeats:
+            index <- index [3 * 1:n - 1]
+            md [index - 1] <- "<center>"
+            md [index + 1] <- "</center>"
+        }
     }
 
     # add links to headers
@@ -57,7 +60,11 @@ blog_render <- function (fname, center_images = TRUE) {
                  '<div class="cell small-10 medium-10 large-10">',
                  '<div class="sections">',
                  '{{#markdown}}')
-    footer <- c ('{{/markdown}}',
+    footer <- c ('<div style="text-align: right">',
+                 paste ('Originally posted:', Sys.Date()),
+                 paste ('Updated:', Sys.Date()),
+                 '</div>',
+                 '{{/markdown}}',
                  '</div>',
                  '</div>',
                  '{{> blog_entry_footer}}')
@@ -82,7 +89,7 @@ write_toc <- function (hdrs)
               '<nav class="sticky-container" data-sticky-container>',
               paste0 ('<div class="sticky" data-sticky data-anchor=',
                       '"how-i-make-this-site" data-sticky-on="large"',
-                      ' data-margin-top="10">'),
+                      ' data-margin-top="5">'),
               '<ul class="vertical menu" data-magellan>')
 
     for (h in seq (nrow (hdrs)))
