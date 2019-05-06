@@ -32,7 +32,7 @@ blog_render <- function (fname, centre_images = TRUE) {
     header <- c ('{{> header}}',
                  '{{> blog_entry_header}}',
                  toc,
-                 '<div class="cell small-10 medium-10 large-10">',
+                 '<div class="cell medium-10 large-10">',
                  '<div class="sections">',
                  '{{#markdown}}')
 
@@ -67,7 +67,7 @@ find_headers <- function (md)
 navbar <- function (hdrs)
 {
     res <- c ("",
-              '<div class="cell small-2 medium-2 large-2 left">',
+              '<div class="cell medium-2 large-2 left">',
               '<nav class="sticky-container" data-sticky-container>',
               paste0 ('<div class="sticky" data-sticky data-anchor=',
                       '"how-i-make-this-site" data-sticky-on="large"',
