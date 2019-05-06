@@ -1,6 +1,6 @@
 #!/usr/bin/make
 
-all: build switch remove move add
+all: build switch remove move remove1 add
 
 build: 
 	foundation build
@@ -22,3 +22,5 @@ move:
 add:
 	git add index.html blog.html blog/* assets/*
 
+remove1:
+	sed -i '1d' index.html
