@@ -1,4 +1,4 @@
-write_blog_entries <- function (n = 6, sort_date = "modified")
+update_main <- function (n = 6, sort_date = "modified")
 {
     flist <- order_blog_files (sort_date = sort_date)
     fdat <- lapply (flist, function (i) get_one_blog_dat (i))
@@ -109,4 +109,4 @@ get_link <- function (x)
     strsplit (link, "link: ") [[1]] [2]
 }
 
-#write_blog_entries (n = 6, sort_date = "modified")
+#update_main (n = 6, sort_date = "modified")
