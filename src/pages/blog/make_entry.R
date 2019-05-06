@@ -6,10 +6,6 @@ blog_render <- function (fname, centre_images = TRUE) {
     file.rename (paste0 (fname, ".md"), paste0 (fname, ".html"))
     conn <- file (paste0 (fname, ".html"), open = "r+")
     md <- readLines (conn)
-    #yaml_end <- which (md == "---") [2]
-    #yaml <- md [1:yaml_end]
-    ##md <- md [(yaml_end + 1):length (md)]
-    yaml <- NULL
     
     # a few necessary replacements:
     md [md == "```{r}"] <- md [md == "``` {r}"] <- "``` r"
@@ -52,7 +48,7 @@ blog_render <- function (fname, centre_images = TRUE) {
                  '</div>',
                  '</div>',
                  '{{> blog_entry_footer}}')
-    md <- c (yaml, header, md, footer)
+    md <- c (header, md, footer)
     writeLines (md, conn)
     close (conn)
 }

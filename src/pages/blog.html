@@ -1,0 +1,31 @@
+{{> header}}
+
+<div class = "backgroundClass">
+
+    <a href=blog.html, style="color:#262626;">
+        <div class="grid-y grid-margin y">
+            <div class="cell"><h2 align="center">blog</h2></div>
+            <div class="cell"><h4 align="center">R, C++, spatial, open data</h2></div>
+        </div>
+    </a>
+
+    {{> sections_header}}
+    {{#each blog}}
+    {{> blog_header}}
+    <a href="{{ link }}", style="color:#262626;">
+        <div align="center">
+            <h3>{{ title }}</h3>
+        </div>
+        <div align="center">
+            <p style="color:#888888;">created: {{ created }}; modified {{ modified }}</p>
+        </div>
+        <div align="center">
+            <p>{{ description }}</p>
+        </div>
+    </a>
+    {{> blog_footer}}
+    {{/each}}
+    {{> sections_footer}}
+
+</div>
+    {{> footer}}

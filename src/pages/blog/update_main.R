@@ -1,6 +1,6 @@
 write_blog_entries <- function (n = 6, sort_date = "modified")
 {
-    flist <- order_blog_files (n = n, sort_date = sort_date)
+    flist <- order_blog_files (sort_date = sort_date)
     fdat <- lapply (flist, function (i) get_one_blog_dat (i))
     
     res <- NULL
@@ -16,9 +16,24 @@ write_blog_entries <- function (n = 6, sort_date = "modified")
 
     fp <- file.path ("..", "..", "data", "blog.yml")
     writeLines (res, fp)
+
+    if (n < length (fdat))
+        fdat <- fdat [seq (n)]
+    res <- NULL
+    for (f in fdat)
+    {
+        res <- c (res, "-",
+                  paste0 ("    title: ", f$title),
+                  paste0 ("    description: ", f$description),
+                  paste0 ("    created: ", f$date_cre),
+                  paste0 ("    modified: ", f$date_mod),
+                  paste0 ("    link: ", f$link))
+    }
+    fp <- file.path ("..", "..", "data", "blogshort.yml")
+    writeLines (res, fp)
 }
 
-order_blog_files <- function (n = 6, sort_date = "modified")
+order_blog_files <- function (sort_date = "modified")
 {
     lf <- list.files (".", pattern = "*.Rmd$")
     if (sort_date == "modified")
@@ -28,7 +43,7 @@ order_blog_files <- function (n = 6, sort_date = "modified")
         dates <- do.call (c, lapply (lf, function (i) get_date (i)))
         flist <- lf [order (dates, decreasing = TRUE)]
     }
-    flist [seq (min (c (length (flist), n)))]
+    return (flist)
 }
 
 get_date <- function (rmd)

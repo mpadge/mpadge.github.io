@@ -11,8 +11,9 @@
         </div>
     </a>
 
+    <section id="blog">
     {{> sections_header}}
-    {{#each blog}}
+    {{#each blogshort}}
     {{> blog_header}}
     <a href="{{ link }}", style="color:#262626;">
         <div align="center">
@@ -28,6 +29,7 @@
     {{> blog_footer}}
     {{/each}}
     {{> sections_footer}}
+    </section>
 
     <div class="grid-y grid-margin y">
         <div class="cell"><h2 align="center">code</h2></div>
@@ -37,6 +39,7 @@
     </div>
 
 
+    <section id="code">
     {{> sections_header}}
     {{#each code}}
     {{> code_header}}
@@ -60,6 +63,7 @@
     {{> code_footer}}
     {{/each}}
     {{> sections_footer}}
+    </section>
 
 </div>
     {{> footer}}
