@@ -1,16 +1,24 @@
 #!/usr/bin/make
 
-#all: remove fnd 
-all: fnd move add
+all: build switch remove move add
 
-remove:
-	git rm -r docs
-
-fnd: 
+build: 
 	foundation build
 
+swtich:
+	git checkout master
+
+remove:
+	git rm -r assets blog
+
 move:
-	mv dist docs
+	mkdir assets; mkdir blog; \
+		mv dist/index.html index.html; \
+		mv dist/blog.html .; \
+		mv dist/blog/*.html blog/. \
+		mv dist/assets/* assets/. \
+		rm -r dist
 
 add:
-	git add docs
+	git add index.html blog.html blog/* assets/*
+
