@@ -340,13 +340,22 @@ the time was me learning how
 zurb foundation </a> works. Most of the mechanics of site construction
 and updating are nevertheless done via the <strong>R</strong> code, which is really
 very short and efficient. If you’re interested, the two files that do
-the work are <a href="https://github.com/mpadge/mpadge.github.io/blob/master/src/pages/blog/make_entry.R">here, for rendering a blog
+the work are <a href="https://github.com/mpadge/mpadge.github.io/blob/source/src/pages/blog/make_entry.R">here, for rendering a blog
 entry</a>
-and <a href="https://github.com/mpadge/mpadge.github.io/blob/master/src/pages/blog/update_main.R">here, for updating the main
+and <a href="https://github.com/mpadge/mpadge.github.io/blob/source/src/pages/blog/update_main.R">here, for updating the main
 page</a>.
 The <code>render_blog()</code> function calls the main updating function anyway, so
 all I ever need to do is to call one simple function to render any new
 blog entry and update the website.</p>
+<p>The site itself is housed on the <code>master</code> branch of
+<a href="https://github.com/mpadge/mpadge.github.io">mpadge.github.io</a>, while
+the generating code behind the site is on the <a href="https://github.com/mpadge/mpadge.github.io/tree/source"><code>source</code>
+branch</a>.
+Deployment is controlled with a very simple <a href="https://github.com/mpadge/mpadge.github.io/blob/source/makefile"><code>makefile</code>
+script</a>
+which builds the foundation site, copies everything across from the
+<code>source</code> to <code>master</code> branches, and adds the changes to <code>git</code>. That’s it.</p>
+<p>Advantages of having done this my own way:</p>
 <ul>
 <li>no borrowed templates!</li>
 <li>no blogdown</li>
