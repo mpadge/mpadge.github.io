@@ -22,7 +22,7 @@ blog_render <- function (fname, centre_images = TRUE) {
 
     # add links to headers
     hdrs <- find_headers (md)
-    toc <- write_toc (hdrs)
+    toc <- navbar (hdrs)
 
     md <- process_headers (md, 1)
     md <- process_headers (md, 2)
@@ -51,6 +51,8 @@ blog_render <- function (fname, centre_images = TRUE) {
     md <- c (header, md, footer)
     writeLines (md, conn)
     close (conn)
+
+    write_blog_entries (n = 6, sort_date = "modified")
 }
 
 find_headers <- function (md)
@@ -62,7 +64,7 @@ find_headers <- function (md)
     cbind (hdrs, hdrs_link)
 }
 
-write_toc <- function (hdrs)
+navbar <- function (hdrs)
 {
     res <- c ("",
               '<div class="cell small-2 medium-2 large-2 left">',

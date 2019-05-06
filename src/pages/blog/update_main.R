@@ -109,4 +109,4 @@ get_link <- function (x)
     strsplit (link, "link: ") [[1]] [2]
 }
 
-write_blog_entries (n = 6, sort_date = "modified")
+#write_blog_entries (n = 6, sort_date = "modified")
