@@ -2,7 +2,7 @@
 title: second entry
 description: it'll come in due time ...
 date: 10 April 2019
-link: blog/blog02.html
+link: blog/blog002.html
 ---
 
 here's a graph
