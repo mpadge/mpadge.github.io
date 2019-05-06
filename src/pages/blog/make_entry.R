@@ -1,8 +1,10 @@
+source ("update_main.R")
+
 blog_render <- function (fname, centre_images = TRUE) {
     rmarkdown::render(paste0 (fname, ".Rmd"),
                       rmarkdown::md_document(variant='gfm'))
     file.rename (paste0 (fname, ".md"), paste0 (fname, ".html"))
-    conn <- file (paste0 (fname, ".html"))
+    conn <- file (paste0 (fname, ".html"), open = "r+")
     md <- readLines (conn)
     #yaml_end <- which (md == "---") [2]
     #yaml <- md [1:yaml_end]
@@ -37,10 +39,15 @@ blog_render <- function (fname, centre_images = TRUE) {
                  '<div class="cell small-10 medium-10 large-10">',
                  '<div class="sections">',
                  '{{#markdown}}')
+
+    # get_one_blog_dat fn defined in "update_main.R"
+    metadat <- get_one_blog_dat (paste0 (fname, ".Rmd"))
+
     footer <- c ('<div style="text-align: right">',
-                 paste ('Originally posted:', Sys.Date()),
-                 paste ('Updated:', Sys.Date()),
-                 '</div>',
+                 paste ('Originally posted:', metadat$date_cre))
+    if (metadat$date_mod > metadat$date_cre)
+        footer <- c (footer, paste ('Updated:', metadat$date_mod))
+    footer <- c (footer, '</div>',
                  '{{/markdown}}',
                  '</div>',
                  '</div>',
@@ -136,9 +143,9 @@ clean_figure_files <- function (md, fname, dest_dir = c ("assets", "img"))
                   length (grep (i, md)) > 0, logical (1))
     lf <- list.files (figpath, full.names = TRUE) [!lf]
     chk <- file.remove (lf)
-    lf <- list.files (newpath, full.names = TRUE)
+    lf <- list.files (figpath, full.names = TRUE)
     if (length (lf) == 0)
-        unlink (newpath, recursive = TRUE)
+        unlink (figpath, recursive = TRUE)
 }
 
 blog_render ("blog01")
