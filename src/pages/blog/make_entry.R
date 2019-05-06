@@ -16,9 +16,11 @@ blog_render <- function (fname, centre_images = TRUE) {
     md <- gsub ("{{", "&#123;&#123;", md, fixed = TRUE)
     md <- gsub ("}}", "&#125;&#125;", md, fixed = TRUE)
 
+    dest_dir <- c ("assets", "img")
     md <- move_image_files (md, fname, centre_images = TRUE,
                             rmd_fig_dir = "figure-gfm",
-                            dest_dir = c ("assets", "img"))
+                            dest_dir = dest_dir)
+    clean_figure_files (md, fname, dest_dir = dest_dir)
 
     # add links to headers
     hdrs <- find_headers (md)
@@ -124,6 +126,19 @@ move_image_files <- function (md, fname, centre_images = TRUE,
     }
 
     return (md)
+}
+
+clean_figure_files <- function (md, fname, dest_dir = c ("assets", "img"))
+{
+    dest_dir <- c ("..", "..", dest_dir, fname)
+    figpath <- do.call (file.path, as.list (dest_dir))
+    lf <- vapply (list.files (figpath), function (i)
+                  length (grep (i, md)) > 0, logical (1))
+    lf <- list.files (figpath, full.names = TRUE) [!lf]
+    chk <- file.remove (lf)
+    lf <- list.files (newpath, full.names = TRUE)
+    if (length (lf) == 0)
+        unlink (newpath, recursive = TRUE)
 }
 
 blog_render ("blog01")
