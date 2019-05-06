@@ -1,4 +1,4 @@
-blog_render <- function (fname, center_images = TRUE) {
+blog_render <- function (fname, centre_images = TRUE) {
     rmarkdown::render(paste0 (fname, ".Rmd"),
                       rmarkdown::md_document(variant='gfm'))
     file.rename (paste0 (fname, ".md"), paste0 (fname, ".html"))
@@ -16,32 +16,9 @@ blog_render <- function (fname, center_images = TRUE) {
     md <- gsub ("{{", "&#123;&#123;", md, fixed = TRUE)
     md <- gsub ("}}", "&#125;&#125;", md, fixed = TRUE)
 
-    # move image files
-    path <- file.path (paste0 (fname, "_files"), "figure-gfm")
-    flist <- list.files (path, full.names = TRUE)
-    if (length (flist) > 0)
-    {
-        newpath <- file.path ("..", "..", "assets", "img", fname)
-        if (!dir.exists (newpath))
-            dir.create (newpath, recursive = TRUE)
-        file.rename (flist, file.path (newpath, list.files (path)))
-        unlink (paste0 (fname, "_files"), recursive = TRUE)
-
-        # and change image location to newpath:
-        md <- gsub (path, newpath, md)
-        if (center_images)
-        {
-            index <- grep (newpath, md)
-            n <- length (index)
-            # copy each of those lines both above and below:
-            md <- md [sort (c (seq (md), rep (index, each = 2)))]
-            index <- grep (newpath, md)
-            # get the index to the middle of each group of 3 repeats:
-            index <- index [3 * 1:n - 1]
-            md [index - 1] <- "<center>"
-            md [index + 1] <- "</center>"
-        }
-    }
+    md <- move_image_files (md, fname, centre_images = TRUE,
+                            rmd_fig_dir = "figure-gfm",
+                            dest_dir = c ("assets", "img"))
 
     # add links to headers
     hdrs <- find_headers (md)
@@ -50,8 +27,6 @@ blog_render <- function (fname, center_images = TRUE) {
     md <- process_headers (md, 1)
     md <- process_headers (md, 2)
     md <- process_headers (md, 3)
-
-    # The sidebar with links to header elements
 
     # the foundation html header and footer:
     header <- c ('{{> header}}',
@@ -97,10 +72,6 @@ write_toc <- function (hdrs)
                                '" style="color:#111111">', hdrs [h, 1],
                                '</a></li>'))
 
-    #for (h in seq (nrow (hdrs)))
-    #    res <- c (res, paste0 ('<a href="#', hdrs [h, 2],
-    #                           '" style="color:#111111">', hdrs [h, 1],
-    #                           '</a><br><br>'))
     c (res, '</div>', '</nav>', '</div>', "")
 }
 
@@ -114,12 +85,45 @@ process_headers <- function (md, level = 1)
         hdr <- gsub (repl, "", md [h])
         nm <- gsub ("[[:space:]]+|[[:punct:]]+", "-", hdr)
         nm <- gsub ("-+", "-", nm)
-        #md [h] <- paste0 ('<h', level, '><a name="', nm,
-        #                  '" style = "color:#111111;">', hdr, '</a></h',
-        #                  level, '>')
         md [h] <- paste0 ('<section id="', nm, '" data-magellan-target="',
                           nm, '"><h', level, '>', hdr, '</h></section>')
     }
     return (md)
 }
+
+move_image_files <- function (md, fname, centre_images = TRUE,
+                              rmd_fig_dir = "figure-gfm",
+                              dest_dir = c ("assets", "img"))
+{
+    fp <- c (paste0 (fname, "_files"), rmd_fig_dir)
+    path <- do.call (file.path, as.list (fp))
+    flist <- list.files (path, full.names = TRUE)
+    if (length (flist) > 0)
+    {
+        dest_dir <- c ("..", "..", dest_dir, fname)
+        newpath <- do.call (file.path, as.list (dest_dir))
+        if (!dir.exists (newpath))
+            dir.create (newpath, recursive = TRUE)
+        file.rename (flist, file.path (newpath, list.files (path)))
+        unlink (paste0 (fname, "_files"), recursive = TRUE)
+
+        # and change image location to newpath:
+        md <- gsub (path, newpath, md)
+        if (centre_images)
+        {
+            index <- grep (newpath, md)
+            n <- length (index)
+            # copy each of those lines both above and below:
+            md <- md [sort (c (seq (md), rep (index, each = 2)))]
+            index <- grep (newpath, md)
+            # get the index to the middle of each group of 3 repeats:
+            index <- index [3 * 1:n - 1]
+            md [index - 1] <- "<center>"
+            md [index + 1] <- "</center>"
+        }
+    }
+
+    return (md)
+}
+
 blog_render ("blog01")
