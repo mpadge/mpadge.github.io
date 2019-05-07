@@ -41,8 +41,8 @@ This is often as simple as replacing some function definition, say:
 ``` c++
 int my_function (int my_integer_input)
 {
-    int result;
-    // do something with `my_integer_input`
+    int result = my_integer_input;
+    // do something with `result`
     return result;
 }
 ```
@@ -51,10 +51,10 @@ with a templated version:
 
 ``` c++
 template <class T>
-T my_function_t (T my_integer_input)
+T my_function_t (T my_generic_input)
 {
-    T result;
-    // do something with `my_integer_input`
+    T result = my_generic_input;
+    // do something with `result`
     return result;
 }
 ```
@@ -68,8 +68,8 @@ look like this:
 // [[Rcpp::export]]
 int my_rcpp_function (int my_integer_input)
 {
-    int result;
-    // do something with `my_integer_input`
+    int result = my_integer_input;
+    // do something with `result`
     return result;
 }
 ```
@@ -99,13 +99,13 @@ RcppExports.cpp:46:41: error: no type named 'type' in the global namespace
 2 errors generated.
 ```
 
-and in this instance provides highly informative error messages that
-clearly indicate that the cause is the ability to infer appropriate
-`inputSEXP` types (itself a necessity of **R** being written in C, not
-C++, and so knowing nothing about inferred types or templates). What we
-can nevertheless do here is replace our undefined type, `T`, with an
-equivalently undefined and generic `SEXP` (and let’s define our function
-while we’re at it to square the input):
+This provides highly informative error messages that clearly indicate
+that the cause is the ability to infer appropriate `inputSEXP` types
+(itself a necessity of **R** being written in C, not C++, and so knowing
+nothing about inferred types or templates). What we can nevertheless do
+here is replace our undefined type, `T`, with an equivalently undefined
+and generic `SEXP` (and let’s define our function while we’re at it to
+square the input):
 
 ``` c++
 // [[Rcpp::export]]
@@ -202,7 +202,7 @@ advantages of templating in terms of abstracting code ought to be
 considered to apply to C++ alone, and not either to **R** or Rcpp.
 Templating still remains entirely possible, and just as powerful; it
 should just remain hidden from any exposure to Rcpp or **R**. I can
-still define an entirely abstracted class like this:
+still define an entirely abstracted C++ class like this:
 
 ``` c++
 template <class T>
@@ -212,10 +212,10 @@ class TemplatedClass
         T _value;
 
     public:
-        DerivedClass (T value) {
+        DerivedClass (T value) {    // constructor
             _value = value;
         };
-        ~DerivedClass () {};
+        ~DerivedClass () {};        // destructor
 
         T function ();
 };
@@ -227,10 +227,10 @@ T DerivedClass<T>::function ()
 }
 ```
 
-(Obviously the only danger there is that I need to ensure that `_value *
-_value` is meaningful for the given input class.) This can then be used
-in my “exposed” Rcpp function through replacing the previous two
-functions with type-explicit instanitations of `TemplatedClass`:
+(With the obvious danger that I need to ensure that `_value * _value` is
+meaningful for the given input class.) This can then be used in my
+“exposed” Rcpp function through replacing the previous two functions
+with type-explicit instanitations of `TemplatedClass`:
 
 ``` c++
 // [[Rcpp::export]]
