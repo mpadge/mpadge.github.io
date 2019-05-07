@@ -57,11 +57,23 @@ blog_render <- function (fname, centre_images = TRUE) {
 
 find_headers <- function (md)
 {
+    md <- md [!seq (md) %in% find_code_lines (md)]
     hdrs <- gsub ("\\#+ ", "", md [grep ("^\\#+", md)])
     hdrs_link <- gsub ("[[:space:]]+|[[:punct:]]+", "-", hdrs)
     hdrs_link <- gsub ("-+", "-", hdrs_link)
     
     cbind (hdrs, hdrs_link)
+}
+
+find_code_lines <- function (md)
+{
+    index <- grep ("^```", md)
+    if (!length (index) %% 2 == 0)
+        stop ("Unmatched code chunks")
+    strt <- index [2 * seq (length (index) / 2) - 1]
+    ends <- index [2 * seq (length (index) / 2)]
+    res <- apply (cbind (strt, ends), 1, function (i) i [1]:i [2])
+    as.numeric (unlist (res))
 }
 
 navbar <- function (hdrs)
@@ -86,6 +98,7 @@ process_headers <- function (md, level = 1)
 {
     ptn <- paste0 ("^", paste0 (rep ("\\#", level), collapse = ""), " ")
     hdrs <- grep (ptn, md)
+    hdrs <- hdrs [!hdrs %in% find_code_lines (md)]
     repl <- paste0 (paste0 (rep ("#", level), collapse = ""), " ")
     for (h in hdrs)
     {
@@ -146,4 +159,4 @@ clean_figure_files <- function (md, fname, dest_dir = c ("assets", "img"))
         unlink (figpath, recursive = TRUE)
 }
 
-blog_render ("blog001")
+blog_render ("blog002")
