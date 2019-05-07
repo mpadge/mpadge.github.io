@@ -367,10 +367,13 @@ The site itself is housed on the `master` branch of
 [mpadge.github.io](https://github.com/mpadge/mpadge.github.io), while
 the generating code behind the site is on the [`source`
 branch](https://github.com/mpadge/mpadge.github.io/tree/source).
-Deployment is controlled with a very simple [`makefile`
-script](https://github.com/mpadge/mpadge.github.io/blob/source/makefile)
+Deployment is controlled with a very simple [bash
+script](https://github.com/mpadge/mpadge.github.io/blob/source/script.sh),
+called by a single [`makefile`
+command](https://github.com/mpadge/mpadge.github.io/blob/source/makefile),
 which builds the foundation site, copies everything across from the
-`source` to `master` branches, and adds the changes to `git`. That’s it.
+`source` to `master` branches, adds the changes to `git`, and creates a
+commit to update the site. That’s it.
 
 Advantages of having done this my own way:
 
