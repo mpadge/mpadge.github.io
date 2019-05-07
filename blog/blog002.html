@@ -177,7 +177,7 @@ like this:</p>
     <span class="hljs-keyword">return</span> input * input;
 }</code></pre></div><p>These can then be called from the <strong>R</strong> side with a type-explicit
 wrapper like this:</p>
-<div class="code-example"><pre><code class="r">my_squre &lt;- <span class="hljs-keyword">function</span> (input)
+<div class="code-example"><pre><code class="r">my_square &lt;- <span class="hljs-keyword">function</span> (input)
 {
     <span class="hljs-keyword">if</span> (is.integer (input))
         rcpp_square_int (input)
