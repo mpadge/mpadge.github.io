@@ -353,10 +353,13 @@ blog entry and update the website.</p>
 <a href="https://github.com/mpadge/mpadge.github.io">mpadge.github.io</a>, while
 the generating code behind the site is on the <a href="https://github.com/mpadge/mpadge.github.io/tree/source"><code>source</code>
 branch</a>.
-Deployment is controlled with a very simple <a href="https://github.com/mpadge/mpadge.github.io/blob/source/makefile"><code>makefile</code>
-script</a>
+Deployment is controlled with a very simple <a href="https://github.com/mpadge/mpadge.github.io/blob/source/script.sh">bash
+script</a>,
+called by a single <a href="https://github.com/mpadge/mpadge.github.io/blob/source/makefile"><code>makefile</code>
+command</a>,
 which builds the foundation site, copies everything across from the
-<code>source</code> to <code>master</code> branches, and adds the changes to <code>git</code>. That’s it.</p>
+<code>source</code> to <code>master</code> branches, adds the changes to <code>git</code>, and creates a
+commit to update the site. That’s it.</p>
 <p>Advantages of having done this my own way:</p>
 <ul>
 <li>no borrowed templates!</li>
