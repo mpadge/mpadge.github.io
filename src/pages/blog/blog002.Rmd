@@ -1,18 +1,228 @@
 ---
-title: second entry
-description: it'll come in due time ...
-date: 10 April 2019
+title: C++ templates and Rcpp
+description: C++ templates are really useful. Templates allow you to code
+    a function able to accept arguments of different types that can't
+    necessarily be known until compile time. There is, however, no such thing
+    as an Rcpp template -- all inputs and outputs must have defined types. This
+    blog entry is about how to maximise the usefulness of C++ templates in an
+    Rcpp context.
+date: 7 May 2019
 link: blog/blog002.html
 ---
 
-here's a graph
+# C++ templates and Rcpp
 
-![](../../assets/img/junk.png)
+C++ templates are really useful. Templates allow you to code a function able to
+accept arguments of different types that can't necessarily be known until
+compile time. There is, however, no such thing as an Rcpp template -- all
+inputs and outputs must have defined types. This blog entry is about how to
+maximise the usefulness of C++ templates in an Rcpp context.
 
-plus some stuff after it, and then a code chunk with a graph of it's own
-```{r}
-x <- 1:100
-y <- sin (x * 5 * pi / 100)
-plot (x, y, "l", col = "blue", lwd = 2)
+It's not a difficult process, and as often in programming, it's about finding
+the most efficient level of abstraction. Templates are one of the coolest ways
+to "abstract" C++ code -- generally meaning abstracting away from specific
+variable (class, structure, whatever ...) types to generic templated forms that
+accept multiple, or indeed any possible, types. Templates in
+<a target="_blank" rel="noopener noreferrer" href="https://rust-lang.org">
+    rust
+</a> just work - types are directly inferred, and any potential conflicts will be
+caught at compile time.
+<a target="_blank" rel="noopener noreferrer" href="https://rust-lang.org">
+    rust
+</a> is the gold standard in which template abstraction is as pain-free as
+possible. C++ templates are, in contrast, somewhat more painful, as a minimal
+generic template must be explicitly specified. This is often as simple as replacing some function definition, say:
+``` C++
+int my_function (int my_integer_input)
+{
+    int result;
+    // do something with `my_integer_input`
+    return result;
+}
 ```
+with a templated version:
+``` C++
+template <class T>
+T my_function_t (T my_integer_input)
+{
+    T result;
+    // do something with `my_integer_input`
+    return result;
+}
+```
+As it stands, `my_function_t` will accept inputs of any arbitrary kinds. (There
+are also ways to permit templated code to only accept objects of some
+pre-defined classes.) An Rcpp version of the first function might look like
+this:
+``` C++
+// [[Rcpp::export]]
+int my_rcpp_function (int my_integer_input)
+{
+    int result;
+    // do something with `my_integer_input`
+    return result;
+}
+```
+The problem arises when you try to do something like this:
+``` C++
+// [[Rcpp::export]]
+template <class T>
+int rcpp_template (T input)
+{
+    int result = Rcpp::as <int> (input);
+    // do something with `result`
+    return result;
+}
+```
+and that takes you here:
+``` C++
+RcppExports.cpp:46:36: error: use of undeclared identifier 'T'
+    Rcpp::traits::input_parameter< T >::type input(inputSEXP);
+                                                              ^
+RcppExports.cpp:46:41: error: no type named 'type' in the global namespace
+    Rcpp::traits::input_parameter< T >::type input(inputSEXP);
+                                                                    ~~^
+2 errors generated.
+```
+and in this instance provides highly informative error messages that clearly
+indicate that the cause is the ability to infer appropriate `inputSEXP` types
+(itself a necessity of **R** being written in C, not C++, and so knowing
+nothing about inferred types or templates). What we can nevertheless do here is
+replace our undefined type, `T`, with an equivalently undefined and generic
+`SEXP` (and let's define our function while we're at it to square the input):
+``` C++
+// [[Rcpp::export]]
+int rcpp_template (SEXP input)
+{
+    int result = Rcpp::as <int> (input);
+    return result * result;
+}
+```
+This can be then called from **R**, and will return an integer output. (The
+`Rcpp::as <int> ()` is a wrapper for `static_cast <int> ()`, which simply
+truncates decimals, so `rcpp_template(1.9)` will give 1.) What about generic
+return values? The next obvious step would be to try this:
+``` C++
+// [[Rcpp::export]]
+SEXP rcpp_template2 (SEXP input)
+{
+    return input * input;
+}
+```
+This would obviously be rather dangerous if it actually worked, but we don't
+need to worry because it fails with this:
+``` C++
+error: invalid operands to binary expression ('SEXP' (aka 'SEXPREC *') and 'SEXP')
+SEXP result = input * input;
+                        ~~~~~ ^ ~~~~~
+1 error generated.
+```
+The arrow points to the "operand", indicating that this has defaulted to an
+attempt to implement bit-wise multiplication of two generic pointer objects (an
+`SEXP` object is nothing but a pointer to the underlying structure it points
+to, an `SEXPREC` object). So that all leaves us now knowing that the most we
+can do is to send generic inputs from **R** to C++ functions as `SEXP`
+parameters, and then coerce them with the magic of `Rcpp::as()`. This is of
+course also potentially dangerous:
+``` R
+rcpp_template (2.9) # = 4; okay
+rcpp_template ("2.9")
+# Error in rcpp_template(input) :
+#   Not compatible with requested type: [type=character; target=integer].
+```
+
+Errors like these are generally interpreted to indicate a need to intercept
+such errors on the **R** side before they are passed to C++. Doing so, of
+course, completely obviates any gains made through permitting a modest degree
+of abstraction in C++ anyway, and we're forced to conclude to this point that
+minimal templating is possible through use/abuse of `SEXP`, but that that is
+generally not a good idea anyway.
+
+## A better level of abstraction
+
+I suggest at this point that a better approach is to leave the templating
+exclusively in C++-land, and use Rcpp to provide strict-type interfaces. For
+our simple square function, the C++-side would then look like this:
+``` C++
+// [[Rcpp::export]]
+int rcpp_square_int (int input)
+{
+    return input * input;
+}
+
+// [[Rcpp::export]]
+int rcpp_square_dbl (double input)
+{
+    return input * input;
+}
+```
+These can then be called from the **R** side with a type-explicit wrapper like this:
+```{r}
+my_squre <- function (input)
+{
+    if (is.integer (input))
+        rcpp_square_int (input)
+    else if (is.double (input))
+        rcpp_square_dbl (input)
+}
+```
+But then there is no abstraction through templating at all! Yeah, but that's
+because the above ramblings have hopefully demonstrated that the advantages of
+templating in terms of abstracting code ought to be considered to apply to C++
+alone, and not either to **R** or Rcpp. Templating still remains entirely
+possible, and just as powerful; it should just remain hidden from any exposure
+to Rcpp or **R**. I can still define an entirely abstracted class like this:
+
+``` C++
+template <class T>
+class TemplatedClass
+{
+    private:
+        T _value;
+
+    public:
+        DerivedClass (T value) {
+            _value = value;
+        };
+        ~DerivedClass () {};
+
+        T function ();
+};
+
+template <class T>
+T DerivedClass<T>::function ()
+{
+    return _value * _value;
+}
+```
+(Obviously the only danger there is that I need to ensure that `_value
+* _value` is meaningful for the given input class.) This can then be used in my
+"exposed" Rcpp function through replacing the previous two functions with
+type-explicit instanitations of `TemplatedClass`:
+``` C++
+// [[Rcpp::export]]
+int rcpp_square_int (int input)
+{
+    TemplatedClass <int> cl (input);
+    return cl.function ();
+}
+
+// [[Rcpp::export]]
+double rcpp_square_dbl (double input)
+{
+    TemplatedClass <double> cl (input);
+    return cl.function ();
+}
+
+```
+The full power of abstraction through templates now remains in the ability to
+define any and all additional functions or properties of `TemplatedClass` in
+templated, rather than type-explicit, form. Just don't try to template-away
+type-specific abstraction in any Rcpp interfaces. **R** is effectively
+type-explicit (the seemingly generic nature of `SEXP` notwithstanding); Rcpp
+should be considered in the same way. Leave the power of templating where it
+belongs: In C++ (or 
+<a target="_blank" rel="noopener noreferrer" href="https://rust-lang.org">
+    rust ...
+</a>).
 
