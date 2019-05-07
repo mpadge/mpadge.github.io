@@ -29,7 +29,7 @@ echo -e "\033[0;32mUpdating git...\033[0m"
 git add index.html blog.html blog/* assets/*
 git add -u
 git commit -am "New Blog Build (`date`)"
-git push
+git push origin master
 
 echo -e "\033[0;32mChange back to source branch...\033[0m"
 git checkout source
