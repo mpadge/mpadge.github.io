@@ -96,13 +96,13 @@ that looks like this:
     description: < blah blah blah >
     created: 06 May 19
     modified: 06 May 19
-    link: blog/blog01.html
+    link: blog/blog001.html
 - 
     title: second entry
     description: it'll come in due time ...
     created: 10 Apr 19
     modified: 06 May 19
-    link: blog/blog02.html
+    link: blog/blog002.html
 ```
 
 More on how that gets automatically generated below; for now, just
@@ -327,7 +327,7 @@ example, converts the metadata for this entry of:
 title: how i made this site
 description: <blah blah blah>
 date: 06/05/2019
-link: blog/blog01.html
+link: blog/blog001.html
 ---
 ```
 
@@ -339,7 +339,7 @@ into the only slightly-modified version in `data/blog.yml` of
     description: <blah blah blah>
     created: 06 May 19
     modified: 06 May 19
-    link: blog/blog01.html
+    link: blog/blog001.html
 ```
 
 The “created” date is read from the original `date` field of the `.Rmd`
@@ -356,18 +356,30 @@ zurb foundation </a> works. Most of the mechanics of site construction
 and updating are nevertheless done via the **R** code, which is really
 very short and efficient. If you’re interested, the two files that do
 the work are [here, for rendering a blog
-entry](https://github.com/mpadge/mpadge.github.io/blob/master/src/pages/blog/make_entry.R)
+entry](https://github.com/mpadge/mpadge.github.io/blob/source/src/pages/blog/make_entry.R)
 and [here, for updating the main
-page](https://github.com/mpadge/mpadge.github.io/blob/master/src/pages/blog/update_main.R).
+page](https://github.com/mpadge/mpadge.github.io/blob/source/src/pages/blog/update_main.R).
 The `render_blog()` function calls the main updating function anyway, so
 all I ever need to do is to call one simple function to render any new
 blog entry and update the website.
+
+The site itself is housed on the `master` branch of
+[mpadge.github.io](https://github.com/mpadge/mpadge.github.io), while
+the generating code behind the site is on the [`source`
+branch](https://github.com/mpadge/mpadge.github.io/tree/source).
+Deployment is controlled with a very simple [`makefile`
+script](https://github.com/mpadge/mpadge.github.io/blob/source/makefile)
+which builds the foundation site, copies everything across from the
+`source` to `master` branches, and adds the changes to `git`. That’s it.
+
+Advantages of having done this my own way:
 
   - no borrowed templates\!
   - no blogdown
   - full control over everything
 <div style="text-align: right">
 Originally posted: 06 May 19
+Updated: 07 May 19
 </div>
 {{/markdown}}
 </div>
