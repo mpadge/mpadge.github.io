@@ -2,19 +2,11 @@
     title: how i made this site
     description: This site is built with zurb foundation, because i had read that it did everything that hugo could, but that final products were more lightweight and flexible. Plus i had no idea about it, and learning something new is sometimes worthwhile. I was also frustrated that standard hugo advice seemed to be, ''oh, just pick a template and off you go,'' yet there is surprisingly little advice on how to modify any given template, let alone how to start from scratch. It turned out that foundation at least made starting from scratch fairly easy, and so this entry is about that process.
     created: 06 May 19
-<<<<<<< HEAD
     modified: 07 May 19
-=======
-    modified: 06 May 19
->>>>>>> b9ab3985e6ea07422b299e465b8697cdf492e999
     link: blog/blog001.html
 -
     title: second entry
     description: it'll come in due time ...
     created: 10 Apr 19
-<<<<<<< HEAD
     modified: 07 May 19
-=======
-    modified: 06 May 19
->>>>>>> b9ab3985e6ea07422b299e465b8697cdf492e999
     link: blog/blog002.html
