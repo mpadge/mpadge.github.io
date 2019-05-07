@@ -14,8 +14,7 @@ echo -e "\033[0;32mDeleting old site...\033[0m"
 rm -r assets/ blog/
 
 echo -e "\033[0;32mTransferring new contents...\033[0m"
-mkdir assets
-mkdir blog
+mkdir assets blog
 mv dist/index.html .
 mv dist/blog.html .
 mv dist/blog/*.html blog/.
@@ -28,6 +27,7 @@ sed -i '1d' index.html
 
 echo -e "\033[0;32mUpdating git...\033[0m"
 git add index.html blog.html blog/* assets/*
+git add -u
 git commit -am "New Blog Build (`date`)"
 git push
 
