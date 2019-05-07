@@ -28,6 +28,7 @@ sed -i '1d' index.html
 echo -e "\033[0;32mUpdating git...\033[0m"
 git add index.html blog.html blog/* assets/*
 git add -u
+git st
 git commit -am "New Blog Build (`date`)"
 git push origin master
 
