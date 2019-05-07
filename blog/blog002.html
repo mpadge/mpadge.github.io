@@ -82,15 +82,15 @@ painful, as a minimal generic template must be explicitly specified.
 This is often as simple as replacing some function definition, say:</p>
 <div class="code-example"><pre><code class="c++"><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">my_function</span> <span class="hljs-params">(<span class="hljs-keyword">int</span> my_integer_input)</span>
 </span>{
-    <span class="hljs-keyword">int</span> result;
-    <span class="hljs-comment">// do something with `my_integer_input`</span>
+    <span class="hljs-keyword">int</span> result = my_integer_input;
+    <span class="hljs-comment">// do something with `result`</span>
     <span class="hljs-keyword">return</span> result;
 }</code></pre></div><p>with a templated version:</p>
 <div class="code-example"><pre><code class="c++"><span class="hljs-keyword">template</span> &lt;<span class="hljs-keyword">class</span> T&gt;
-<span class="hljs-function">T <span class="hljs-title">my_function_t</span> <span class="hljs-params">(T my_integer_input)</span>
+<span class="hljs-function">T <span class="hljs-title">my_function_t</span> <span class="hljs-params">(T my_generic_input)</span>
 </span>{
-    T result;
-    <span class="hljs-comment">// do something with `my_integer_input`</span>
+    T result = my_generic_input;
+    <span class="hljs-comment">// do something with `result`</span>
     <span class="hljs-keyword">return</span> result;
 }</code></pre></div><p>As it stands, <code>my_function_t</code> will accept inputs of any arbitrary kinds.
 (There are also ways to permit templated code to only accept objects of
@@ -99,8 +99,8 @@ look like this:</p>
 <div class="code-example"><pre><code class="c++"><span class="hljs-comment">// [[Rcpp::export]]</span>
 <span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">my_rcpp_function</span> <span class="hljs-params">(<span class="hljs-keyword">int</span> my_integer_input)</span>
 </span>{
-    <span class="hljs-keyword">int</span> result;
-    <span class="hljs-comment">// do something with `my_integer_input`</span>
+    <span class="hljs-keyword">int</span> result = my_integer_input;
+    <span class="hljs-comment">// do something with `result`</span>
     <span class="hljs-keyword">return</span> result;
 }</code></pre></div><p>The problem arises when you try to do something like this:</p>
 <div class="code-example"><pre><code class="c++"><span class="hljs-comment">// [[Rcpp::export]]</span>
@@ -117,13 +117,13 @@ look like this:</p>
 RcppExports.cpp:46:41: error: no type named 'type' in the global namespace
     Rcpp::traits::input_parameter&lt; T &gt;::type input(inputSEXP);
                                                                     ~~^
-2 errors generated.</code></pre></div><p>and in this instance provides highly informative error messages that
-clearly indicate that the cause is the ability to infer appropriate
-<code>inputSEXP</code> types (itself a necessity of <strong>R</strong> being written in C, not
-C++, and so knowing nothing about inferred types or templates). What we
-can nevertheless do here is replace our undefined type, <code>T</code>, with an
-equivalently undefined and generic <code>SEXP</code> (and let’s define our function
-while we’re at it to square the input):</p>
+2 errors generated.</code></pre></div><p>This provides highly informative error messages that clearly indicate
+that the cause is the ability to infer appropriate <code>inputSEXP</code> types
+(itself a necessity of <strong>R</strong> being written in C, not C++, and so knowing
+nothing about inferred types or templates). What we can nevertheless do
+here is replace our undefined type, <code>T</code>, with an equivalently undefined
+and generic <code>SEXP</code> (and let’s define our function while we’re at it to
+square the input):</p>
 <div class="code-example"><pre><code class="c++"><span class="hljs-comment">// [[Rcpp::export]]</span>
 <span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">rcpp_template</span> <span class="hljs-params">(SEXP input)</span>
 </span>{
@@ -189,7 +189,7 @@ advantages of templating in terms of abstracting code ought to be
 considered to apply to C++ alone, and not either to <strong>R</strong> or Rcpp.
 Templating still remains entirely possible, and just as powerful; it
 should just remain hidden from any exposure to Rcpp or <strong>R</strong>. I can
-still define an entirely abstracted class like this:</p>
+still define an entirely abstracted C++ class like this:</p>
 <div class="code-example"><pre><code class="c++"><span class="hljs-keyword">template</span> &lt;<span class="hljs-keyword">class</span> T&gt;
 <span class="hljs-keyword">class</span> TemplatedClass
 {
@@ -197,10 +197,10 @@ still define an entirely abstracted class like this:</p>
         T _value;
 
     <span class="hljs-keyword">public</span>:
-        DerivedClass (T value) {
+        DerivedClass (T value) {    <span class="hljs-comment">// constructor</span>
             _value = value;
         };
-        ~DerivedClass () {};
+        ~DerivedClass () {};        <span class="hljs-comment">// destructor</span>
 
         <span class="hljs-function">T <span class="hljs-title">function</span> <span class="hljs-params">()</span></span>;
 };
@@ -209,10 +209,10 @@ still define an entirely abstracted class like this:</p>
 T DerivedClass&lt;T&gt;::function ()
 {
     <span class="hljs-keyword">return</span> _value * _value;
-}</code></pre></div><p>(Obviously the only danger there is that I need to ensure that <code>_value *
-_value</code> is meaningful for the given input class.) This can then be used
-in my “exposed” Rcpp function through replacing the previous two
-functions with type-explicit instanitations of <code>TemplatedClass</code>:</p>
+}</code></pre></div><p>(With the obvious danger that I need to ensure that <code>_value * _value</code> is
+meaningful for the given input class.) This can then be used in my
+“exposed” Rcpp function through replacing the previous two functions
+with type-explicit instanitations of <code>TemplatedClass</code>:</p>
 <div class="code-example"><pre><code class="c++"><span class="hljs-comment">// [[Rcpp::export]]</span>
 <span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">rcpp_square_int</span> <span class="hljs-params">(<span class="hljs-keyword">int</span> input)</span>
 </span>{
