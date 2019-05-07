@@ -15,8 +15,8 @@ move:
 	mkdir assets; mkdir blog; \
 		mv dist/index.html .; \
 		mv dist/blog.html .; \
-		mv dist/blog/*.html blog/. \
-		mv dist/assets/* assets/. \
+		mv dist/blog/*.html blog/.; \
+		mv dist/assets/* assets/.; \
 		rm -r dist
 
 remove1:
