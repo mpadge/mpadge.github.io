@@ -1,0 +1,249 @@
+
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>mpadge</title>
+    <link rel="stylesheet" href="../assets/css/app.css" />
+    <link rel="stylesheet" href="../assets/foundation-icons/foundation-icons.css" />
+  </head>
+<body>
+<!--
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/gruvbox-dark.min.css">
+href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/atelier-dune-light.min.css">
+-->
+<link rel="stylesheet"
+href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/atom-one-light.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<div data-sticky-container>
+    <div class="top-bar" data-sticky data-options="marginTop:0;",style="width:100%;">
+        <div class="top-bar-left">
+            <ul class="dropdown menu" data-dropdown-menu>
+                <li class="menu-text"> mpadge </li>
+                <li><a href="..//#">home</a></li>
+                <li><a href="../blog.html">blog</a></li>
+                <li> <a href="..//#code">code</a> </li>
+            </ul>
+        </div>
+        <div class="top-bar-right">
+            <ul class="dropdown menu" data-dropdown-menu>
+                <li><a target="_blank" rel="noopener noreferrer"
+                                       href="https://github.com/mpadge">
+                        <i class="fi-social-github"></i></a></li>
+                <li><a target="_blank" rel="noopener noreferrer"
+                                       href="https://twitter.com/bikesRdata">
+                        <i class="fi-social-twitter"></i></a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="blogClass">
+<div class="grid-container">
+<div class="grid-x grid-padding-x">
+
+<div class="cell medium-2 large-2 left">
+<nav class="sticky-container" data-sticky-container>
+<div class="sticky" data-sticky data-anchor="how-i-make-this-site" data-sticky-on="large" data-margin-top="5">
+<ul class="vertical menu" data-magellan>
+<li><a href="#C-templates-and-Rcpp" style="color:#111111">C++ templates and Rcpp</a></li>
+<li><a href="#A-better-level-of-abstraction" style="color:#111111">A better level of abstraction</a></li>
+</div>
+</nav>
+</div>
+
+<div class="cell medium-10 large-10">
+<div class="sections">
+<section id="C-templates-and-Rcpp" data-magellan-target="C-templates-and-Rcpp"><h1>C++ templates and Rcpp</h></section>
+
+<p>C++ templates are really useful. Templates allow you to code a function
+able to accept arguments of different types that can’t necessarily be
+known until compile time. There is, however, no such thing as an Rcpp
+template – all inputs and outputs must have defined types. This blog
+entry is about how to maximise the usefulness of C++ templates in an
+Rcpp context.</p>
+<p>It’s not a difficult process, and as often in programming, it’s about
+finding the most efficient level of abstraction. Templates are one of
+the coolest ways to “abstract” C++ code – generally meaning abstracting
+away from specific variable (class, structure, whatever …) types to
+generic templated forms that accept multiple, or indeed any possible,
+types. Templates in
+<a target="_blank" rel="noopener noreferrer" href="https://rust-lang.org">
+rust </a> just work - types are directly inferred, and any potential
+conflicts will be caught at compile time.
+<a target="_blank" rel="noopener noreferrer" href="https://rust-lang.org">
+rust </a> is the gold standard in which template abstraction is as
+pain-free as possible. C++ templates are, in contrast, somewhat more
+painful, as a minimal generic template must be explicitly specified.
+This is often as simple as replacing some function definition, say:</p>
+<div class="code-example"><pre><code class="c++"><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">my_function</span> <span class="hljs-params">(<span class="hljs-keyword">int</span> my_integer_input)</span>
+</span>{
+    <span class="hljs-keyword">int</span> result;
+    <span class="hljs-comment">// do something with `my_integer_input`</span>
+    <span class="hljs-keyword">return</span> result;
+}</code></pre></div><p>with a templated version:</p>
+<div class="code-example"><pre><code class="c++"><span class="hljs-keyword">template</span> &lt;<span class="hljs-keyword">class</span> T&gt;
+<span class="hljs-function">T <span class="hljs-title">my_function_t</span> <span class="hljs-params">(T my_integer_input)</span>
+</span>{
+    T result;
+    <span class="hljs-comment">// do something with `my_integer_input`</span>
+    <span class="hljs-keyword">return</span> result;
+}</code></pre></div><p>As it stands, <code>my_function_t</code> will accept inputs of any arbitrary kinds.
+(There are also ways to permit templated code to only accept objects of
+some pre-defined classes.) An Rcpp version of the first function might
+look like this:</p>
+<div class="code-example"><pre><code class="c++"><span class="hljs-comment">// [[Rcpp::export]]</span>
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">my_rcpp_function</span> <span class="hljs-params">(<span class="hljs-keyword">int</span> my_integer_input)</span>
+</span>{
+    <span class="hljs-keyword">int</span> result;
+    <span class="hljs-comment">// do something with `my_integer_input`</span>
+    <span class="hljs-keyword">return</span> result;
+}</code></pre></div><p>The problem arises when you try to do something like this:</p>
+<div class="code-example"><pre><code class="c++"><span class="hljs-comment">// [[Rcpp::export]]</span>
+<span class="hljs-keyword">template</span> &lt;<span class="hljs-keyword">class</span> T&gt;
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">rcpp_template</span> <span class="hljs-params">(T input)</span>
+</span>{
+    <span class="hljs-keyword">int</span> result = Rcpp::as &lt;<span class="hljs-keyword">int</span>&gt; (input);
+    <span class="hljs-comment">// do something with `result`</span>
+    <span class="hljs-keyword">return</span> result;
+}</code></pre></div><p>and that takes you here:</p>
+<div class="code-example"><pre><code class="c++">RcppExports.cpp:46:36: error: use of undeclared identifier 'T'
+    Rcpp::traits::input_parameter&lt; T &gt;::type input(inputSEXP);
+                                                              ^
+RcppExports.cpp:46:41: error: no type named 'type' in the global namespace
+    Rcpp::traits::input_parameter&lt; T &gt;::type input(inputSEXP);
+                                                                    ~~^
+2 errors generated.</code></pre></div><p>and in this instance provides highly informative error messages that
+clearly indicate that the cause is the ability to infer appropriate
+<code>inputSEXP</code> types (itself a necessity of <strong>R</strong> being written in C, not
+C++, and so knowing nothing about inferred types or templates). What we
+can nevertheless do here is replace our undefined type, <code>T</code>, with an
+equivalently undefined and generic <code>SEXP</code> (and let’s define our function
+while we’re at it to square the input):</p>
+<div class="code-example"><pre><code class="c++"><span class="hljs-comment">// [[Rcpp::export]]</span>
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">rcpp_template</span> <span class="hljs-params">(SEXP input)</span>
+</span>{
+    <span class="hljs-keyword">int</span> result = Rcpp::as &lt;<span class="hljs-keyword">int</span>&gt; (input);
+    <span class="hljs-keyword">return</span> result * result;
+}</code></pre></div><p>This can be then called from <strong>R</strong>, and will return an integer output.
+(The <code>Rcpp::as &lt;int&gt; ()</code> is a wrapper for <code>static_cast &lt;int&gt; ()</code>, which
+simply truncates decimals, so <code>rcpp_template(1.9)</code> will give 1.) What
+about generic return values? The next obvious step would be to try this:</p>
+<div class="code-example"><pre><code class="c++"><span class="hljs-comment">// [[Rcpp::export]]</span>
+<span class="hljs-function">SEXP <span class="hljs-title">rcpp_template2</span> <span class="hljs-params">(SEXP input)</span>
+</span>{
+    <span class="hljs-keyword">return</span> input * input;
+}</code></pre></div><p>This would obviously be rather dangerous if it actually worked, but we
+don’t need to worry because it fails with this:</p>
+<div class="code-example"><pre><code class="c++">error: invalid operands to binary expression ('SEXP' (aka 'SEXPREC *') and 'SEXP')
+SEXP result = input * input;
+                        ~~~~~ ^ ~~~~~
+1 error generated.</code></pre></div><p>The arrow points to the “operand”, indicating that this has defaulted to
+an attempt to implement bit-wise multiplication of two generic pointer
+objects (an <code>SEXP</code> object is nothing but a pointer to the underlying
+structure it points to, an <code>SEXPREC</code> object). So that all leaves us now
+knowing that the most we can do is to send generic inputs from <strong>R</strong> to
+C++ functions as <code>SEXP</code> parameters, and then coerce them with the magic
+of <code>Rcpp::as()</code>. This is of course also potentially dangerous:</p>
+<div class="code-example"><pre><code class="r">rcpp_template (<span class="hljs-number">2.9</span>) <span class="hljs-comment"># = 4; okay</span>
+rcpp_template (<span class="hljs-string">"2.9"</span>)
+<span class="hljs-comment"># Error in rcpp_template(input) :</span>
+<span class="hljs-comment">#   Not compatible with requested type: [type=character; target=integer].</span></code></pre></div><p>Errors like these are generally interpreted to indicate a need to
+intercept such errors on the <strong>R</strong> side before they are passed to C++.
+Doing so, of course, completely obviates any gains made through
+permitting a modest degree of abstraction in C++ anyway, and we’re
+forced to conclude to this point that minimal templating is possible
+through use/abuse of <code>SEXP</code>, but that that is generally not a good idea
+anyway.</p>
+<section id="A-better-level-of-abstraction" data-magellan-target="A-better-level-of-abstraction"><h2>A better level of abstraction</h></section>
+
+<p>I suggest at this point that a better approach is to leave the
+templating exclusively in C++-land, and use Rcpp to provide strict-type
+interfaces. For our simple square function, the C++-side would then look
+like this:</p>
+<div class="code-example"><pre><code class="c++"><span class="hljs-comment">// [[Rcpp::export]]</span>
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">rcpp_square_int</span> <span class="hljs-params">(<span class="hljs-keyword">int</span> input)</span>
+</span>{
+    <span class="hljs-keyword">return</span> input * input;
+}
+
+<span class="hljs-comment">// [[Rcpp::export]]</span>
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">rcpp_square_dbl</span> <span class="hljs-params">(<span class="hljs-keyword">double</span> input)</span>
+</span>{
+    <span class="hljs-keyword">return</span> input * input;
+}</code></pre></div><p>These can then be called from the <strong>R</strong> side with a type-explicit
+wrapper like this:</p>
+<div class="code-example"><pre><code class="r">my_squre &lt;- <span class="hljs-keyword">function</span> (input)
+{
+    <span class="hljs-keyword">if</span> (is.integer (input))
+        rcpp_square_int (input)
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (is.double (input))
+        rcpp_square_dbl (input)
+}</code></pre></div><p>But then there is no abstraction through templating at all! Yeah, but
+that’s because the above ramblings have hopefully demonstrated that the
+advantages of templating in terms of abstracting code ought to be
+considered to apply to C++ alone, and not either to <strong>R</strong> or Rcpp.
+Templating still remains entirely possible, and just as powerful; it
+should just remain hidden from any exposure to Rcpp or <strong>R</strong>. I can
+still define an entirely abstracted class like this:</p>
+<div class="code-example"><pre><code class="c++"><span class="hljs-keyword">template</span> &lt;<span class="hljs-keyword">class</span> T&gt;
+<span class="hljs-keyword">class</span> TemplatedClass
+{
+    <span class="hljs-keyword">private</span>:
+        T _value;
+
+    <span class="hljs-keyword">public</span>:
+        DerivedClass (T value) {
+            _value = value;
+        };
+        ~DerivedClass () {};
+
+        <span class="hljs-function">T <span class="hljs-title">function</span> <span class="hljs-params">()</span></span>;
+};
+
+<span class="hljs-keyword">template</span> &lt;<span class="hljs-keyword">class</span> T&gt;
+T DerivedClass&lt;T&gt;::function ()
+{
+    <span class="hljs-keyword">return</span> _value * _value;
+}</code></pre></div><p>(Obviously the only danger there is that I need to ensure that <code>_value *
+_value</code> is meaningful for the given input class.) This can then be used
+in my “exposed” Rcpp function through replacing the previous two
+functions with type-explicit instanitations of <code>TemplatedClass</code>:</p>
+<div class="code-example"><pre><code class="c++"><span class="hljs-comment">// [[Rcpp::export]]</span>
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">rcpp_square_int</span> <span class="hljs-params">(<span class="hljs-keyword">int</span> input)</span>
+</span>{
+    TemplatedClass &lt;<span class="hljs-keyword">int</span>&gt; cl (input);
+    <span class="hljs-keyword">return</span> cl.function ();
+}
+
+<span class="hljs-comment">// [[Rcpp::export]]</span>
+<span class="hljs-function"><span class="hljs-keyword">double</span> <span class="hljs-title">rcpp_square_dbl</span> <span class="hljs-params">(<span class="hljs-keyword">double</span> input)</span>
+</span>{
+    TemplatedClass &lt;<span class="hljs-keyword">double</span>&gt; cl (input);
+    <span class="hljs-keyword">return</span> cl.function ();
+}</code></pre></div><p>The full power of abstraction through templates now remains in the
+ability to define any and all additional functions or properties of
+<code>TemplatedClass</code> in templated, rather than type-explicit, form. Just
+don’t try to template-away type-specific abstraction in any Rcpp
+interfaces. <strong>R</strong> is effectively type-explicit (the seemingly generic
+nature of <code>SEXP</code> notwithstanding); Rcpp should be considered in the same
+way. Leave the power of templating where it belongs: In C++ (or
+<a target="_blank" rel="noopener noreferrer" href="https://rust-lang.org">
+rust … </a>).</p>
+<div style="text-align: right">
+Originally posted: 07 May 19
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+<script src="../assets/js/app.js"></script>
+</body>
+</html>
