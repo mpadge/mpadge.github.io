@@ -47,7 +47,8 @@ blog_render <- function (fname, centre_images = TRUE) {
                  '{{/markdown}}',
                  '</div>',
                  '</div>',
-                 '{{> blog_entry_footer}}')
+                 '{{> blog_entry_footer}}',
+                 '{{> footer}}')
     md <- c (header, md, footer)
     writeLines (md, conn)
     close (conn)
