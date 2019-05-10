@@ -4,8 +4,11 @@
 @import 'foundation';
 @import 'motion-ui';
 
-@import url('https://fontlibrary.org/face/tex-gyre-adventor');
-@import url('https://fontlibrary.org/face/linux-biolinum');
+//@import url('https://fontlibrary.org/face/tex-gyre-adventor');
+//@import url('https://fontlibrary.org/face/linux-biolinum');
+@import url('../fonts/ostrich-sans.css');
+//@import url('../fonts/junction.css');
+@import url('../fonts/Prociono.css');
 
 // Global styles
 @include foundation-global-styles;
@@ -91,3 +94,4 @@
     font-size: 30px;
     color: #111111;
 }
+
