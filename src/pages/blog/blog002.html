@@ -105,7 +105,10 @@ that the cause is the ability to infer appropriate `inputSEXP` types
 nothing about inferred types or templates). What we can nevertheless do
 here is replace our undefined type, `T`, with an equivalently undefined
 and generic `SEXP` (and let’s define our function while we’re at it to
-square the input):
+square the input; and also, if you’re wondering what all this `SEXP`
+stuff is, you could take a wee digression over to
+<a target="_blank" rel="noopener noreferrer" href="https://bragqut.github.io/2016/05/26/milesmcbain-rnoprimitives/">
+Miles McBain’s brief but illuminating ramblings on the topic </a>)
 
 ``` c++
 // [[Rcpp::export]]
@@ -259,6 +262,7 @@ way. Leave the power of templating where it belongs: In C++ (or
 rust … </a>).
 <div style="text-align: right">
 Originally posted: 07 May 19
+Updated: 10 May 19
 </div>
 {{/markdown}}
 </div>
