@@ -17,6 +17,7 @@ echo -e "\033[0;32mTransferring new contents...\033[0m"
 mkdir assets blog
 mv dist/index.html .
 mv dist/blog.html .
+mv dist/privacy.html .
 mv dist/blog/*.html blog/.
 mv dist/assets/* assets/.
 rm -r dist
@@ -26,7 +27,7 @@ rm -r dist
 sed -i '1d' index.html
 
 echo -e "\033[0;32mUpdating git...\033[0m"
-git add index.html blog.html blog/* assets/*
+git add index.html blog.html privacy.html blog/* assets/*
 git add -u
 git st
 git commit -am "New Blog Build (`date`)"
