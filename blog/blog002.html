@@ -124,7 +124,10 @@ that the cause is the ability to infer appropriate <code>inputSEXP</code> types
 nothing about inferred types or templates). What we can nevertheless do
 here is replace our undefined type, <code>T</code>, with an equivalently undefined
 and generic <code>SEXP</code> (and let’s define our function while we’re at it to
-square the input):</p>
+square the input; and also, if you’re wondering what all this <code>SEXP</code>
+stuff is, you could take a wee digression over to
+<a target="_blank" rel="noopener noreferrer" href="https://bragqut.github.io/2016/05/26/milesmcbain-rnoprimitives/">
+Miles McBain’s brief but illuminating ramblings on the topic </a>)</p>
 <div class="code-example"><pre><code class="c++"><span class="hljs-comment">// [[Rcpp::export]]</span>
 <span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">rcpp_template</span> <span class="hljs-params">(SEXP input)</span>
 </span>{
@@ -237,6 +240,7 @@ way. Leave the power of templating where it belongs: In C++ (or
 rust … </a>).</p>
 <div style="text-align: right">
 Originally posted: 07 May 19
+Updated: 10 May 19
 </div>
 </div>
 </div>
