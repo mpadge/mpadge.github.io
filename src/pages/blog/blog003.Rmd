@@ -1,0 +1,309 @@
+---
+title: Caching via background R processes
+description: Caching is implemented because it saves time, generally by saving
+    the results of one function call for subsequent reuse. Background processes
+    are also commonly implemented as time-saving measures, through delegating
+    long-running tasks to "somewhere else", allowing you to keep focussing on
+    whatever (un)important things you were doing in the meantime. This blog
+    entry describes how to combine the two to save double time through caching
+    via background processes.
+date: 28 May 2019
+link: blog/blog003.html
+---
+
+# Caching via background R processes
+
+The title of this blog entry should be fairly self-evident for those who might
+incline to read it, yet is motivated by the simple fact that there currently
+appear to be no online sources that clearly describe the relatively
+straightforward process of using background processes in **R** to cache
+objects. (Check out search engine results for 
+<a target="_blank" rel="noopener noreferrer" href="https://duckduckgo.com/?q=caching+background+R+processes&t=ffab&ia=web">
+"caching background R processes"
+</a>: most of the top entries are for Android, and even opting for other search
+engines 
+<a target="_blank" rel="noopener noreferrer" href="https://duckduckgo.com/?q=!g+caching+background+R+processes&t=ffab&ia=web">
+does little to help uncover any useful information
+</a>.) Caching is implemented because it saves time, generally by saving the
+results of one function call for subsequent reuse. Background processes are also
+commonly implemented as time-saving measures, through delegating long-running
+tasks to "somewhere else", allowing you to keep focussing on whatever
+(un)important things you were doing in the meantime.
+
+Straightforward caching of the results of single function calls is often
+achieved through
+<a target="_blank" rel="noopener noreferrer" href="https://duckduckgo.com/?q=!w+memoization&t=ffab&ia=web">
+"memoisation"
+</a>, implemented in several **R** packages including
+<a target="_blank" rel="noopener noreferrer" href="https://cran.r-project.org/package=R.cache">
+R.cache
+</a>, 
+<a target="_blank" rel="noopener noreferrer" href="https://cran.r-project.org/package=memoise">
+memoise
+</a>, 
+<a target="_blank" rel="noopener noreferrer" href="https://cran.r-project.org/package=memo">
+memo
+</a>, 
+<a target="_blank" rel="noopener noreferrer" href="https://cran.r-project.org/package=simpleCache">
+simpleCache
+</a>, and
+<a target="_blank" rel="noopener noreferrer" href="https://cran.r-project.org/package=simpleRCache">
+simpleRCache
+</a>, not to mention the extremely useful cache-management package,
+<a target="_blank" rel="noopener noreferrer" href="https://cran.r-project.org/package=hoardr">
+hoardr
+</a>. None of these packages offer the ability to perform the caching via
+a background process, and thus the initial call to a function to-be-cached will
+have to wait until that function finishes before returning a value.
+
+This blog entry describes how to implement caching via background processes.
+Using a background process to cache an object naturally requires a measure of
+anticipation that the object to be cached is likely to be useful sometime in the
+future, as opposed to necessarily needed right now. This is nevertheless
+a relatively common situation is complex, multi-stage analyses, where the
+results of one stage generally proceed in a predictable manner to subsequent
+stages. The typical inputs and outputs of those subsequent stages are the things
+that can be anticipated, and the results pre-calculated via background
+processes, and then cached for subsequent *and immediate* recall. So having
+briefly described "standard" caching ("foreground" caching, if you like), it's
+time to describe background processes in **R**.
+
+## Background processes in R
+
+Background processes are, among other things, the key to the much-used 
+<a target="_blank" rel="noopener noreferrer" href="https://cran.r-project.org/package=future">
+future package
+</a>. This package seems at first like a barely intelligible miracle of
+mysterious implementation. What are these "futures"? The host of highly
+informative vignettes provide a wealth of information on how the users of this
+package can implement their own "futures", yet little information on how the
+futures themselves are implemented. (This is not a criticism; it reflects
+a reasonably self-justifying design choice, because the average user of this
+package will be generally satisfied with knowing how to use the package, and
+won't necessarily want or need to know *how* the magic is performed.)
+
+In short: a "future" is just a background process that dumps its results
+somewhere ready for later recall. What is a background process? Simply another
+**R** session running as a separate 
+<a target="_blank" rel="noopener noreferrer" href="https://duckduckgo.com/?q=!w+computer+process&t=ffab&ia=web">
+process
+</a>. It's easy to implement in base R. We first need a simple **R** script,
+as for example generated by the following code:
+```{r my_code, eval = TRUE}
+my_code <- c ("x <- rnorm (1e6)",
+                           "y <- x ^ 2",
+                           "y [x < 0] <- -y [x < 0]",
+                           "saveRDS (sd (y), file = 'myresult.Rds')")
+writeLines (my_code, con = "myfile.R")
+```
+That script can be executed as a background process by simply calling 
+<a target="_blank" rel="noopener noreferrer" href="https://stat.ethz.ch/R-manual/R-devel/library/utils/html/Rscript.html">
+Rscript
+</a> via a
+<a target="_blank" rel="noopener noreferrer" href="https://stat.ethz.ch/R-manual/R-devel/library/base/html/system.html">
+system
+</a> or
+<a target="_blank" rel="noopener noreferrer" href="https://stat.ethz.ch/R-manual/R-devel/library/base/html/system2.html">
+system2
+</a> call, where the latter two allow `wait = FALSE` to send the process to the
+background. (The more recent implementation of system calls via the
+<a target="_blank" rel="noopener noreferrer" href="https://github.com/jeroen/sys">
+sys package
+</a> and its simple `exec_background()` function also deserve a mention here.)
+In base R terms, a script can be called from an interactive session via
+```{r background, eval = TRUE}
+system2 (command = "Rscript", args = "myfile.R", wait = FALSE)
+list.files (pattern = "^my")
+```
+The script has been executed as a background process, and the result dumped to
+the file, "myresult.Rds". This can then simply be read to retrieve the cached
+result generated by that background process:
+```{r}
+readRDS ("myresult.Rds")
+```
+
+And that value was calculated in, and cached from, a background process. Simple.
+
+### Complications
+
+Where was the above value stored? In the working directory of that **R**
+session, of course. This is often neither a practicable nor sensible approach,
+for example whenever any control over storage locations is desired. These
+cached values are generally going to be temporary in nature, and the
+`tempdir()` of the current **R** session offers an alternative location, and is
+in fact the only location acceptable for CRAN packages to write to during
+package tests. Other common options include a sub-directory of `~/.Rcache`, as used for example in the 
+<a target="_blank" rel="noopener noreferrer" href="https://cran.r-project.org/package=R.cache">
+R.cache
+</a> package. I'll only consider `tempdir()` from here on, but doing so will
+also reveal why the more enduring location of `~/.Rcache` is often preferred.
+
+Another complication arises in calling 
+<a target="_blank" rel="noopener noreferrer" href="https://stat.ethz.ch/R-manual/R-devel/library/utils/html/Rscript.html">
+Rscript
+</a>, by virtue of the claims in
+<a target="_blank" rel="noopener noreferrer" href="https://cran.r-project.org/doc/manuals/r-release/R-exts.html">
+"Writing R Extensions"
+</a> -- the official CRAN guide to **R** packages -- that one should,
+
+> ... not invoke R by plain R, Rscript or (on Windows) Rterm in your examples,
+tests, vignettes, makefiles or other scripts. As pointed out in several places
+earlier in this manual, use something like "\$(R_HOME)/bin/Rscript" or "\$(R_HOME)/bin\$(R_ARCH_BIN)/Rterm"
+
+That comment is not very helpful because the alluded "several places" are in
+different contexts, and are also only examples rather than actual guidelines. The problem is those suggestions will usually, *but not always* work, depending on Operating System idiosyncrasies. So calling 
+<a target="_blank" rel="noopener noreferrer" href="https://stat.ethz.ch/R-manual/R-devel/library/utils/html/Rscript.html">
+Rscript
+</a> directly is less straightforward than it might seem. 
+
+A further problem arises in that both `system` and `system2` will generally
+return values of `0` when everything works okay. "Works" then means that the
+process has been successfully started. But where is that process in relation to
+the current **R** session? And likely most importantly, has that process
+finished or is it still operating? While it is possible to use further `system`
+calls to determine the 
+<a target="_blank" rel="noopener noreferrer" href="https://duckduckgo.com/?q=!w+process+identifier&t=ffab&ia=web">
+process identifier (PID)
+</a>, that process itself is fraught and perilous. There are further
+complications which arise through directly calling background **R** processes
+via `Rscript`, but those should suffice to argue for the fabulous alternative
+available thanks to Gábor Csárdi and ...
+
+## The processx package
+
+The
+<a target="_blank" rel="noopener noreferrer" href="https://github.com/r-lib/processx">
+processx
+</a> package states simply that it provides,
+
+> "Tools to run system processes in the background"
+
+This package is designed to run *any* available system process, including ones
+that potentially have nothing to do with **R** let alone a current **R**
+session. Using 
+<a target="_blank" rel="noopener noreferrer" href="https://github.com/r-lib/processx">
+processx
+</a> to run background **R** process thus requires calling `Rscript`, with the
+associated problems described above. Fortunately for us, Gábor foresaw this
+need and created the "companion" package, 
+<a target="_blank" rel="noopener noreferrer" href="https://github.com/r-lib/callr">
+callr
+</a> to simply
+
+> "Call R from R"
+
+
+<a target="_blank" rel="noopener noreferrer" href="https://github.com/r-lib/callr">
+callr
+</a> relies directly on
+<a target="_blank" rel="noopener noreferrer" href="https://github.com/r-lib/processx">
+processx
+</a>, but provides the far simpler function,
+<a target="_blank" rel="noopener noreferrer" href="https://callr.r-lib.org/reference/r_bg.html">
+r_bg
+</a> to
+
+> "Evaluate an expression in another R session, in the background"
+
+So
+<a target="_blank" rel="noopener noreferrer" href="https://callr.r-lib.org/reference/r_bg.html">
+r_bg
+</a> provides the perfect tool for our needs. This function directly evaluates
+R code, without needing to render it to text as we did above in order to write
+it to an external script file. An 
+<a target="_blank" rel="noopener noreferrer" href="https://callr.r-lib.org/reference/r_bg.html">
+r_bg
+</a> version of the above would look like this:
+```{r my_fn}
+f <- function () {
+    x <- rnorm (1e6)
+    y <- x ^ 2
+    y [x < 0] <- -y [x < 0]
+    saveRDS (sd (y), file = "myresult.Rds")
+}
+callr::r_bg (f)
+```
+We immediately see that 
+<a target="_blank" rel="noopener noreferrer" href="https://callr.r-lib.org/reference/r_bg.html">
+r_bg
+</a> returns a handle to the process itself, along with the single piece of
+critical diagnostic information: Whether the process is still running or not:
+```{r r_bg}
+px <- callr::r_bg (f)
+px
+Sys.sleep (1)
+px
+```
+Multiple processes can be generated and queried this way. The package is
+designed around, and returns, 
+<a target="_blank" rel="noopener noreferrer" href="https://github.com/r-lib/R6">
+R6
+</a> class objects, enabling function calls on the objects, notably including
+the following:
+
+```{r r_bg2}
+px <- callr::r_bg (f)
+px
+while (px$is_alive())
+    px$wait ()
+px
+```
+The `px$is_alive()` and `px$wait()` functions are all that is needed to wait
+until a background process is finished. In the context of using background
+processes to cache objects, these lines enable the primary **R** session to
+simply wait until caching is finished before retrieving the object.
+
+## processx, callr, and caching
+
+There is only one remaining issue with the above code: Where is "myresult.Rds"
+in the following code?
+```{r my_fn2}
+f <- function () {
+    x <- rnorm (1e6)
+    y <- x ^ 2
+    y [x < 0] <- -y [x < 0]
+    saveRDS (sd (y), file = file.path (tempdir (), "myresult.Rds"))
+}
+px <- callr::r_bg (f)
+```
+It's in `tempdir()`, but *not* the `tempdir()` of the current process. Where is
+his other `tempdir()`? It's temporary of course, so has been dutifully cleaned up,
+thereby removing our desired result. What is needed is a way to store the
+result in the `tempdir()`of the current -- active -- **R** session. This
+`tempdir()` is merely specified as a character string, which we can pass
+directly to our function:
+```{r myfn3}
+f <- function (temp_dir) {
+    x <- rnorm (1e6)
+    y <- x ^ 2
+    y [x < 0] <- -y [x < 0]
+    saveRDS (sd (y), file = file.path (temp_dir, "mynewresult.Rds"))
+}
+```
+We then only need to note that the second parameter of
+<a target="_blank" rel="noopener noreferrer" href="https://callr.r-lib.org/reference/r_bg.html">
+r_bg
+</a> is `args`, which is,
+
+> "Arguments to pass to the function. Must be a list."
+
+That is then all we need, so let it run ...
+```{r r_bg3}
+px <- callr::r_bg (f, list (tempdir ()))
+while (px$is_alive())
+    px$wait ()
+list.files (tempdir (), pattern = "^my")
+```
+And there is our new result, along with all we need to understand how to cache
+objects via background **R** processes.
+
+## Summary
+
+1. Define a function to generate the object to be cached, and include
+   a `tempdir()` parameter if that is to be used as the cache location.
+2. Use `callr::r_bg()` to call that function in the background and deliver the
+   result to the desired location.
+3. Examine the handle of the process returned by `r_bg()` to determine whether
+   it has finished or not.
+4. ... use the cached result.
+

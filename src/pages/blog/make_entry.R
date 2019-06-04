@@ -71,6 +71,9 @@ find_code_lines <- function (md)
     index <- grep ("^```", md)
     if (!length (index) %% 2 == 0)
         stop ("Unmatched code chunks")
+    if (length (index) < 2)
+        return (NULL)
+
     strt <- index [2 * seq (length (index) / 2) - 1]
     ends <- index [2 * seq (length (index) / 2)]
     res <- apply (cbind (strt, ends), 1, function (i) i [1]:i [2])
@@ -160,4 +163,4 @@ clean_figure_files <- function (md, fname, dest_dir = c ("assets", "img"))
         unlink (figpath, recursive = TRUE)
 }
 
-blog_render ("blog002")
+blog_render ("blog003")
