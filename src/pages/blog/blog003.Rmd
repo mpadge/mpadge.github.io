@@ -7,7 +7,7 @@ description: Caching is implemented because it saves time, generally by saving
     whatever (un)important things you were doing in the meantime. This blog
     entry describes how to combine the two to save double time through caching
     via background processes.
-date: 28 May 2019
+date: 6 June 2019
 link: blog/blog003.html
 ---
 
