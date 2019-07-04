@@ -65,7 +65,7 @@ Accessing this within the source code was then as simple as defining an equivale
 ``` C
 char * getDictPath()
 {
-    char *ret = getenv("GCR_DICT_DIR");
+    char *ret = getenv("DICT_DIR");
     return ret;
 }
 ```
