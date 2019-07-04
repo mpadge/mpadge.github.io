@@ -1,0 +1,88 @@
+---
+title: Calling external files from C in R
+description: I recently encountered a problem while bundling an old C library
+    into a new R package. The library itself depends on, and includes, an
+    external "dictionary" in plain text format used to construct a large lookup
+    table. The creators of this library of course assume that this dictionary
+    file will always reside in the same directory as the compiled object, and
+    so can always be directly linked. The `src` directory of R packages is,
+    however, only permitted to contain source code, which text files
+    definitively are not. This blog entry is about where to put such files,
+    and how to link them within the source code.
+date: 4 July 2019
+link: blog/blog004.html
+---
+
+# Calling external files from C in R
+
+I recently encountered a problem while bundling an old C library into a new
+R package. The library itself depends on, and includes, an external
+"dictionary" in plain text format used to construct a large lookup table. The
+creators of this library of course assume that this dictionary file will always
+reside in the same directory as the compiled object, and so can always be
+directly linked. The `src` directory of R packages is, however, only permitted
+to contain source code, which text files definitively are *not*. This blog
+entry is about where to put such files, and how to link them *within the source
+code*.
+
+The answer turns out to be very simple, yet was nevertheless one which occupied
+a couple of days of my time, hence this documentation for the sake of
+posterity. As with many "external" files within R packages, the recommended
+locations is within the `inst` directory, or some sub-directory thereof. Any
+files within this directory will be copied "recursively to the installation
+directory" (from Writing R Extensions).
+
+Such files can nevertheless *not* be called directly from any `src` code,
+because there is no way for a compiled source object to find them -- relative
+paths can not be used, because they will be implemented relative to the
+directory from which the compiled object is called. Tests, for example, will
+call the compiled object from the `./tests` directory, while direct use within
+the package directory will call from `.`.  For general usage, the directory
+from which the object is called could be anywhere, and external files can
+not be linked. In other words, it is not possible to directly link a compiled
+object in a R package with other package-local files, because the only "local"
+in R is the currently working directory.
+
+It is thus necessary to step back "out" from the source into the R environment to
+obtain the path to the external file -- in my case, to the dictionary. This
+information needs somehow to be fed to the source code whenever and wherever
+the package is used: precisely the kind of job for which the `.onLoad()`
+function is intended. An additional problem in my particular case was that the source code relied very extensively on defining the dictionary file through a simple C macro:
+``` C
+#define MY_DICTIONARY "dictionary.txt"
+```
+Literally dozens of functions then call that simple macro to read from the
+dictionary. Rewriting all of them to accept a dynamic parameter defining the
+location would have been way too much work, and so I urgently needed a simpler
+solution. The easiest turned out to be to use environmental variables, which
+are universally accessible by any programming language. I just needed to define
+and write the environmental variable of the package dictionary in the
+`.onLoad()` function as,
+```{r, eval = FALSE}
+Sys.setenv ("DICT_DIR" = system.file (package = "my_package", "subdir", "my_dict.txt"))
+```
+Accessing this within the source code was then as simple as defining an equivalent function in C to read that variable:
+``` C
+char * getDictPath()
+{
+    char *ret = getenv("GCR_DICT_DIR");
+    return ret;
+}
+```
+and then replacing the hard-coded macro with a functional equivalent:
+``` C
+#define MY_DICTIONARY getDictPath()
+```
+The entire bundled source then remained intact, with the `getDictPath()`
+function returning the appropriate path as defined within R itself, and
+accessible through the `system.file()` function.
+
+Credit and gratitude to Iñaki Ucar and Martin Morgan for suggestions on the
+[r-package-devel mailing
+list](https://stat.ethz.ch/pipermail/r-package-devel/2019q2/004113.html).
+
+
+
+
+
+
