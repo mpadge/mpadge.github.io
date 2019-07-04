@@ -89,7 +89,9 @@ and then replacing the hard-coded macro with a functional equivalent:
 
 The entire bundled source then remained intact, with the `getDictPath()`
 function returning the appropriate path as defined within R itself, and
-accessible through the `system.file()` function.
+accessible through the `system.file()` function, and leaving the C code
+able to simply call the macro `MY_DICTIONARY` to access the local copy
+of that file.
 
 Credit and gratitude to Iñaki Ucar and Martin Morgan for suggestions on
 the [r-package-devel mailing
