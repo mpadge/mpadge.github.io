@@ -111,7 +111,9 @@ equivalent function in C to read that variable:</p>
 }</code></pre></div><p>and then replacing the hard-coded macro with a functional equivalent:</p>
 <div class="code-example"><pre><code class="c"><span class="hljs-preprocessor">#<span class="hljs-keyword">define</span> MY_DICTIONARY getDictPath()</span></code></pre></div><p>The entire bundled source then remained intact, with the <code>getDictPath()</code>
 function returning the appropriate path as defined within R itself, and
-accessible through the <code>system.file()</code> function.</p>
+accessible through the <code>system.file()</code> function, and leaving the C code
+able to simply call the macro <code>MY_DICTIONARY</code> to access the local copy
+of that file.</p>
 <p>Credit and gratitude to Iñaki Ucar and Martin Morgan for suggestions on
 the <a href="https://stat.ethz.ch/pipermail/r-package-devel/2019q2/004113.html">r-package-devel mailing
 list</a>.</p>
