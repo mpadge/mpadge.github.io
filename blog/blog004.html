@@ -106,7 +106,7 @@ function as,</p>
 equivalent function in C to read that variable:</p>
 <div class="code-example"><pre><code class="c"><span class="hljs-function"><span class="hljs-keyword">char</span> * <span class="hljs-title">getDictPath</span><span class="hljs-params">()</span>
 </span>{
-    <span class="hljs-keyword">char</span> *ret = getenv(<span class="hljs-string">"GCR_DICT_DIR"</span>);
+    <span class="hljs-keyword">char</span> *ret = getenv(<span class="hljs-string">"DICT_DIR"</span>);
     <span class="hljs-keyword">return</span> ret;
 }</code></pre></div><p>and then replacing the hard-coded macro with a functional equivalent:</p>
 <div class="code-example"><pre><code class="c"><span class="hljs-preprocessor">#<span class="hljs-keyword">define</span> MY_DICTIONARY getDictPath()</span></code></pre></div><p>The entire bundled source then remained intact, with the <code>getDictPath()</code>
