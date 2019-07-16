@@ -1,4 +1,4 @@
-update_main <- function (n = 6, sort_date = "modified")
+update_main <- function (n = 6, sort_date = "created")
 {
     flist <- order_blog_files (sort_date = sort_date)
     fdat <- lapply (flist, function (i) get_one_blog_dat (i))
@@ -10,7 +10,7 @@ update_main <- function (n = 6, sort_date = "modified")
                   paste0 ("    title: ", f$title),
                   paste0 ("    description: ", f$description),
                   paste0 ("    created: ", f$date_cre),
-                  paste0 ("    modified: ", f$date_mod),
+                  #paste0 ("    modified: ", f$date_mod),
                   paste0 ("    link: ", f$link))
     }
 
@@ -26,7 +26,7 @@ update_main <- function (n = 6, sort_date = "modified")
                   paste0 ("    title: ", f$title),
                   paste0 ("    description: ", f$description),
                   paste0 ("    created: ", f$date_cre),
-                  paste0 ("    modified: ", f$date_mod),
+                  #paste0 ("    modified: ", f$date_mod),
                   paste0 ("    link: ", f$link))
     }
     fp <- file.path ("..", "..", "data", "blogshort.yml")
@@ -59,9 +59,8 @@ get_date <- function (rmd)
 get_datestr <- function (x)
 {
     date_ln <- x [grep ("^date:", x)]
-    res <- as.Date (strsplit (date_ln, "date: ") [[1]] [2],
-                    tryFormats = c ("%d/%m/%Y", "%d %b %Y"))
-    format (res, format = "%d %b %y")
+    as.Date (strsplit (date_ln, "date: ") [[1]] [2],
+             tryFormats = c ("%d/%m/%Y", "%d %b %Y"))
 }
 
 get_one_blog_dat <- function (f)
@@ -77,7 +76,7 @@ get_one_blog_dat <- function (f)
     list (title = get_title (x),
           description = get_descr (x),
           date_mod = date_mod,
-          date_cre = get_datestr (x),
+          date_cre = format (get_datestr (x), format = "%d %b %y"),
           link = get_link (x))
 }
 
@@ -109,4 +108,4 @@ get_link <- function (x)
     strsplit (link, "link: ") [[1]] [2]
 }
 
-#update_main (n = 6, sort_date = "modified")
+update_main (n = 6, sort_date = "created")

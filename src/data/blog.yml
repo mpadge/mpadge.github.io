@@ -2,23 +2,19 @@
     title: Calling external files from C in R
     description: I recently encountered a problem while bundling an old C library into a new R package. The library itself depends on, and includes, an external "dictionary" in plain text format used to construct a large lookup table. The creators of this library of course assume that this dictionary file will always reside in the same directory as the compiled object, and so can always be directly linked. The `src` directory of R packages is, however, only permitted to contain source code, which text files definitively are not. This blog entry is about where to put such files, and how to link them within the source code.
     created: 04 Jul 19
-    modified: 04 Jul 19
     link: blog/blog004.html
--
-    title: how i made this site
-    description: This site is built with zurb foundation, because i had read that it did everything that hugo could, but that final products were more lightweight and flexible. Plus i had no idea about it, and learning something new is sometimes worthwhile. I was also frustrated that standard hugo advice seemed to be, ''oh, just pick a template and off you go,'' yet there is surprisingly little advice on how to modify any given template, let alone how to start from scratch. It turned out that foundation at least made starting from scratch fairly easy, and so this entry is about that process.
-    created: 06 May 19
-    modified: 04 Jul 19
-    link: blog/blog001.html
--
-    title: C++ templates and Rcpp
-    description: C++ templates are really useful. Templates allow you to code a function able to accept arguments of different types that can't necessarily be known until compile time. There is, however, no such thing as an Rcpp template -- all inputs and outputs must have defined types. This blog entry is about how to maximise the usefulness of C++ templates in an Rcpp context.
-    created: 07 May 19
-    modified: 04 Jul 19
-    link: blog/blog002.html
 -
     title: Caching via background R processes
     description: Caching is implemented because it saves time, generally by saving the results of one function call for subsequent reuse. Background processes are also commonly implemented as time-saving measures, through delegating long-running tasks to "somewhere else", allowing you to keep focussing on whatever (un)important things you were doing in the meantime. This blog entry describes how to combine the two to save double time through caching via background processes.
     created: 06 Jun 19
-    modified: 04 Jul 19
     link: blog/blog003.html
+-
+    title: C++ templates and Rcpp
+    description: C++ templates are really useful. Templates allow you to code a function able to accept arguments of different types that can't necessarily be known until compile time. There is, however, no such thing as an Rcpp template -- all inputs and outputs must have defined types. This blog entry is about how to maximise the usefulness of C++ templates in an Rcpp context.
+    created: 07 May 19
+    link: blog/blog002.html
+-
+    title: how i made this site
+    description: This site is built with zurb foundation, because i had read that it did everything that hugo could, but that final products were more lightweight and flexible. Plus i had no idea about it, and learning something new is sometimes worthwhile. I was also frustrated that standard hugo advice seemed to be, ''oh, just pick a template and off you go,'' yet there is surprisingly little advice on how to modify any given template, let alone how to start from scratch. It turned out that foundation at least made starting from scratch fairly easy, and so this entry is about that process.
+    created: 06 May 19
+    link: blog/blog001.html
