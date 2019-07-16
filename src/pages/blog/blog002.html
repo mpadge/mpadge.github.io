@@ -277,14 +277,14 @@ place:
 #include <Rcpp.h>
 
 template <class T>
-inline T mysquare (T &x)
+T mysquare (T &x)
 {
     for (size_t i = 0; i < x.size (); i++)
         x (i) = x (i) * x (i);
     return x;
 }
 
-inline SEXP mysquare (SEXP &x)
+SEXP mysquare (SEXP &x)
 {
     switch (TYPEOF (x))
     {
