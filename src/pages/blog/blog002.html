@@ -7,6 +7,7 @@
 <ul class="vertical menu" data-magellan>
 <li><a href="#C-templates-and-Rcpp" style="color:#111111">C++ templates and Rcpp</a></li>
 <li><a href="#A-better-level-of-abstraction" style="color:#111111">A better level of abstraction</a></li>
+<li><a href="#The-final-code" style="color:#111111">The final code</a></li>
 </div>
 </nav>
 </div>
@@ -157,112 +158,158 @@ rcpp_template ("2.9")
 #   Not compatible with requested type: [type=character; target=integer].
 ```
 
-Errors like these are generally interpreted to indicate a need to
-intercept such errors on the **R** side before they are passed to C++.
-Doing so, of course, completely obviates any gains made through
-permitting a modest degree of abstraction in C++ anyway, and we’re
-forced to conclude to this point that minimal templating is possible
-through use/abuse of `SEXP`, but that that is generally not a good idea
-anyway.
+<br>
 
 <section id="A-better-level-of-abstraction" data-magellan-target="A-better-level-of-abstraction"><h2>A better level of abstraction</h></section>
 
-I suggest at this point that a better approach is to leave the
-templating exclusively in C++-land, and use Rcpp to provide strict-type
-interfaces. For our simple square function, the C++-side would then look
-like this:
+The key to using C++ templates in R is the realisation that (i)
+<a target="_blank" rel="noopener noreferrer" href="http://adv-r.had.co.nz/C-interface.html">
+R’s C interface </a> only knows about `SEXP`, itself a template for a
+generic “S-EXPression”; and (ii) All `SEXP` objects are mere pointers to
+C arrays, which is why R neither can nor does make any distinction
+between single values and vectors – all R objects are vectors at heart.
+This suggests something like the following code—which does not work:
 
 ``` c++
-// [[Rcpp::export]]
-int rcpp_square_int (int input)
+#include <Rcpp.h>
+
+template <class T>
+T mysquare (T &x)
 {
-    return input * input;
+    for (size_t i = 0; i < x.size (); i++)
+        x (i) = x (i) * x (i);
+    return x;
 }
 
 // [[Rcpp::export]]
-int rcpp_square_dbl (double input)
+SEXP rcpp_mysquare (SEXP &x)
 {
-    return input * input;
+    return mysquare (x);
 }
 ```
 
-These can then be called from the **R** side with a type-explicit
-wrapper like this:
+That code will fail to compile because of “incomplete definition of type
+‘SEXPREC’” (where a `SEXPREC` is a structure pointed to by an `SEXP`)—in
+other words, R has no way of inferring the type of data pointed to by
+the `SEXP`. The trick is to have an additional “type-selector” function
+that recognises and typecasts the input type as one of the
+<a target="_blank" rel="noopener noreferrer" href="https://cran.r-project.org/doc/manuals/R-exts.html#Registering-native-routines">
+six possible R types </a>. We’re only interested in a couple of those
+here, representing the integer and real or floating-point types, which
+are respectively `INTSXP` and `REALSXP`. Recalling that there is no
+distinction between a single integer or numeric (floating-point) value
+and equivalent vectors of these, we can distinguish these two cases
+through casting via `Rcpp::as` to `Rcpp` equivalents of either integer
+or numeric vectors with the following additional code, representing our
+“type selector” function:
+
+``` c++
+SEXP mysquare (SEXP &x)
+{
+    switch (TYPEOF (x))
+    {
+        case INTSXP: {
+                         Rcpp::IntegerVector iv = Rcpp::as <Rcpp::IntegerVector> (x);
+                         return mysquare (iv);
+                     }
+        case REALSXP: {
+                         Rcpp::NumericVector nv = Rcpp::as <Rcpp::NumericVector> (x);
+                         return mysquare (nv);
+                     }
+        default: { Rcpp::stop ("incompatible type");    }
+    }
+    return x; // this should never happen
+}
+```
+
+This function takes a generic (`SEXP`) input and returns a generic
+output, yet deploys actual calls to the templated version of `mysquare`
+with specified (`Rcpp`) types, ensuring that the above templated
+function will always be able to infer the input type. The `default`
+`Rcpp::stop` ensures that types other than our desired two are not
+processed further, preventing for example attempts to calculate the
+square of `"a"`. Inserting this “type-selector” code in the above code
+(and presuming all to be in a file `src.cpp`) permits a generic
+`SEXP`-in / `SEXP`-out function (our `rcpp_mysquare` in the above code)
+to be deployed to specific types, and then simply passed to a generic
+C++ template function. The whole thing then works like this:
 
 ``` r
-my_square <- function (input)
-{
-    if (is.integer (input))
-        rcpp_square_int (input)
-    else if (is.double (input))
-        rcpp_square_dbl (input)
-}
+Rcpp::sourceCpp ("src.cpp") # source the file, placing the Rcpp::export-ed function in workspace
+x <- 1:5
+x <- rcpp_mysquare (x)
+x
 ```
 
-But then there is no abstraction through templating at all\! Yeah, but
-that’s because the above ramblings have hopefully demonstrated that the
-advantages of templating in terms of abstracting code ought to be
-considered to apply to C++ alone, and not either to **R** or Rcpp.
-Templating still remains entirely possible, and just as powerful; it
-should just remain hidden from any exposure to Rcpp or **R**. I can
-still define an entirely abstracted C++ class like this:
+    ## [1]  1  4  9 16 25
+
+``` r
+class (x)
+```
+
+    ## [1] "integer"
+
+``` r
+storage.mode (x) <- "numeric"
+x <- rcpp_mysquare (x)
+x
+```
+
+    ## [1]   1  16  81 256 625
+
+``` r
+class (x)
+```
+
+    ## [1] "numeric"
+
+An integer vector gives integer return values, and a numeric
+(floating-point) vector gives numeric return values. There you have it:
+templating through the magic of `SEXP`. Gratitude extended to Dirk
+Eddelbeuttel and David Cooley for advice and helpful pointers.
+
+<section id="The-final-code" data-magellan-target="The-final-code"><h2>The final code</h></section>
+
+Just to make it clear, here’s the above code all placed in a single
+place:
 
 ``` c++
-template <class T>
-class TemplatedClass
-{
-    private:
-        T _value;
-
-    public:
-        DerivedClass (T value) {    // constructor
-            _value = value;
-        };
-        ~DerivedClass () {};        // destructor
-
-        T function ();
-};
+#include <Rcpp.h>
 
 template <class T>
-T DerivedClass<T>::function ()
+inline T mysquare (T &x)
 {
-    return _value * _value;
+    for (size_t i = 0; i < x.size (); i++)
+        x (i) = x (i) * x (i);
+    return x;
 }
-```
 
-(With the obvious danger that I need to ensure that `_value * _value` is
-meaningful for the given input class.) This can then be used in my
-“exposed” Rcpp function through replacing the previous two functions
-with type-explicit instanitations of `TemplatedClass`:
-
-``` c++
-// [[Rcpp::export]]
-int rcpp_square_int (int input)
+inline SEXP mysquare (SEXP &x)
 {
-    TemplatedClass <int> cl (input);
-    return cl.function ();
+    switch (TYPEOF (x))
+    {
+        case INTSXP: {
+                         Rcpp::IntegerVector iv = Rcpp::as <Rcpp::IntegerVector> (x);
+                         return mysquare (iv);
+                     }
+        case REALSXP: {
+                         Rcpp::NumericVector nv = Rcpp::as <Rcpp::NumericVector> (x);
+                         return mysquare (nv);
+                     }
+        default: { Rcpp::stop ("error");    }
+    }
+    return x; // this never happens
 }
 
 // [[Rcpp::export]]
-double rcpp_square_dbl (double input)
+SEXP rcpp_mysquare (SEXP &x)
 {
-    TemplatedClass <double> cl (input);
-    return cl.function ();
+    return mysquare (x);
 }
 ```
-
-The full power of abstraction through templates now remains in the
-ability to define any and all additional functions or properties of
-`TemplatedClass` in templated, rather than type-explicit, form. Just
-don’t try to template-away type-specific abstraction in any Rcpp
-interfaces. **R** is effectively type-explicit (the seemingly generic
-nature of `SEXP` notwithstanding); Rcpp should be considered in the same
-way. Leave the power of templating where it belongs: In C++ (or
-<a target="_blank" rel="noopener noreferrer" href="https://rust-lang.org">
-rust … </a>).
 <div style="text-align: right">
 Originally posted: 07 May 19
-Updated: 10 May 19
+Updated: 16 Jul 19
 </div>
 {{/markdown}}
 </div>
