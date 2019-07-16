@@ -53,7 +53,7 @@ blog_render <- function (fname, centre_images = TRUE) {
     writeLines (md, conn)
     close (conn)
 
-    update_main (n = 6, sort_date = "modified")
+    update_main (n = 6, sort_date = "created")
 }
 
 find_headers <- function (md)
