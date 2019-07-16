@@ -237,14 +237,14 @@ place:</p>
 <div class="code-example"><pre><code class="c++"><span class="hljs-preprocessor">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;Rcpp.h&gt;</span></span>
 
 <span class="hljs-keyword">template</span> &lt;<span class="hljs-keyword">class</span> T&gt;
-<span class="hljs-function"><span class="hljs-keyword">inline</span> T <span class="hljs-title">mysquare</span> <span class="hljs-params">(T &amp;x)</span>
+<span class="hljs-function">T <span class="hljs-title">mysquare</span> <span class="hljs-params">(T &amp;x)</span>
 </span>{
     <span class="hljs-keyword">for</span> (<span class="hljs-keyword">size_t</span> i = <span class="hljs-number">0</span>; i &lt; x.size (); i++)
         x (i) = x (i) * x (i);
     <span class="hljs-keyword">return</span> x;
 }
 
-<span class="hljs-function"><span class="hljs-keyword">inline</span> SEXP <span class="hljs-title">mysquare</span> <span class="hljs-params">(SEXP &amp;x)</span>
+<span class="hljs-function">SEXP <span class="hljs-title">mysquare</span> <span class="hljs-params">(SEXP &amp;x)</span>
 </span>{
     <span class="hljs-keyword">switch</span> (TYPEOF (x))
     {
