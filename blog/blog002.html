@@ -53,6 +53,7 @@ href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/atom-one-light
 <ul class="vertical menu" data-magellan>
 <li><a href="#C-templates-and-Rcpp" style="color:#111111">C++ templates and Rcpp</a></li>
 <li><a href="#A-better-level-of-abstraction" style="color:#111111">A better level of abstraction</a></li>
+<li><a href="#The-final-code" style="color:#111111">The final code</a></li>
 </div>
 </nav>
 </div>
@@ -156,91 +157,117 @@ of <code>Rcpp::as()</code>. This is of course also potentially dangerous:</p>
 <div class="code-example"><pre><code class="r">rcpp_template (<span class="hljs-number">2.9</span>) <span class="hljs-comment"># = 4; okay</span>
 rcpp_template (<span class="hljs-string">"2.9"</span>)
 <span class="hljs-comment"># Error in rcpp_template(input) :</span>
-<span class="hljs-comment">#   Not compatible with requested type: [type=character; target=integer].</span></code></pre></div><p>Errors like these are generally interpreted to indicate a need to
-intercept such errors on the <strong>R</strong> side before they are passed to C++.
-Doing so, of course, completely obviates any gains made through
-permitting a modest degree of abstraction in C++ anyway, and we’re
-forced to conclude to this point that minimal templating is possible
-through use/abuse of <code>SEXP</code>, but that that is generally not a good idea
-anyway.</p>
+<span class="hljs-comment">#   Not compatible with requested type: [type=character; target=integer].</span></code></pre></div><p><br></p>
 <section id="A-better-level-of-abstraction" data-magellan-target="A-better-level-of-abstraction"><h2>A better level of abstraction</h></section>
 
-<p>I suggest at this point that a better approach is to leave the
-templating exclusively in C++-land, and use Rcpp to provide strict-type
-interfaces. For our simple square function, the C++-side would then look
-like this:</p>
-<div class="code-example"><pre><code class="c++"><span class="hljs-comment">// [[Rcpp::export]]</span>
-<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">rcpp_square_int</span> <span class="hljs-params">(<span class="hljs-keyword">int</span> input)</span>
-</span>{
-    <span class="hljs-keyword">return</span> input * input;
-}
-
-<span class="hljs-comment">// [[Rcpp::export]]</span>
-<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">rcpp_square_dbl</span> <span class="hljs-params">(<span class="hljs-keyword">double</span> input)</span>
-</span>{
-    <span class="hljs-keyword">return</span> input * input;
-}</code></pre></div><p>These can then be called from the <strong>R</strong> side with a type-explicit
-wrapper like this:</p>
-<div class="code-example"><pre><code class="r">my_square &lt;- <span class="hljs-keyword">function</span> (input)
-{
-    <span class="hljs-keyword">if</span> (is.integer (input))
-        rcpp_square_int (input)
-    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (is.double (input))
-        rcpp_square_dbl (input)
-}</code></pre></div><p>But then there is no abstraction through templating at all! Yeah, but
-that’s because the above ramblings have hopefully demonstrated that the
-advantages of templating in terms of abstracting code ought to be
-considered to apply to C++ alone, and not either to <strong>R</strong> or Rcpp.
-Templating still remains entirely possible, and just as powerful; it
-should just remain hidden from any exposure to Rcpp or <strong>R</strong>. I can
-still define an entirely abstracted C++ class like this:</p>
-<div class="code-example"><pre><code class="c++"><span class="hljs-keyword">template</span> &lt;<span class="hljs-keyword">class</span> T&gt;
-<span class="hljs-keyword">class</span> TemplatedClass
-{
-    <span class="hljs-keyword">private</span>:
-        T _value;
-
-    <span class="hljs-keyword">public</span>:
-        DerivedClass (T value) {    <span class="hljs-comment">// constructor</span>
-            _value = value;
-        };
-        ~DerivedClass () {};        <span class="hljs-comment">// destructor</span>
-
-        <span class="hljs-function">T <span class="hljs-title">function</span> <span class="hljs-params">()</span></span>;
-};
+<p>The key to using C++ templates in R is the realisation that (i)
+<a target="_blank" rel="noopener noreferrer" href="http://adv-r.had.co.nz/C-interface.html">
+R’s C interface </a> only knows about <code>SEXP</code>, itself a template for a
+generic “S-EXPression”; and (ii) All <code>SEXP</code> objects are mere pointers to
+C arrays, which is why R neither can nor does make any distinction
+between single values and vectors – all R objects are vectors at heart.
+This suggests something like the following code—which does not work:</p>
+<div class="code-example"><pre><code class="c++"><span class="hljs-preprocessor">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;Rcpp.h&gt;</span></span>
 
 <span class="hljs-keyword">template</span> &lt;<span class="hljs-keyword">class</span> T&gt;
-T DerivedClass&lt;T&gt;::function ()
-{
-    <span class="hljs-keyword">return</span> _value * _value;
-}</code></pre></div><p>(With the obvious danger that I need to ensure that <code>_value * _value</code> is
-meaningful for the given input class.) This can then be used in my
-“exposed” Rcpp function through replacing the previous two functions
-with type-explicit instanitations of <code>TemplatedClass</code>:</p>
-<div class="code-example"><pre><code class="c++"><span class="hljs-comment">// [[Rcpp::export]]</span>
-<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">rcpp_square_int</span> <span class="hljs-params">(<span class="hljs-keyword">int</span> input)</span>
+<span class="hljs-function">T <span class="hljs-title">mysquare</span> <span class="hljs-params">(T &amp;x)</span>
 </span>{
-    TemplatedClass &lt;<span class="hljs-keyword">int</span>&gt; cl (input);
-    <span class="hljs-keyword">return</span> cl.function ();
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">size_t</span> i = <span class="hljs-number">0</span>; i &lt; x.size (); i++)
+        x (i) = x (i) * x (i);
+    <span class="hljs-keyword">return</span> x;
 }
 
 <span class="hljs-comment">// [[Rcpp::export]]</span>
-<span class="hljs-function"><span class="hljs-keyword">double</span> <span class="hljs-title">rcpp_square_dbl</span> <span class="hljs-params">(<span class="hljs-keyword">double</span> input)</span>
+<span class="hljs-function">SEXP <span class="hljs-title">rcpp_mysquare</span> <span class="hljs-params">(SEXP &amp;x)</span>
 </span>{
-    TemplatedClass &lt;<span class="hljs-keyword">double</span>&gt; cl (input);
-    <span class="hljs-keyword">return</span> cl.function ();
-}</code></pre></div><p>The full power of abstraction through templates now remains in the
-ability to define any and all additional functions or properties of
-<code>TemplatedClass</code> in templated, rather than type-explicit, form. Just
-don’t try to template-away type-specific abstraction in any Rcpp
-interfaces. <strong>R</strong> is effectively type-explicit (the seemingly generic
-nature of <code>SEXP</code> notwithstanding); Rcpp should be considered in the same
-way. Leave the power of templating where it belongs: In C++ (or
-<a target="_blank" rel="noopener noreferrer" href="https://rust-lang.org">
-rust … </a>).</p>
-<div style="text-align: right">
+    <span class="hljs-keyword">return</span> mysquare (x);
+}</code></pre></div><p>That code will fail to compile because of “incomplete definition of type
+‘SEXPREC’” (where a <code>SEXPREC</code> is a structure pointed to by an <code>SEXP</code>)—in
+other words, R has no way of inferring the type of data pointed to by
+the <code>SEXP</code>. The trick is to have an additional “type-selector” function
+that recognises and typecasts the input type as one of the
+<a target="_blank" rel="noopener noreferrer" href="https://cran.r-project.org/doc/manuals/R-exts.html#Registering-native-routines">
+six possible R types </a>. We’re only interested in a couple of those
+here, representing the integer and real or floating-point types, which
+are respectively <code>INTSXP</code> and <code>REALSXP</code>. Recalling that there is no
+distinction between a single integer or numeric (floating-point) value
+and equivalent vectors of these, we can distinguish these two cases
+through casting via <code>Rcpp::as</code> to <code>Rcpp</code> equivalents of either integer
+or numeric vectors with the following additional code, representing our
+“type selector” function:</p>
+<div class="code-example"><pre><code class="c++"><span class="hljs-function">SEXP <span class="hljs-title">mysquare</span> <span class="hljs-params">(SEXP &amp;x)</span>
+</span>{
+    <span class="hljs-keyword">switch</span> (TYPEOF (x))
+    {
+        <span class="hljs-keyword">case</span> INTSXP: {
+                         Rcpp::IntegerVector iv = Rcpp::as &lt;Rcpp::IntegerVector&gt; (x);
+                         <span class="hljs-keyword">return</span> mysquare (iv);
+                     }
+        <span class="hljs-keyword">case</span> REALSXP: {
+                         Rcpp::NumericVector nv = Rcpp::as &lt;Rcpp::NumericVector&gt; (x);
+                         <span class="hljs-keyword">return</span> mysquare (nv);
+                     }
+        <span class="hljs-keyword">default</span>: { Rcpp::stop (<span class="hljs-string">"incompatible type"</span>);    }
+    }
+    <span class="hljs-keyword">return</span> x; <span class="hljs-comment">// this should never happen</span>
+}</code></pre></div><p>This function takes a generic (<code>SEXP</code>) input and returns a generic
+output, yet deploys actual calls to the templated version of <code>mysquare</code>
+with specified (<code>Rcpp</code>) types, ensuring that the above templated
+function will always be able to infer the input type. The <code>default</code>
+<code>Rcpp::stop</code> ensures that types other than our desired two are not
+processed further, preventing for example attempts to calculate the
+square of <code>&quot;a&quot;</code>. Inserting this “type-selector” code in the above code
+(and presuming all to be in a file <code>src.cpp</code>) permits a generic
+<code>SEXP</code>-in / <code>SEXP</code>-out function (our <code>rcpp_mysquare</code> in the above code)
+to be deployed to specific types, and then simply passed to a generic
+C++ template function. The whole thing then works like this:</p>
+<div class="code-example"><pre><code class="r">Rcpp::sourceCpp (<span class="hljs-string">"src.cpp"</span>) <span class="hljs-comment"># source the file, placing the Rcpp::export-ed function in workspace</span>
+x &lt;- <span class="hljs-number">1</span>:<span class="hljs-number">5</span>
+x &lt;- rcpp_mysquare (x)
+x</code></pre></div><div class="code-example"><pre><code class="html">## [1]  1  4  9 16 25</code></pre></div><div class="code-example"><pre><code class="r">class (x)</code></pre></div><div class="code-example"><pre><code class="html">## [1] "integer"</code></pre></div><div class="code-example"><pre><code class="r">storage.mode (x) &lt;- <span class="hljs-string">"numeric"</span>
+x &lt;- rcpp_mysquare (x)
+x</code></pre></div><div class="code-example"><pre><code class="html">## [1]   1  16  81 256 625</code></pre></div><div class="code-example"><pre><code class="r">class (x)</code></pre></div><div class="code-example"><pre><code class="html">## [1] "numeric"</code></pre></div><p>An integer vector gives integer return values, and a numeric
+(floating-point) vector gives numeric return values. There you have it:
+templating through the magic of <code>SEXP</code>. Gratitude extended to Dirk
+Eddelbeuttel and David Cooley for advice and helpful pointers.</p>
+<section id="The-final-code" data-magellan-target="The-final-code"><h2>The final code</h></section>
+
+<p>Just to make it clear, here’s the above code all placed in a single
+place:</p>
+<div class="code-example"><pre><code class="c++"><span class="hljs-preprocessor">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;Rcpp.h&gt;</span></span>
+
+<span class="hljs-keyword">template</span> &lt;<span class="hljs-keyword">class</span> T&gt;
+<span class="hljs-function"><span class="hljs-keyword">inline</span> T <span class="hljs-title">mysquare</span> <span class="hljs-params">(T &amp;x)</span>
+</span>{
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">size_t</span> i = <span class="hljs-number">0</span>; i &lt; x.size (); i++)
+        x (i) = x (i) * x (i);
+    <span class="hljs-keyword">return</span> x;
+}
+
+<span class="hljs-function"><span class="hljs-keyword">inline</span> SEXP <span class="hljs-title">mysquare</span> <span class="hljs-params">(SEXP &amp;x)</span>
+</span>{
+    <span class="hljs-keyword">switch</span> (TYPEOF (x))
+    {
+        <span class="hljs-keyword">case</span> INTSXP: {
+                         Rcpp::IntegerVector iv = Rcpp::as &lt;Rcpp::IntegerVector&gt; (x);
+                         <span class="hljs-keyword">return</span> mysquare (iv);
+                     }
+        <span class="hljs-keyword">case</span> REALSXP: {
+                         Rcpp::NumericVector nv = Rcpp::as &lt;Rcpp::NumericVector&gt; (x);
+                         <span class="hljs-keyword">return</span> mysquare (nv);
+                     }
+        <span class="hljs-keyword">default</span>: { Rcpp::stop (<span class="hljs-string">"error"</span>);    }
+    }
+    <span class="hljs-keyword">return</span> x; <span class="hljs-comment">// this never happens</span>
+}
+
+<span class="hljs-comment">// [[Rcpp::export]]</span>
+<span class="hljs-function">SEXP <span class="hljs-title">rcpp_mysquare</span> <span class="hljs-params">(SEXP &amp;x)</span>
+</span>{
+    <span class="hljs-keyword">return</span> mysquare (x);
+}</code></pre></div><div style="text-align: right">
 Originally posted: 07 May 19
-Updated: 10 May 19
+Updated: 16 Jul 19
 </div>
 </div>
 </div>
