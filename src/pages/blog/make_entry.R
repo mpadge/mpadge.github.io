@@ -2,11 +2,11 @@ source ("update_main.R")
 
 blog_render <- function (fname, centre_images = TRUE) {
     rmarkdown::render(paste0 (fname, ".Rmd"),
-                      rmarkdown::md_document(variant='gfm'))
+                      rmarkdown::md_document(variant = 'gfm'))
     file.rename (paste0 (fname, ".md"), paste0 (fname, ".html"))
     conn <- file (paste0 (fname, ".html"), open = "r+")
     md <- readLines (conn)
-    
+
     # a few necessary replacements:
     md [md == "```{r}"] <- md [md == "``` {r}"] <- "``` r"
     md <- gsub ("{{#", "&#123;&#123;&#35;", md, fixed = TRUE)
@@ -62,7 +62,7 @@ find_headers <- function (md)
     hdrs <- gsub ("\\#+ ", "", md [grep ("^\\#+", md)])
     hdrs_link <- gsub ("[[:space:]]+|[[:punct:]]+", "-", hdrs)
     hdrs_link <- gsub ("-+", "-", hdrs_link)
-    
+
     cbind (hdrs, hdrs_link)
 }
 
@@ -157,10 +157,10 @@ clean_figure_files <- function (md, fname, dest_dir = c ("assets", "img"))
     lf <- vapply (list.files (figpath), function (i)
                   length (grep (i, md)) > 0, logical (1))
     lf <- list.files (figpath, full.names = TRUE) [!lf]
-    chk <- file.remove (lf)
+    invisible (file.remove (lf))
     lf <- list.files (figpath, full.names = TRUE)
     if (length (lf) == 0)
         unlink (figpath, recursive = TRUE)
 }
 
-blog_render ("blog002")
+blog_render ("blog005")
