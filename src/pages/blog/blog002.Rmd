@@ -271,3 +271,12 @@ SEXP rcpp_mysquare (SEXP &x)
 }
 ```
 
+## Update (31 Aug 2019)
+
+Since writing that, I found 
+<a target="_blank" rel="noopener noreferrer" href="https://gallery.rcpp.org/articles/rcpp-return-macros/">
+this very clear and more extensive explanation
+</a> in an 
+<a target="_blank" rel="noopener noreferrer" href="https://gallery.rcpp.org">
+Rcpp Gallery post.
+</a>.
