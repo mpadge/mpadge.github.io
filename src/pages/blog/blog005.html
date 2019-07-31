@@ -61,14 +61,15 @@ rbenchmark::benchmark (
 
 | test                | replications | elapsed | relative |
 | :------------------ | -----------: | ------: | -------: |
-| res \<- x + y       |          100 |   0.208 |    1.000 |
-| res \<- rowSums(xy) |          100 |   0.903 |    4.341 |
+| res <- x + y       |          100 |   0.210 |    1.000 |
+| res <- rowSums(xy) |          100 |   0.994 |    4.733 |
 
-And okay, that’s clearly a difference between the `rowSums` function and
-direct addition of two vectors (`x + y`). But why should these two
-behave so differently? Why is simple vector addition around 4 times
-faster than `rowSums`? At that point, I must freely admit to being not
-sufficiently clever to have uncovered the reason in the
+Adding the two rows of a matrix takes 3-4 times longer than adding two
+otherwise equivalent vectors. And okay, that’s very likely something to
+do with the `rowSums` function rather than the matrix itself, but why
+should these two behave so differently? At that point, I must freely
+admit to being not sufficiently clever to have uncovered the actual
+reason in the
 <a target="_blank" rel="noopener noreferrer" href="https://github.com/wch/r-source/blob/trunk/src/main/array.c">
 underlying C source code. </a> The answer must lie somewhere in there,
 so any pointers would be greatly appreciated. Short of that, the
@@ -113,9 +114,9 @@ rbenchmark::benchmark (
 
 | test                | replications | elapsed | relative |
 | :------------------ | -----------: | ------: | -------: |
-| res \<- x + y       |          100 |   0.209 |    1.000 |
-| res \<- add(x, y)   |          100 |   0.210 |    1.005 |
-| res \<- rowSums(xy) |          100 |   0.961 |    4.598 |
+| res <- x + y       |          100 |   0.206 |    1.000 |
+| res <- add(x, y)   |          100 |   0.251 |    1.218 |
+| res <- rowSums(xy) |          100 |   1.250 |    6.068 |
 
 So our `add` function is broadly equivalent to R’s underlying code for
 vector addition, and correspondingly, considerably more efficient than
@@ -137,10 +138,10 @@ rbenchmark::benchmark (
 
 | test                          | replications | elapsed | relative |
 | :---------------------------- | -----------: | ------: | -------: |
-| res \<- x + y                 |          100 |   0.368 |    1.752 |
-| res \<- add(x, y)             |          100 |   0.210 |    1.000 |
-| res \<- rowSums(xy)           |          100 |   0.782 |    3.724 |
-| res \<- xy\[, 1\] + xy\[, 2\] |          100 |   0.741 |    3.529 |
+| res <- x + y                 |          100 |   0.260 |    1.000 |
+| res <- add(x, y)             |          100 |   0.356 |    1.369 |
+| res <- rowSums(xy)           |          100 |   0.981 |    3.773 |
+| res <- xy\[, 1\] + xy\[, 2\] |          100 |   0.747 |    2.873 |
 
 And direct addition of two columns of a matrix, through indexing into
 those columns, is roughly as *inefficient* as `rowSums` itself, while
@@ -149,30 +150,32 @@ efficient.
 
 <section id="How-are-matrices-stored-" data-magellan-target="How-are-matrices-stored-"><h3>How are matrices stored?</h></section>
 
-The reference manual for the C-level details of data storage in R is the
-online compendium,
+So the reason for the relative inefficiency of `rowSums` is likely to
+extend directly from the column selection operation, `xy[, i]`. The
+reference manual for the C-level details of data storage and
+sub-selection in R is the online compendium,
 <a target="_blank" rel="noopener noreferrer" href="https://cran.r-project.org/doc/manuals/r-release/R-ints.html#SEXPs">
 R Internals </a>, yet even this has remarkably little to say in regard
-to how matrices are actually stored. The key is a single incidental
-statement that,
+to how matrices are actually stored or manipulated. The key is a single
+incidental statement that,
 <a target="_blank" rel="noopener noreferrer" href="https://cran.r-project.org/doc/manuals/R-ints.html#Large-matrices">
 “Matrices are stored as vectors” </a>. The storage can then be
 understood through reading the details of vector storage, and then
 simply figuring out how the indexing of a matrix-as-vector is
-implemented. This can in turn be immediately seen from direct conversion
-within R:
+implemented. This can be easily discerned from direct conversion within
+R:
 
 ``` r
-mat <- cbind (1:5, 6:10)
-as.vector (mat)
+as.vector (cbind (1:5, 6:10))
 ```
 
     ##  [1]  1  2  3  4  5  6  7  8  9 10
 
 The columns of a matrix are directly concatenated within the vector
 object. This enables us to then re-write the above C code for vector
-addition in matrix form as follows, noting that the indices `i` and `n +
-i` respectively refer to the first and second columns of the matrix.
+addition to instead accept a matrix object, noting that the indices `i`
+and `n + i` respectively refer to the first and second columns of the
+matrix.
 
 ``` r
 matadd <- cfunction(c(a = "numeric"), "
@@ -207,18 +210,22 @@ rbenchmark::benchmark (
 
 | test                          | replications | elapsed | relative |
 | :---------------------------- | -----------: | ------: | -------: |
-| res \<- x + y                 |          100 |   0.307 |    1.512 |
-| res \<- add(x, y)             |          100 |   0.203 |    1.000 |
-| res \<- rowSums(xy)           |          100 |   0.790 |    3.892 |
-| res \<- xy\[, 1\] + xy\[, 2\] |          100 |   0.704 |    3.468 |
-| res \<- matadd(xy)            |          100 |   0.262 |    1.291 |
-| res \<- xy + xy               |          100 |   0.383 |    1.887 |
+| res <- x + y                 |          100 |   0.256 |    1.255 |
+| res <- add(x, y)             |          100 |   0.204 |    1.000 |
+| res <- rowSums(xy)           |          100 |   0.811 |    3.975 |
+| res <- xy\[, 1\] + xy\[, 2\] |          100 |   0.752 |    3.686 |
+| res <- matadd(xy)            |          100 |   0.204 |    1.000 |
+| res <- xy + xy               |          100 |   0.422 |    2.069 |
 
 That benchmark demonstrates that operations on matrix columns are only
 as efficient as equivalent operations on vectors when the matrices are
-treated as entire objects. Sub-setting a matrix – the `xy [, i]`
-operations – is much less efficient, presumably because it involves
-creating an additional copy of the entire column.
+treated as singular vector objects. Direct addition of entire matrices
+(`xy + xy`) is also as efficient as vector addition, taking here around
+twice as long because twice as many values are being added.
+Inefficiencies arise in handling matrices only when extracting
+individual rows or columns – the `xy[, i]` operations, presumably
+because these operations involve creating an additional copy of the
+entire row or column.
 
 <section id="Conclusion" data-magellan-target="Conclusion"><h2>Conclusion</h></section>
 
@@ -226,11 +233,12 @@ What the above code was intended to demonstrate was that matrices should
 only be considered to be **like** vectors in the sense of operations on
 the entire objects. Sub-setting or sub-selecting of matrices involves
 creating additional copies of the sub-set/sub-selected portions, and is
-comparably much less efficient than equivalent vector operations.
-
-For code in which efficient is paramount, sub-set matrices with care.
+comparably less efficient than equivalent vector operations. In
+particular, efficient C or C++ operations on matrices should index
+directly into the underlying vector object, rather than sub-setting
+particular rows or columns of the matrices.
 <div style="text-align: right">
-Originally posted: 30 Jul 19
+Originally posted: 31 Jul 19
 </div>
 {{/markdown}}
 </div>
