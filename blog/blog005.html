@@ -111,14 +111,14 @@ rbenchmark::benchmark (
 <tr>
 <td style="text-align:left">res &lt;- x + y</td>
 <td style="text-align:right">100</td>
-<td style="text-align:right">0.210</td>
+<td style="text-align:right">0.245</td>
 <td style="text-align:right">1.000</td>
 </tr>
 <tr>
 <td style="text-align:left">res &lt;- rowSums(xy)</td>
 <td style="text-align:right">100</td>
-<td style="text-align:right">0.994</td>
-<td style="text-align:right">4.733</td>
+<td style="text-align:right">0.912</td>
+<td style="text-align:right">3.722</td>
 </tr>
 </tbody>
 </table>
@@ -172,20 +172,20 @@ equivalent functions.</p>
 <tr>
 <td style="text-align:left">res &lt;- x + y</td>
 <td style="text-align:right">100</td>
-<td style="text-align:right">0.206</td>
+<td style="text-align:right">0.203</td>
 <td style="text-align:right">1.000</td>
 </tr>
 <tr>
 <td style="text-align:left">res &lt;- add(x, y)</td>
 <td style="text-align:right">100</td>
-<td style="text-align:right">0.251</td>
-<td style="text-align:right">1.218</td>
+<td style="text-align:right">0.217</td>
+<td style="text-align:right">1.069</td>
 </tr>
 <tr>
 <td style="text-align:left">res &lt;- rowSums(xy)</td>
 <td style="text-align:right">100</td>
-<td style="text-align:right">1.250</td>
-<td style="text-align:right">6.068</td>
+<td style="text-align:right">0.931</td>
+<td style="text-align:right">4.586</td>
 </tr>
 </tbody>
 </table>
@@ -215,26 +215,26 @@ initial answer to that quesiton.</p>
 <tr>
 <td style="text-align:left">res &lt;- x + y</td>
 <td style="text-align:right">100</td>
-<td style="text-align:right">0.260</td>
+<td style="text-align:right">0.208</td>
 <td style="text-align:right">1.000</td>
 </tr>
 <tr>
 <td style="text-align:left">res &lt;- add(x, y)</td>
 <td style="text-align:right">100</td>
-<td style="text-align:right">0.356</td>
-<td style="text-align:right">1.369</td>
+<td style="text-align:right">0.250</td>
+<td style="text-align:right">1.202</td>
 </tr>
 <tr>
 <td style="text-align:left">res &lt;- rowSums(xy)</td>
 <td style="text-align:right">100</td>
-<td style="text-align:right">0.981</td>
-<td style="text-align:right">3.773</td>
+<td style="text-align:right">0.840</td>
+<td style="text-align:right">4.038</td>
 </tr>
 <tr>
 <td style="text-align:left">res &lt;- xy[, 1] + xy[, 2]</td>
 <td style="text-align:right">100</td>
-<td style="text-align:right">0.747</td>
-<td style="text-align:right">2.873</td>
+<td style="text-align:right">0.742</td>
+<td style="text-align:right">3.567</td>
 </tr>
 </tbody>
 </table>
@@ -298,38 +298,38 @@ results.</p>
 <tr>
 <td style="text-align:left">res &lt;- x + y</td>
 <td style="text-align:right">100</td>
-<td style="text-align:right">0.256</td>
-<td style="text-align:right">1.255</td>
+<td style="text-align:right">0.214</td>
+<td style="text-align:right">1.000</td>
 </tr>
 <tr>
 <td style="text-align:left">res &lt;- add(x, y)</td>
 <td style="text-align:right">100</td>
-<td style="text-align:right">0.204</td>
-<td style="text-align:right">1.000</td>
+<td style="text-align:right">0.215</td>
+<td style="text-align:right">1.005</td>
 </tr>
 <tr>
 <td style="text-align:left">res &lt;- rowSums(xy)</td>
 <td style="text-align:right">100</td>
-<td style="text-align:right">0.811</td>
-<td style="text-align:right">3.975</td>
+<td style="text-align:right">0.824</td>
+<td style="text-align:right">3.850</td>
 </tr>
 <tr>
 <td style="text-align:left">res &lt;- xy[, 1] + xy[, 2]</td>
 <td style="text-align:right">100</td>
-<td style="text-align:right">0.752</td>
-<td style="text-align:right">3.686</td>
+<td style="text-align:right">0.767</td>
+<td style="text-align:right">3.584</td>
 </tr>
 <tr>
 <td style="text-align:left">res &lt;- matadd(xy)</td>
 <td style="text-align:right">100</td>
-<td style="text-align:right">0.204</td>
-<td style="text-align:right">1.000</td>
+<td style="text-align:right">0.219</td>
+<td style="text-align:right">1.023</td>
 </tr>
 <tr>
 <td style="text-align:left">res &lt;- xy + xy</td>
 <td style="text-align:right">100</td>
-<td style="text-align:right">0.422</td>
-<td style="text-align:right">2.069</td>
+<td style="text-align:right">0.407</td>
+<td style="text-align:right">1.902</td>
 </tr>
 </tbody>
 </table>
@@ -352,6 +352,9 @@ comparably less efficient than equivalent vector operations. In
 particular, efficient C or C++ operations on matrices should index
 directly into the underlying vector object, rather than sub-setting
 particular rows or columns of the matrices.</p>
+<p>The assertion that everything in R is a vector hereby deepens: Even
+matrices in R are vectors, and should in many circumstances be treated
+as such.</p>
 <div style="text-align: right">
 Originally posted: 31 Jul 19
 </div>
