@@ -1,6 +1,9 @@
 ---
 title: What are matrices in R?
-description: If everything in R is a vector, then what is a matrix?
+description: If everything in R is a vector, then what is a matrix? This entry
+    will demonstrate that even matrices are vectors, and that processing of
+    matrices can in certain circumstances be considerably more efficient if
+    they are treated as simple vectors.
 date: 31 July 2019
 link: blog/blog005.html
 ---
@@ -223,4 +226,7 @@ copies of the sub-set/sub-selected portions, and is comparably less efficient
 than equivalent vector operations. In particular, efficient C or C++ operations
 on matrices should index directly into the underlying vector object, rather than
 sub-setting particular rows or columns of the matrices.
+
+The assertion that everything in R is a vector hereby deepens: Even matrices in
+R are vectors, and should in many circumstances be treated as such.
 

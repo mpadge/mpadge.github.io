@@ -1,6 +1,6 @@
 -
     title: What are matrices in R?
-    description: If everything in R is a vector, then what is a matrix?
+    description: If everything in R is a vector, then what is a matrix? This entry will demonstrate that even matrices are vectors, and that processing of matrices can in certain circumstances be considerably more efficient if they are treated as simple vectors.
     created: 31 Jul 19
     link: blog/blog005.html
 -
