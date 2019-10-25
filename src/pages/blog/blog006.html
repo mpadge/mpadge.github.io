@@ -166,9 +166,9 @@ That script gives our desired output:
 
 My solution then just involved combining those two tricks within a
 single script, designed to *almost* but not quite reflect the old `git
-push` prompt and behaviour i was trying to recreate, and including an
+push` prompt and behaviour i was trying to emulate, and including an
 additional option to call the script with an extra parameter specifying
-the branch to push to:
+the branch to push to, or otherwise defaulting to the current branch:
 
 ``` bash
 #!/bin/bash
@@ -181,9 +181,9 @@ PASS=""
 PAT=$(<aaagit.txt)
 rm aaagit.txt
 
-# get git remote branch:
+# get git branch:
 if [ "$1" == "" ]; then
-    BRANCH="master"
+    BRANCH=$(git branch --show-current)
 else
     BRANCH=$1
 fi
