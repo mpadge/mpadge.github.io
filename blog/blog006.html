@@ -184,9 +184,9 @@ cut <span class="hljs-string">"github.com"</span>
 
 <p>My solution then just involved combining those two tricks within a
 single script, designed to <em>almost</em> but not quite reflect the old <code>git
-push</code> prompt and behaviour i was trying to recreate, and including an
+push</code> prompt and behaviour i was trying to emulate, and including an
 additional option to call the script with an extra parameter specifying
-the branch to push to:</p>
+the branch to push to, or otherwise defaulting to the current branch:</p>
 <div class="code-example"><pre><code class="bash"><span class="hljs-shebang">#!/bin/bash</span>
 <span class="hljs-built_in">read</span> -p <span class="hljs-string">"User name for 'https://github.com': "</span> UNAME
 <span class="hljs-built_in">read</span> <span class="hljs-operator">-s</span> -p <span class="hljs-string">"Password (NOT PAT) for 'https://<span class="hljs-variable">$UNAME</span>@github.com' "</span> PASS
@@ -197,9 +197,9 @@ PASS=<span class="hljs-string">""</span>
 PAT=$(&lt;aaagit.txt)
 rm aaagit.txt
 
-<span class="hljs-comment"># get git remote branch:</span>
+<span class="hljs-comment"># get git branch:</span>
 <span class="hljs-keyword">if</span> [ <span class="hljs-string">"<span class="hljs-variable">$1</span>"</span> == <span class="hljs-string">""</span> ]; <span class="hljs-keyword">then</span>
-    BRANCH=<span class="hljs-string">"master"</span>
+    BRANCH=$(git branch --show-current)
 <span class="hljs-keyword">else</span>
     BRANCH=<span class="hljs-variable">$1</span>
 <span class="hljs-keyword">fi</span>
