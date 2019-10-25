@@ -1,0 +1,241 @@
+---
+title: Github 2FA, git push, and password entry
+description: Activating github two-factor authentication (2FA) offers an
+    indubitable security boost, with one notable side effect--https
+    authentication requires entering a Personal Access Token instead of
+    password. This entry explains how I reconfigured my git push commands
+    with 2FA to be able to enter my password once again, instead of a random
+    32-character token.
+date: 25 Oct 2019
+link: blog/blog006.html
+---
+
+# Github 2FA, git push, and password entry
+
+Activating github two-factor authentication (2FA) offers an indubitable
+security boost, with one notable side effect: `https` authentication requires
+entering a Personal Access Token instead of password, as very clearly explained
+in the official 
+<a target="_blank" rel="noopener noreferrer" href="https://help.github.com/en/github/authenticating-to-github/accessing-github-using-two-factor-authentication#authenticating-on-the-command-line-using-https">
+github documentation
+</a>, which states:
+
+> The command line prompt won't specify that you should enter your personal
+access token when it asks for your password.
+
+So everything *looks* like it stays the same, except now I have to enter
+a random 32-character long Personal Access Token (PAT), instead of my former,
+sensibly memorable, and readily typeable password. But I liked things the old
+way! This blog entry describes the process I went through to effectively
+restore the previous behaviour of the git prompt prior to me switching on 2FA
+on github, enabling me to type a password for `git push`, instead of the
+un-typeable PAT.
+
+## Why enter a password each time?
+
+Many -- maybe most? -- people are likely content with SSH authentication, which
+avoids any of these issues, and simply allows your `git push` commands to be
+identified through connecting your local `ssh` agent with github to do the
+authentication. `git push` then just works. My problem with this is twofold:
+
+1. *i like typing in both my github name, and my password*, especially because
+   i have long learnt to appreciate the brief cognitive disconnect this gives
+   me, one which not infrequently leads to me realising that, no, i really do
+   not want to push that commit. The necessity of me manually entering my name
+   and password for each push provides an extra level of security against me
+   inadvertently pushing breaking or otherwise silly commits. I like that.
+2. The immediacy of SSH pushes disturbs me somewhat. Yes, my local machine is
+   absolutely authenticated, but this means that anybody who happens to get
+   their maws on my machine can push whatever they want anytime. Although this
+   is wildly unlikely to ever happen, the mere notion that it could
+   nevertheless disturbs me.
+
+I like having to type my name and password. It is impossible for me to type my
+name and PAT. For a brief moment after having switched on 2FA on github,
+i feared that i was going to have to constantly copy-paste my PAT for every
+commit. I didn't wanna do that, so i did the following ... but first a brief
+digression into my SSL habits.
+
+## OpenSSL encryption
+
+I use 
+<a target="_blank" rel="noopener noreferrer" href="https://www.openssl.org/">
+OpenSSL
+</a>
+a lot. I encrypt any and all sensitive information, and use a host of local
+scripts and bash aliases to do so. I wasn't going to leave my github PAT just
+lying around on my machine, so it naturally gets encrypted too, simply by
+storing it as a single line in a text file, and typing:
+```{bash, eval = FALSE}
+openssl des3 -salt -md sha256 -pbkdf2 -in gitpat.txt -out gitpat
+```
+That command prompts me to enter and repeat a password. See the
+<a target="_blank" rel="noopener noreferrer" href="https://www.openssl.org/">
+OpenSSL
+</a>
+manual for what all those flags mean; or just believe me that they ensure that
+it's really encrypted. Delete `gitpat.txt` --- and don't forget any extra files
+like `.gitpat.txt.un~` on linux, or whatever traces might be left lying around
+on other operating systems --- and your PAT is secure. Decrypting pretty much
+just reverses the above:
+```{bash, eval = FALSE}
+openssl des3 -salt -md sha256 -pbkdf2 -d -in gitpat -out gitpat.txt
+```
+Then i've got my token in `gitpat.txt`, which i can ... copy-and-paste each
+time i need to `git push`? No way! And so ... on to my solution.
+
+## github 2FA via https with password entry, and not an untypeable token
+
+My solution involved two main tricks:
+
+1. Replacing my pushes in the form `git push origin master`, where `origin` can
+   be identified via `git remote -v` as something like
+   `https://github.com/mpadge/<repo>`, and which necessitates entering
+   `"mpadge"` and my PAT, with `git push
+   https://mpadge:<PAT>@github.com/mpadge/<repo>`, where the PAT is passed
+   directly to github, circumventing the need to enter it manually, so that the
+   push is directly sent and accepted; and
+2. Writing a script requiring my (github or other) password, and using that to
+   automatically decrypt my PAT, convert it to an environmental variable, and
+   using that to convert `git push` into the form above with my PAT embedded.
+
+The second of those steps looks, in the form of a `bash` script, like this:
+```{bash, eval = FALSE}
+read -s -p "Enter Password: " PASS
+echo ""
+
+openssl des3 -salt -md sha256 -pbkdf2 -d -in /<my>/<secret>/<path>/gitpat -out gitpat.txt -pass pass:$PASS
+PASS=""
+PAT=$(<aaagit.txt)
+rm aaagit.txt
+```
+I then have a variable, `"PAT"`, containing my PAT, with no other traces of its
+value, or of my password, left on my machine. Note that the password required
+is whatever was entered for the initial encryption of `gitpat.txt` to `gitpat`.
+
+The first step then inserts this PAT, and my github user name, into a `git
+push` command via the following `bash` code, presuming here that my github user
+name is stored in a variable named `UNAME`:
+```{bash, eval = FALSE}
+REMOTE=$(git remote -v | head -n 1)
+# REMOTE="origin https://github.com/<org>/<repo> (fetch)" (or similar)
+
+# function to cut string by delimiter
+cut () {
+    local s=$REMOTE$1
+    while [[ $s ]]; do
+        array+=( "${s%%"$1"*}" );
+        s=${s#*"$1"};
+    done;
+}
+# cut terminal bit "(fetch)" from remote, returning first part as array[0]:
+array=();
+cut " "
+REMOTE="${array[0]}"
+
+# cut remainder around "github.com", returning 2nd part as "/<org>/<repo>"
+array=();
+cut "github.com"
+
+# convert REMOTE given above to
+# REMOTE="https://<UNAME>:<PAT>@github.com/<org>/<repo>" (or similar)
+printf -v REMOTE "https://%s:%s@github.com%s" "$UNAME" "$PAT" "${array[1]}"
+echo $REMOTE
+```
+That script gives our desired output:
+```{r bash1, echo = FALSE}
+f <- file ("junk.bash")
+txt <- c ('#!/bin/bash',
+          'UNAME="mpadge"',
+          'PAT="<mypat>"',
+          'REMOTE=$(git remote -v | head -n 1)',
+          'cut () {',
+          '    local s=$REMOTE$1',
+          '    while [[ $s ]]; do',
+          '        array+=( "${s%%"$1"*}" );',
+          '        s=${s#*"$1"};',
+          '    done;',
+          '}',
+          'array=();',
+          'cut " "',
+          'REMOTE="${array[0]}"',
+          'array=();',
+          'cut "github.com"',
+          'printf -v REMOTE "https://%s:%s@github.com%s" "$UNAME" "$PAT" "${array[1]}"',
+          'echo $REMOTE $BRANCH')
+writeLines (txt, f)
+close (f)
+#system ("bash junk.bash", intern = TRUE)
+"https://mpadge:<mypat>@github.com/<org>/<repo>"
+invisible (file.remove ("junk.bash"))
+```
+
+## Final script
+
+My solution then just involved combining those two tricks within a single
+script, designed to *almost* but not quite reflect the old `git push` prompt
+and behaviour i was trying to emulate, and including an additional option to
+call the script with an extra parameter specifying the branch to push to:
+
+```{bash, eval = FALSE}
+#!/bin/bash
+read -p "User name for 'https://github.com': " UNAME
+read -s -p "Password (NOT PAT) for 'https://$UNAME@github.com' " PASS
+echo ""
+
+openssl des3 -salt -md sha256 -pbkdf2 -d -in /<my>/<secret>/<path>/gitpat -out gitpat.txt -pass pass:$PASS
+PASS=""
+PAT=$(<aaagit.txt)
+rm aaagit.txt
+
+# get git remote branch:
+if [ "$1" == "" ]; then
+    BRANCH="master"
+else
+    BRANCH=$1
+fi
+
+REMOTE=$(git remote -v | head -n 1)
+# REMOTE="origin https://github.com/<org>/<repo> (fetch)" (or similar)
+
+# function to cut string by delimiter
+cut () {
+    local s=$REMOTE$1
+    while [[ $s ]]; do
+        array+=( "${s%%"$1"*}" );
+        s=${s#*"$1"};
+    done;
+}
+# cut terminal bit "(fetch)" from remote, returning first part as array[0]:
+array=();
+cut " "
+REMOTE="${array[0]}"
+
+# cut remainder around "github.com", returning 2nd part as "/<org>/<repo>"
+array=();
+cut "github.com"
+
+# convert REMOTE given above to
+# REMOTE="https://<UNAME>:<PAT>@github.com/<org>/<repo>" (or similar)
+printf -v REMOTE "https://%s:%s@github.com%s" "$UNAME" "$PAT" "${array[1]}"
+
+git push $REMOTE $BRANCH
+# clear variables:
+PAT=""
+REMOTE=""
+```
+
+I then only needed to set an alias to that script in `~/.bash_aliases`, along
+the lines of
+```{bash, eval = FALSE}
+alias gitpush="bash /<my>/<secret>/<path>/gitpatscript.bash"
+```
+and then replace my former `git push` with `gitpush`, to enable me to once
+again type in my password like i always liked to do.
+
+
+
+
+
+
+

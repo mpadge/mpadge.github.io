@@ -1,4 +1,9 @@
 -
+    title: Github 2FA, git push, and password entry
+    description: Activating github two-factor authentication (2FA) offers an indubitable security boost, with one notable side effect--https authentication requires entering a Personal Access Token instead of password. This entry explains how I reconfigured my git push commands with 2FA to be able to enter my password once again, instead of a random 32-character token.
+    created: 25 Oct 19
+    link: blog/blog006.html
+-
     title: What are matrices in R?
     description: If everything in R is a vector, then what is a matrix? This entry will demonstrate that even matrices are vectors, and that processing of matrices can in certain circumstances be considerably more efficient if they are treated as simple vectors.
     created: 31 Jul 19
