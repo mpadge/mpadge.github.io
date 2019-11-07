@@ -108,4 +108,4 @@ get_link <- function (x)
     strsplit (link, "link: ") [[1]] [2]
 }
 
-update_main (n = 6, sort_date = "created")
+update_main (n = 7, sort_date = "created")
