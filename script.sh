@@ -31,8 +31,8 @@ git add index.html blog.html privacy.html blog/* assets/*
 git add -u
 git st
 git commit -am "New Blog Build (`date`)"
-#git push origin master
-gitpush master
+git push origin master
+#gitpush master
 
 echo -e "\033[0;32mChange back to source branch...\033[0m"
 git checkout source
