@@ -16,6 +16,7 @@
     "lodash": "^4.17.12",
     "lodash.template": "^4.5.0",
     "motion-ui": "^2.0.3",
+    "serialize-javascript": "^2.1.1",
     "set-value": "^2.0.1",
     "tar": "^4.4.2",
     "what-input": "^5.1.2"
