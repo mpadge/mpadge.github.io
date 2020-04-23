@@ -19,6 +19,7 @@
     "serialize-javascript": "^2.1.1",
     "set-value": "^2.0.1",
     "tar": "^4.4.2",
+    "tunnel-agent": "^0.6.0",
     "what-input": "^5.1.2"
   },
   "devDependencies": {
