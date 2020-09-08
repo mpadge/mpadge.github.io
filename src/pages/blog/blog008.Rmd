@@ -1,0 +1,60 @@
+---
+title: The troubles with getting help files in R
+description: How to extract the actual content of help files.
+date: 08/09/2020
+link: blog/blog008.html
+---
+
+# The troubles with getting help files in R
+
+R has a very well structured system for documenting and accessing help for
+packages. This entry describes how to extract the actual content of help files.
+The `tools` package has a few functions for working with help files, starting
+with
+[`parse_Rd`](https://stat.ethz.ch/R-manual/R-patched/library/tools/html/parse_Rd.html)
+which claims at the outset that,
+
+> This function parses ‘Rd’ files according to the specification given in [https://developer.r-project.org/parseRd.pdf](https://developer.r-project.org/parseRd.pdf)
+
+The document referred to there tells you everything you maybe did not ever
+really want to know about *how* the `parse_Rd()` function actually does the
+parsing, yet not anything about how the mysterious `.Rd` objects supposedly
+parsed by the function are actually accessed in the first place. Absent that
+information, it remains very difficult to figure out how to use `parse_Rd`.
+
+Help files for R packages (since around version 2 at least) are stored in
+a standard location, within the `"help"` directory of the local package
+installation. The following code demonstrates for the `tools` package, which
+includes the `parse_Rd()` function.
+
+```{r tools-pkg}
+loc <- file.path (R.home (), "library", "tools", "help")
+list.files (loc)
+```
+
+That directory does not contain any actual `.Rd` objects, or anything that can
+be submitted directly to `parse_Rd()`. And yet it does contain all of the help
+information, in the format of one `.rdb` and one `.rdx` file. As explained in
+one answer to [this StackOverflow question](
+https://stackoverflow.com/questions/46184224/how-to-open-rdb-file-using-r),
+these files can be loaded with the [`lazyload()`
+function](https://stat.ethz.ch/R-manual/R-devel/library/base/html/lazyload.html).
+Armed with that knowledge, the following function illustrates one simple way to
+extract the contents of help files as text entries.
+
+
+```{r}
+gethelp <- function (package, fn) {
+    loc <- file.path (R.home (), "library", package, "help", package)
+    e <- new.env ()
+    chk <- lazyLoad (loc, envir = e)
+    get (fn, envir = e)
+}
+x <- gethelp ("tools", "parse_Rd")
+class (x)
+print (x)
+```
+
+So `lazyLoad()` can be used to directly access the `.Rd` objects containing the
+help files for any package and function.
+

@@ -1,4 +1,9 @@
 -
+    title: The troubles with getting help files in R
+    description: How to extract the actual content of help files.
+    created: 08 Sep 20
+    link: blog/blog008.html
+-
     title: Using RcppParallel to aggregate to a vector
     description: This article was recently published in the Rcpp Gallery, and demonstrates using the RcppParallel package to aggregate to an output vector. It extends directly from previous demonstrations of single-valued aggregation, through providing necessary details to enable aggregation to a vector, or by extension, to any arbitrary form.
     created: 07 Nov 19

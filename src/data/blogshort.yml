@@ -1,4 +1,9 @@
 -
+    title: The troubles with getting help files in R
+    description: How to extract the actual content of help files.
+    created: 08 Sep 20
+    link: blog/blog008.html
+-
     title: Using RcppParallel to aggregate to a vector
     description: This article was recently published in the Rcpp Gallery, and demonstrates using the RcppParallel package to aggregate to an output vector. It extends directly from previous demonstrations of single-valued aggregation, through providing necessary details to enable aggregation to a vector, or by extension, to any arbitrary form.
     created: 07 Nov 19
@@ -23,13 +28,3 @@
     description: Caching is implemented because it saves time, generally by saving the results of one function call for subsequent reuse. Background processes are also commonly implemented as time-saving measures, through delegating long-running tasks to "somewhere else", allowing you to keep focussing on whatever (un)important things you were doing in the meantime. This blog entry describes how to combine the two to save double time through caching via background processes.
     created: 06 Jun 19
     link: blog/blog003.html
--
-    title: C++ templates and Rcpp
-    description: C++ templates are really useful. Templates allow you to code a function able to accept arguments of different types that can't necessarily be known until compile time. There is, however, no such thing as an Rcpp template -- all inputs and outputs must have defined types. This blog entry is about how to maximise the usefulness of C++ templates in an Rcpp context.
-    created: 07 May 19
-    link: blog/blog002.html
--
-    title: how i made this site
-    description: This site is built with zurb foundation, because i had read that it did everything that hugo could, but that final products were more lightweight and flexible. Plus i had no idea about it, and learning something new is sometimes worthwhile. I was also frustrated that standard hugo advice seemed to be, ''oh, just pick a template and off you go,'' yet there is surprisingly little advice on how to modify any given template, let alone how to start from scratch. It turned out that foundation at least made starting from scratch fairly easy, and so this entry is about that process.
-    created: 06 May 19
-    link: blog/blog001.html
