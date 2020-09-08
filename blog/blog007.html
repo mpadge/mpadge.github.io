@@ -127,7 +127,8 @@ simple <code>Rcpp::wrap</code> call.)</p>
 </li>
 </ol>
 <!-- end list -->
-<div class="code-example"><pre><code class="cpp"><span class="hljs-preprocessor">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;Rcpp.h&gt;</span></span>
+
+<div class="code-example"><pre><code class="cpp hljs"><span class="hljs-preprocessor">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;Rcpp.h&gt;</span></span>
 <span class="hljs-comment">// [[Rcpp::depends(RcppParallel)]]</span>
 <span class="hljs-preprocessor">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;RcppParallel.h&gt;</span></span>
 <span class="hljs-keyword">using</span> <span class="hljs-keyword">namespace</span> Rcpp;
@@ -192,7 +193,7 @@ pass <code>unsigned long</code> or <code>size_t</code> values to the worker to u
 into standard C++ vectors. The <code>output</code> of <code>oneJob</code> is a
 <code>std::vector&lt;double&gt;</code>, which is converted to an <code>Rcpp::NumericVector</code>
 through a simple call to <code>Rcpp::wrap</code>.</p>
-<div class="code-example"><pre><code class="cpp"><span class="hljs-comment">// [[Rcpp::export]]</span>
+<div class="code-example"><pre><code class="cpp hljs"><span class="hljs-comment">// [[Rcpp::export]]</span>
 <span class="hljs-function">NumericVector <span class="hljs-title">vector_aggregator</span> <span class="hljs-params">(IntegerVector index, NumericVector x)</span>
 </span>{
     <span class="hljs-keyword">const</span> <span class="hljs-keyword">size_t</span> nrow = <span class="hljs-keyword">static_cast</span> &lt;<span class="hljs-keyword">size_t</span>&gt; (index.size ());
@@ -204,7 +205,7 @@ through a simple call to <code>Rcpp::wrap</code>.</p>
 
 <p>Finally, the following code demonstrates that this parallel worker
 correctly returns the row sums of the input matrix.</p>
-<div class="code-example"><pre><code class="r"><span class="hljs-comment"># allocate a vector</span>
+<div class="code-example"><pre><code class="r hljs"><span class="hljs-comment"># allocate a vector</span>
 nrow &lt;- <span class="hljs-number">1e5</span>
 ncol &lt;- <span class="hljs-number">10</span>
 x &lt;- runif (nrow * ncol) <span class="hljs-comment"># input matrix</span>
@@ -212,7 +213,7 @@ res &lt;- vector_aggregator (seq(nrow), x)
 
 <span class="hljs-comment"># confirm that this equals rowsums of the matrix:</span>
 xmat &lt;- matrix(x, ncol = ncol)
-identical(res, rowSums(xmat))</code></pre></div><div class="code-example"><pre><code class="html">## [1] TRUE</code></pre></div><p>You can learn more about using RcppParallel at
+identical(res, rowSums(xmat))</code></pre></div><div class="code-example"><pre><code class="html hljs">## [1] TRUE</code></pre></div><p>You can learn more about using RcppParallel at
 <a href="https://rcppcore.github.com/RcppParallel">https://rcppcore.github.com/RcppParallel</a>.</p>
 <div style="text-align: right">
 Originally posted: 07 Nov 19

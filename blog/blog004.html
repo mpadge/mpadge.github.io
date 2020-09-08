@@ -94,7 +94,7 @@ whenever and wherever the package is used: precisely the kind of job for
 which the <code>.onLoad()</code> function is intended. An additional problem in my
 particular case was that the source code relied very extensively on
 defining the dictionary file through a simple C macro:</p>
-<div class="code-example"><pre><code class="c"><span class="hljs-preprocessor">#<span class="hljs-keyword">define</span> MY_DICTIONARY <span class="hljs-string">"dictionary.txt"</span></span></code></pre></div><p>Literally dozens of functions then call that simple macro to read from
+<div class="code-example"><pre><code class="c hljs"><span class="hljs-preprocessor">#<span class="hljs-keyword">define</span> MY_DICTIONARY <span class="hljs-string">"dictionary.txt"</span></span></code></pre></div><p>Literally dozens of functions then call that simple macro to read from
 the dictionary. Rewriting all of them to accept a dynamic parameter
 defining the location would have been way too much work, and so I
 urgently needed a simpler solution. The easiest turned out to be to use
@@ -102,14 +102,14 @@ environmental variables, which are universally accessible by any
 programming language. I just needed to define and write the
 environmental variable of the package dictionary in the <code>.onLoad()</code>
 function as,</p>
-<div class="code-example"><pre><code class="r">Sys.setenv (<span class="hljs-string">"DICT_DIR"</span> = system.file (package = <span class="hljs-string">"my_package"</span>, <span class="hljs-string">"subdir"</span>, <span class="hljs-string">"my_dict.txt"</span>))</code></pre></div><p>Accessing this within the source code was then as simple as defining an
+<div class="code-example"><pre><code class="r hljs">Sys.setenv (<span class="hljs-string">"DICT_DIR"</span> = system.file (package = <span class="hljs-string">"my_package"</span>, <span class="hljs-string">"subdir"</span>, <span class="hljs-string">"my_dict.txt"</span>))</code></pre></div><p>Accessing this within the source code was then as simple as defining an
 equivalent function in C to read that variable:</p>
-<div class="code-example"><pre><code class="c"><span class="hljs-function"><span class="hljs-keyword">char</span> * <span class="hljs-title">getDictPath</span><span class="hljs-params">()</span>
+<div class="code-example"><pre><code class="c hljs"><span class="hljs-function"><span class="hljs-keyword">char</span> * <span class="hljs-title">getDictPath</span><span class="hljs-params">()</span>
 </span>{
     <span class="hljs-keyword">char</span> *ret = getenv(<span class="hljs-string">"DICT_DIR"</span>);
     <span class="hljs-keyword">return</span> ret;
 }</code></pre></div><p>and then replacing the hard-coded macro with a functional equivalent:</p>
-<div class="code-example"><pre><code class="c"><span class="hljs-preprocessor">#<span class="hljs-keyword">define</span> MY_DICTIONARY getDictPath()</span></code></pre></div><p>The entire bundled source then remained intact, with the <code>getDictPath()</code>
+<div class="code-example"><pre><code class="c hljs"><span class="hljs-preprocessor">#<span class="hljs-keyword">define</span> MY_DICTIONARY getDictPath()</span></code></pre></div><p>The entire bundled source then remained intact, with the <code>getDictPath()</code>
 function returning the appropriate path as defined within R itself, and
 accessible through the <code>system.file()</code> function, and leaving the C code
 able to simply call the macro <code>MY_DICTIONARY</code> to access the local copy

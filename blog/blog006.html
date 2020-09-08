@@ -116,14 +116,14 @@ a host of local scripts and bash aliases to do so. I wasn’t going to
 leave my github PAT just lying around on my machine, so it naturally
 gets encrypted too, simply by storing it as a single line in a text
 file, and typing:</p>
-<div class="code-example"><pre><code class="bash">openssl des3 -salt -md sha256 -pbkdf2 -in gitpat.txt -out gitpat</code></pre></div><p>That command prompts me to enter and repeat a password. See the
+<div class="code-example"><pre><code class="bash hljs">openssl des3 -salt -md sha256 -pbkdf2 -in gitpat.txt -out gitpat</code></pre></div><p>That command prompts me to enter and repeat a password. See the
 <a target="_blank" rel="noopener noreferrer" href="https://www.openssl.org/">
 OpenSSL </a> manual for what all those flags mean; or just believe me
 that they ensure that it’s really encrypted. Delete <code>gitpat.txt</code> — and
 don’t forget any extra files like <code>.gitpat.txt.un~</code> on linux, or
 whatever traces might be left lying around on other operating systems —
 and your PAT is secure. Decrypting pretty much just reverses the above:</p>
-<div class="code-example"><pre><code class="bash">openssl des3 -salt -md sha256 -pbkdf2 <span class="hljs-operator">-d</span> -in gitpat -out gitpat.txt</code></pre></div><p>Then i’ve got my token in <code>gitpat.txt</code>, which i can … copy-and-paste
+<div class="code-example"><pre><code class="bash hljs">openssl des3 -salt -md sha256 -pbkdf2 <span class="hljs-operator">-d</span> -in gitpat -out gitpat.txt</code></pre></div><p>Then i’ve got my token in <code>gitpat.txt</code>, which i can … copy-and-paste
 each time i need to <code>git push</code>? No way! And so … on to my solution.</p>
 <section id="github-2FA-via-https-with-password-entry-and-not-an-untypeable-token" data-magellan-target="github-2FA-via-https-with-password-entry-and-not-an-untypeable-token"><h2>github 2FA via https with password entry, and not an untypeable token</h></section>
 
@@ -132,8 +132,7 @@ each time i need to <code>git push</code>? No way! And so … on to my solution.
 <li>Replacing my pushes in the form <code>git push origin master</code>, where
 <code>origin</code> can be identified via <code>git remote -v</code> as something like
 <code>https://github.com/mpadge/&lt;repo&gt;</code>, and which necessitates entering
-<code>&quot;mpadge&quot;</code> and my PAT, with <code>git push
-https://mpadge:&lt;PAT&gt;@github.com/mpadge/&lt;repo&gt;</code>, where the PAT is
+<code>&quot;mpadge&quot;</code> and my PAT, with <code>git push https://mpadge:&lt;PAT&gt;@github.com/mpadge/&lt;repo&gt;</code>, where the PAT is
 passed directly to github, circumventing the need to enter it
 manually, so that the push is directly sent and accepted; and</li>
 <li>Writing a script requiring my (github or other) password, and using
@@ -143,7 +142,7 @@ with my PAT embedded.</li>
 </ol>
 <p>The second of those steps looks, in the form of a <code>bash</code> script, like
 this:</p>
-<div class="code-example"><pre><code class="bash"><span class="hljs-built_in">read</span> <span class="hljs-operator">-s</span> -p <span class="hljs-string">"Enter Password: "</span> PASS
+<div class="code-example"><pre><code class="bash hljs"><span class="hljs-built_in">read</span> <span class="hljs-operator">-s</span> -p <span class="hljs-string">"Enter Password: "</span> PASS
 <span class="hljs-built_in">echo</span> <span class="hljs-string">""</span>
 
 openssl des3 -salt -md sha256 -pbkdf2 <span class="hljs-operator">-d</span> -in /&lt;my&gt;/&lt;secret&gt;/&lt;path&gt;/gitpat -out gitpat.txt -pass pass:<span class="hljs-variable">$PASS</span>
@@ -156,7 +155,7 @@ password required is whatever was entered for the initial encryption of
 <p>The first step then inserts this PAT, and my github user name, into a
 <code>git push</code> command via the following <code>bash</code> code, presuming here that my
 github user name is stored in a variable named <code>UNAME</code>:</p>
-<div class="code-example"><pre><code class="bash">REMOTE=$(git remote -v | head -n <span class="hljs-number">1</span>)
+<div class="code-example"><pre><code class="bash hljs">REMOTE=$(git remote -v | head -n <span class="hljs-number">1</span>)
 <span class="hljs-comment"># REMOTE="origin https://github.com/&lt;org&gt;/&lt;repo&gt; (fetch)" (or similar)</span>
 
 <span class="hljs-comment"># function to cut string by delimiter</span>
@@ -180,14 +179,13 @@ cut <span class="hljs-string">"github.com"</span>
 <span class="hljs-comment"># REMOTE="https://&lt;UNAME&gt;:&lt;PAT&gt;@github.com/&lt;org&gt;/&lt;repo&gt;" (or similar)</span>
 <span class="hljs-built_in">printf</span> -v REMOTE <span class="hljs-string">"https://%s:%s@github.com%s"</span> <span class="hljs-string">"<span class="hljs-variable">$UNAME</span>"</span> <span class="hljs-string">"<span class="hljs-variable">$PAT</span>"</span> <span class="hljs-string">"<span class="hljs-variable">${array[1]}</span>"</span>
 <span class="hljs-built_in">echo</span> <span class="hljs-variable">$REMOTE</span></code></pre></div><p>That script gives our desired output:</p>
-<div class="code-example"><pre><code class="html">## [1] "https://mpadge:<span class="hljs-tag">&lt;<span class="hljs-title">mypat</span>&gt;</span>@github.com/<span class="hljs-tag">&lt;<span class="hljs-title">org</span>&gt;</span>/<span class="hljs-tag">&lt;<span class="hljs-title">repo</span>&gt;</span>"</code></pre></div><section id="Final-script" data-magellan-target="Final-script"><h2>Final script</h></section>
+<div class="code-example"><pre><code class="html hljs">## [1] "https://mpadge:<span class="hljs-tag">&lt;<span class="hljs-title">mypat</span>&gt;</span>@github.com/<span class="hljs-tag">&lt;<span class="hljs-title">org</span>&gt;</span>/<span class="hljs-tag">&lt;<span class="hljs-title">repo</span>&gt;</span>"</code></pre></div><section id="Final-script" data-magellan-target="Final-script"><h2>Final script</h></section>
 
 <p>My solution then just involved combining those two tricks within a
-single script, designed to <em>almost</em> but not quite reflect the old <code>git
-push</code> prompt and behaviour i was trying to emulate, and including an
+single script, designed to <em>almost</em> but not quite reflect the old <code>git push</code> prompt and behaviour i was trying to emulate, and including an
 additional option to call the script with an extra parameter specifying
 the branch to push to, or otherwise defaulting to the current branch:</p>
-<div class="code-example"><pre><code class="bash"><span class="hljs-shebang">#!/bin/bash</span>
+<div class="code-example"><pre><code class="bash hljs"><span class="hljs-shebang">#!/bin/bash</span>
 <span class="hljs-built_in">read</span> -p <span class="hljs-string">"User name for 'https://github.com': "</span> UNAME
 <span class="hljs-built_in">read</span> <span class="hljs-operator">-s</span> -p <span class="hljs-string">"Password (NOT PAT) for 'https://<span class="hljs-variable">$UNAME</span>@github.com' "</span> PASS
 <span class="hljs-built_in">echo</span> <span class="hljs-string">""</span>
@@ -233,7 +231,7 @@ git push <span class="hljs-variable">$REMOTE</span> <span class="hljs-variable">
 PAT=<span class="hljs-string">""</span>
 REMOTE=<span class="hljs-string">""</span></code></pre></div><p>I then only needed to set an alias to that script in <code>~/.bash_aliases</code>,
 along the lines of</p>
-<div class="code-example"><pre><code class="bash"><span class="hljs-built_in">alias</span> gitpush=<span class="hljs-string">"bash /&lt;my&gt;/&lt;secret&gt;/&lt;path&gt;/gitpatscript.bash"</span></code></pre></div><p>and then replace my former <code>git push</code> with <code>gitpush</code>, to enable me to
+<div class="code-example"><pre><code class="bash hljs"><span class="hljs-built_in">alias</span> gitpush=<span class="hljs-string">"bash /&lt;my&gt;/&lt;secret&gt;/&lt;path&gt;/gitpatscript.bash"</span></code></pre></div><p>and then replace my former <code>git push</code> with <code>gitpush</code>, to enable me to
 once again type in my password like i always liked to do.</p>
 <div style="text-align: right">
 Originally posted: 25 Oct 19

@@ -1,0 +1,202 @@
+
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>mpadge</title>
+    <link rel="stylesheet" href="../assets/css/app.css" />
+    <link rel="stylesheet" href="../assets/foundation-icons/foundation-icons.css" />
+  </head>
+<body>
+<!--
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/gruvbox-dark.min.css">
+href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/atelier-dune-light.min.css">
+-->
+<link rel="stylesheet"
+href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/atom-one-light.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<div data-sticky-container>
+    <div class="top-bar" data-sticky data-options="marginTop:0;",style="width:100%;">
+        <div class="top-bar-left">
+            <ul class="dropdown menu" data-dropdown-menu>
+                <li class="menu-text"> mpadge </li>
+                <li><a href="..//#">home</a></li>
+                <li><a href="../blog.html">blog</a></li>
+                <li> <a href="..//#code">code</a> </li>
+                <li> <a href="../privacy.html">privacy</a> </li>
+            </ul>
+        </div>
+        <div class="top-bar-right">
+            <ul class="dropdown menu" data-dropdown-menu>
+                <li><a target="_blank" rel="noopener noreferrer"
+                                       href="https://github.com/mpadge">
+                        <i class="fi-social-github"></i></a></li>
+                <li><a target="_blank" rel="noopener noreferrer"
+                                       href="https://twitter.com/bikesRdata">
+                        <i class="fi-social-twitter"></i></a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="blogClass">
+<div class="grid-container">
+<div class="grid-x grid-padding-x">
+
+<div class="cell medium-2 large-2 left">
+<nav class="sticky-container" data-sticky-container>
+<div class="sticky" data-sticky data-anchor="how-i-make-this-site" data-sticky-on="large" data-margin-top="5">
+<ul class="vertical menu" data-magellan>
+<li><a href="#The-troubles-with-getting-help-files-in-R" style="color:#111111">The troubles with getting help files in R</a></li>
+</div>
+</nav>
+</div>
+
+<div class="cell medium-10 large-10">
+<div class="sections">
+<section id="The-troubles-with-getting-help-files-in-R" data-magellan-target="The-troubles-with-getting-help-files-in-R"><h1>The troubles with getting help files in R</h></section>
+
+<p>R has a very well structured system for documenting and accessing help
+for packages. This entry describes how to extract the actual content of
+help files. The <code>tools</code> package has a few functions for working with
+help files, starting with
+<a href="https://stat.ethz.ch/R-manual/R-patched/library/tools/html/parse_Rd.html"><code>parse_Rd</code></a>
+which claims at the outset that,</p>
+<blockquote>
+<p>This function parses ‘Rd’ files according to the specification given
+in <a href="https://developer.r-project.org/parseRd.pdf">https://developer.r-project.org/parseRd.pdf</a></p>
+</blockquote>
+<p>The document referred to there tells you everything you maybe did not
+ever really want to know about <em>how</em> the <code>parse_Rd()</code> function actually
+does the parsing, yet not anything about how the mysterious <code>.Rd</code>
+objects supposedly parsed by the function are actually accessed in the
+first place. Absent that information, it remains very difficult to
+figure out how to use <code>parse_Rd</code>.</p>
+<p>Help files for R packages (since around version 2 at least) are stored
+in a standard location, within the <code>&quot;help&quot;</code> directory of the local
+package installation. The following code demonstrates for the <code>tools</code>
+package, which includes the <code>parse_Rd()</code> function.</p>
+<div class="code-example"><pre><code class="r hljs">loc &lt;- file.path (R.home (), <span class="hljs-string">"library"</span>, <span class="hljs-string">"tools"</span>, <span class="hljs-string">"help"</span>)
+list.files (loc)</code></pre></div><div class="code-example"><pre><code class="html hljs">## [1] "aliases.rds" "AnIndex"     "paths.rds"   "tools.rdb"   "tools.rdx"</code></pre></div><p>That directory does not contain any actual <code>.Rd</code> objects, or anything
+that can be submitted directly to <code>parse_Rd()</code>. And yet it does contain
+all of the help information, in the format of one <code>.rdb</code> and one <code>.rdx</code>
+file. As explained in one answer to <a href="https://stackoverflow.com/questions/46184224/how-to-open-rdb-file-using-r">this StackOverflow
+question</a>,
+these files can be loaded with the <a href="https://stat.ethz.ch/R-manual/R-devel/library/base/html/lazyload.html"><code>lazyload()</code>
+function</a>.
+Armed with that knowledge, the following function illustrates one simple
+way to extract the contents of help files as text entries.</p>
+<div class="code-example"><pre><code class="r hljs">gethelp &lt;- <span class="hljs-keyword">function</span> (package, fn) {
+    loc &lt;- file.path (R.home (), <span class="hljs-string">"library"</span>, package, <span class="hljs-string">"help"</span>, package)
+    e &lt;- new.env ()
+    chk &lt;- lazyLoad (loc, envir = e)
+    get (fn, envir = e)
+}
+x &lt;- gethelp (<span class="hljs-string">"tools"</span>, <span class="hljs-string">"parse_Rd"</span>)
+class (x)</code></pre></div><div class="code-example"><pre><code class="html hljs">## [1] "Rd"</code></pre></div><div class="code-example"><pre><code class="r hljs">print (x)</code></pre></div><div class="code-example"><pre><code class="html hljs">## \title{Parse an Rd File}\name{parse_Rd}\alias{parse_Rd}\alias{print.Rd}\alias{as.character.Rd}\keyword{utilities}\keyword{documentation}\description{
+##   This function reads an R documentation (Rd) file and parses it, for
+##   processing by other functions.
+## }\usage{
+## parse_Rd(file, srcfile = NULL, encoding = "unknown",
+##          verbose = FALSE, fragment = FALSE, warningCalls = TRUE,
+##   macros = file.path(R.home("share"), "Rd", "macros", "system.Rd"),
+##          permissive = FALSE)
+## \method{print}{Rd}(x, deparse = FALSE, \dots)
+## \method{as.character}{Rd}(x, deparse = FALSE, \dots)
+## }\arguments{
+##   \item{file}{A filename or text-mode connection.  At present filenames
+##     work best.}
+##   \item{srcfile}{\code{NULL}, or a \code{"srcfile"} object.  See the
+##     \sQuote{Details} section.}
+##   \item{encoding}{Encoding to be assumed for input strings.}
+##   \item{verbose}{Logical indicating whether detailed parsing
+##     information should be printed.}
+##   \item{fragment}{Logical indicating whether file represents a complete
+##     Rd file, or a fragment.}
+##   \item{warningCalls}{Logical: should parser warnings include the call?}
+##   \item{macros}{Filename or environment from which to load additional
+##     macros, or a logical value.  See the Details below.}
+##   \item{permissive}{Logical indicating that unrecognized macros
+##     should be treated as text with no warning.}
+##   \item{x}{An object of class Rd.}
+##   \item{deparse}{If \code{TRUE}, attempt to reinstate the escape characters
+##     so that the resulting characters will parse to the same object.}
+##   \item{\dots}{Further arguments to be passed to or from other methods.}
+## }\details{
+##   This function parses \file{Rd} files according to the specification given
+##   in \url{https://developer.r-project.org/parseRd.pdf}.
+## 
+##   It generates a warning for each parse error and attempts to continue
+##   parsing.  In order to continue, it is generally necessary to drop some
+##   parts of the file, so such warnings should not be ignored.
+## 
+##   Files without a marked encoding are by default assumed to be in the
+##   native encoding.  An alternate default can be set using the
+##   \code{encoding} argument.  All text in files is translated to the
+##   UTF-8 encoding in the parsed object.
+## 
+##   As from \R version 3.2.0, User-defined macros may be given in a
+##   separate file using \samp{\newcommand} or \samp{\renewcommand}.
+##   An environment may also be given:  it would be produced by
+##   \code{\link{loadRdMacros&amp;#125;&amp;#125;, \code{\link{loadPkgRdMacros&amp;#125;&amp;#125;, or
+##   by a previous call to \code{parse_Rd}.  If a logical value
+##   is given, only the default built-in macros will be used;
+##   \code{FALSE} indicates that no \code{"macros"} attribute
+##   will be returned with the result.
+## 
+##   The \code{permissive} argument allows text to be parsed that is
+##   not completely in Rd format.  Typically it would be LaTeX code,
+##   used in an Rd fragment, e.g.\ifelse&amp;#123;&amp;#123;latex}{\out{~&amp;#125;&amp;#125;{ &amp;#125;&amp;#125;{}in a \code{\link{bibentry&amp;#125;&amp;#125;.
+##   With \code{permissive = TRUE}, this will be passed through as plain
+##   text.  Since \code{parse_Rd} doesn't know how many arguments
+##   belong in LaTeX macros, it will guess based on the presence
+##   of braces after the macro; this is not infallible.
+## }\value{
+##   \code{parse_Rd} returns an object of class \code{"Rd"}.  The
+##   internal format of this object is subject to change.  The
+##   \code{as.character()} and \code{print()} methods defined for the
+##   class return character vectors and print them, respectively.
+## 
+##   Unless \code{macros = FALSE}, the object will have an attribute
+##   named \code{"macros"}, which is an environment containing the
+##   macros defined in \code{file}, in a format that can be used for
+##   further \code{parse_Rd} calls  in the same session.  It is not
+##   guaranteed to work if saved to a file and reloaded in a different
+##   session.
+## }\author{ Duncan Murdoch }\references{ \url{https://developer.r-project.org/parseRd.pdf} }\seealso{
+##   \code{\link{Rd2HTML&amp;#125;&amp;#125; for the converters that use the output of
+##   \code{parse_Rd()}.
+## }</code></pre></div><p>So <code>lazyLoad()</code> can be used to directly access the <code>.Rd</code> objects
+containing the help files for any package and function.</p>
+<div style="text-align: right">
+Originally posted: 08 Sep 20
+</div>
+</div>
+</div>
+
+<script src="https://utteranc.es/client.js"
+        repo="mpadge/mpadge.github.io"
+        issue-term="pathname"
+        label="blog_comments"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script>
+
+</div>
+</div>
+</div>
+<div class="large-12 cell" style="background-color:#ffffff00">
+    <div class="callout">
+        <p class="text-center" style="font-size:8pt">Copyright &#169; 2019--20 mark padgham</p>
+    </div>
+</div>
+
+
+<script src="../assets/js/app.js"></script>
+</body>
+</html>

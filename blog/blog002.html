@@ -84,13 +84,13 @@ rust </a> is the gold standard in which template abstraction is as
 pain-free as possible. C++ templates are, in contrast, somewhat more
 painful, as a minimal generic template must be explicitly specified.
 This is often as simple as replacing some function definition, say:</p>
-<div class="code-example"><pre><code class="c++"><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">my_function</span> <span class="hljs-params">(<span class="hljs-keyword">int</span> my_integer_input)</span>
+<div class="code-example"><pre><code class="c++ hljs"><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">my_function</span> <span class="hljs-params">(<span class="hljs-keyword">int</span> my_integer_input)</span>
 </span>{
     <span class="hljs-keyword">int</span> result = my_integer_input;
     <span class="hljs-comment">// do something with `result`</span>
     <span class="hljs-keyword">return</span> result;
 }</code></pre></div><p>with a templated version:</p>
-<div class="code-example"><pre><code class="c++"><span class="hljs-keyword">template</span> &lt;<span class="hljs-keyword">class</span> T&gt;
+<div class="code-example"><pre><code class="c++ hljs"><span class="hljs-keyword">template</span> &lt;<span class="hljs-keyword">class</span> T&gt;
 <span class="hljs-function">T <span class="hljs-title">my_function_t</span> <span class="hljs-params">(T my_generic_input)</span>
 </span>{
     T result = my_generic_input;
@@ -100,14 +100,14 @@ This is often as simple as replacing some function definition, say:</p>
 (There are also ways to permit templated code to only accept objects of
 some pre-defined classes.) An Rcpp version of the first function might
 look like this:</p>
-<div class="code-example"><pre><code class="c++"><span class="hljs-comment">// [[Rcpp::export]]</span>
+<div class="code-example"><pre><code class="c++ hljs"><span class="hljs-comment">// [[Rcpp::export]]</span>
 <span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">my_rcpp_function</span> <span class="hljs-params">(<span class="hljs-keyword">int</span> my_integer_input)</span>
 </span>{
     <span class="hljs-keyword">int</span> result = my_integer_input;
     <span class="hljs-comment">// do something with `result`</span>
     <span class="hljs-keyword">return</span> result;
 }</code></pre></div><p>The problem arises when you try to do something like this:</p>
-<div class="code-example"><pre><code class="c++"><span class="hljs-comment">// [[Rcpp::export]]</span>
+<div class="code-example"><pre><code class="c++ hljs"><span class="hljs-comment">// [[Rcpp::export]]</span>
 <span class="hljs-keyword">template</span> &lt;<span class="hljs-keyword">class</span> T&gt;
 <span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">rcpp_template</span> <span class="hljs-params">(T input)</span>
 </span>{
@@ -115,7 +115,7 @@ look like this:</p>
     <span class="hljs-comment">// do something with `result`</span>
     <span class="hljs-keyword">return</span> result;
 }</code></pre></div><p>and that takes you here:</p>
-<div class="code-example"><pre><code class="c++">RcppExports.cpp:46:36: error: use of undeclared identifier 'T'
+<div class="code-example"><pre><code class="c++ hljs">RcppExports.cpp:46:36: error: use of undeclared identifier 'T'
     Rcpp::traits::input_parameter&lt; T &gt;::type input(inputSEXP);
                                                               ^
 RcppExports.cpp:46:41: error: no type named 'type' in the global namespace
@@ -131,7 +131,7 @@ while we’re at it to square the input; and also, if you’re wondering
 what all this <code>SEXP</code> stuff is, you could take a wee digression over to
 <a target="_blank" rel="noopener noreferrer" href="https://bragqut.github.io/2016/05/26/milesmcbain-rnoprimitives/">
 Miles McBain’s brief but illuminating ramblings on the topic </a>)</p>
-<div class="code-example"><pre><code class="c++"><span class="hljs-comment">// [[Rcpp::export]]</span>
+<div class="code-example"><pre><code class="c++ hljs"><span class="hljs-comment">// [[Rcpp::export]]</span>
 <span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">rcpp_template</span> <span class="hljs-params">(SEXP input)</span>
 </span>{
     <span class="hljs-keyword">int</span> result = Rcpp::as &lt;<span class="hljs-keyword">int</span>&gt; (input);
@@ -140,13 +140,13 @@ Miles McBain’s brief but illuminating ramblings on the topic </a>)</p>
 (The <code>Rcpp::as &lt;int&gt; ()</code> is a wrapper for <code>static_cast &lt;int&gt; ()</code>, which
 simply truncates decimals, so <code>rcpp_template(1.9)</code> will give 1.) What
 about generic return values? The next obvious step would be to try this:</p>
-<div class="code-example"><pre><code class="c++"><span class="hljs-comment">// [[Rcpp::export]]</span>
+<div class="code-example"><pre><code class="c++ hljs"><span class="hljs-comment">// [[Rcpp::export]]</span>
 <span class="hljs-function">SEXP <span class="hljs-title">rcpp_template2</span> <span class="hljs-params">(SEXP input)</span>
 </span>{
     <span class="hljs-keyword">return</span> input * input;
 }</code></pre></div><p>This would obviously be rather dangerous if it actually worked, but we
 don’t need to worry because it fails with this:</p>
-<div class="code-example"><pre><code class="c++">error: invalid operands to binary expression ('SEXP' (aka 'SEXPREC *') and 'SEXP')
+<div class="code-example"><pre><code class="c++ hljs">error: invalid operands to binary expression ('SEXP' (aka 'SEXPREC *') and 'SEXP')
 SEXP result = input * input;
                         ~~~~~ ^ ~~~~~
 1 error generated.</code></pre></div><p>The arrow points to the “operand”, indicating that this has defaulted to
@@ -156,10 +156,11 @@ structure it points to, an <code>SEXPREC</code> object). So that all leaves us n
 knowing that the most we can do is to send generic inputs from <strong>R</strong> to
 C++ functions as <code>SEXP</code> parameters, and then coerce them with the magic
 of <code>Rcpp::as()</code>. This is of course also potentially dangerous:</p>
-<div class="code-example"><pre><code class="r">rcpp_template (<span class="hljs-number">2.9</span>) <span class="hljs-comment"># = 4; okay</span>
+<div class="code-example"><pre><code class="r hljs">rcpp_template (<span class="hljs-number">2.9</span>) <span class="hljs-comment"># = 4; okay</span>
 rcpp_template (<span class="hljs-string">"2.9"</span>)
 <span class="hljs-comment"># Error in rcpp_template(input) :</span>
-<span class="hljs-comment">#   Not compatible with requested type: [type=character; target=integer].</span></code></pre></div><p><br></p>
+<span class="hljs-comment">#   Not compatible with requested type: [type=character; target=integer].</span></code></pre></div><br>
+
 <section id="A-better-level-of-abstraction" data-magellan-target="A-better-level-of-abstraction"><h2>A better level of abstraction</h></section>
 
 <p>Remembering that
@@ -167,7 +168,7 @@ rcpp_template (<span class="hljs-string">"2.9"</span>)
 R’s C interface </a> only knows about <code>SEXP</code> (“S-EXPression”), and that
 all <code>SEXP</code> objects are mere pointers to C arrays, suggests something
 like the following code—which does not work:</p>
-<div class="code-example"><pre><code class="c++"><span class="hljs-preprocessor">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;Rcpp.h&gt;</span></span>
+<div class="code-example"><pre><code class="c++ hljs"><span class="hljs-preprocessor">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;Rcpp.h&gt;</span></span>
 
 <span class="hljs-keyword">template</span> &lt;<span class="hljs-keyword">class</span> T&gt;
 <span class="hljs-function">T <span class="hljs-title">mysquare</span> <span class="hljs-params">(T &amp;x)</span>
@@ -197,7 +198,7 @@ and equivalent vectors of these, we can distinguish these two cases
 through casting via <code>Rcpp::as</code> to <code>Rcpp</code> equivalents of either integer
 or numeric vectors with the following additional code, representing our
 “type selector” function:</p>
-<div class="code-example"><pre><code class="c++"><span class="hljs-function">SEXP <span class="hljs-title">mysquare</span> <span class="hljs-params">(SEXP &amp;x)</span>
+<div class="code-example"><pre><code class="c++ hljs"><span class="hljs-function">SEXP <span class="hljs-title">mysquare</span> <span class="hljs-params">(SEXP &amp;x)</span>
 </span>{
     <span class="hljs-keyword">switch</span> (TYPEOF (x))
     {
@@ -223,12 +224,12 @@ permits a generic <code>SEXP</code>-in / <code>SEXP</code>-out function (our <co
 in the above code) to be deployed to specific types, and then simply
 passed to a generic C++ template function. Presuming this C++ code to be
 in a file <code>src.cpp</code>, the whole thing then works like this:</p>
-<div class="code-example"><pre><code class="r">Rcpp::sourceCpp (<span class="hljs-string">"src.cpp"</span>) <span class="hljs-comment"># source the file, placing the Rcpp::export-ed function in workspace</span>
+<div class="code-example"><pre><code class="r hljs">Rcpp::sourceCpp (<span class="hljs-string">"src.cpp"</span>) <span class="hljs-comment"># source the file, placing the Rcpp::export-ed function in workspace</span>
 x &lt;- <span class="hljs-number">1</span>:<span class="hljs-number">5</span>
 x &lt;- rcpp_mysquare (x)
-x</code></pre></div><div class="code-example"><pre><code class="html">## [1]  1  4  9 16 25</code></pre></div><div class="code-example"><pre><code class="r">class (x)</code></pre></div><div class="code-example"><pre><code class="html">## [1] "integer"</code></pre></div><div class="code-example"><pre><code class="r">storage.mode (x) &lt;- <span class="hljs-string">"numeric"</span>
+x</code></pre></div><div class="code-example"><pre><code class="html hljs">## [1]  1  4  9 16 25</code></pre></div><div class="code-example"><pre><code class="r hljs">class (x)</code></pre></div><div class="code-example"><pre><code class="html hljs">## [1] "integer"</code></pre></div><div class="code-example"><pre><code class="r hljs">storage.mode (x) &lt;- <span class="hljs-string">"numeric"</span>
 x &lt;- rcpp_mysquare (x)
-x</code></pre></div><div class="code-example"><pre><code class="html">## [1]   1  16  81 256 625</code></pre></div><div class="code-example"><pre><code class="r">class (x)</code></pre></div><div class="code-example"><pre><code class="html">## [1] "numeric"</code></pre></div><p>An integer vector gives integer return values, and a numeric
+x</code></pre></div><div class="code-example"><pre><code class="html hljs">## [1]   1  16  81 256 625</code></pre></div><div class="code-example"><pre><code class="r hljs">class (x)</code></pre></div><div class="code-example"><pre><code class="html hljs">## [1] "numeric"</code></pre></div><p>An integer vector gives integer return values, and a numeric
 (floating-point) vector gives numeric return values. There you have it:
 templating through the magic of <code>SEXP</code>. Gratitude extended to Dirk
 Eddelbeuttel and David Cooley for advice and helpful pointers.</p>
@@ -236,7 +237,7 @@ Eddelbeuttel and David Cooley for advice and helpful pointers.</p>
 
 <p>Just to make it clear, here’s the above code all placed in a single
 place:</p>
-<div class="code-example"><pre><code class="c++"><span class="hljs-preprocessor">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;Rcpp.h&gt;</span></span>
+<div class="code-example"><pre><code class="c++ hljs"><span class="hljs-preprocessor">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;Rcpp.h&gt;</span></span>
 
 <span class="hljs-keyword">template</span> &lt;<span class="hljs-keyword">class</span> T&gt;
 <span class="hljs-function">T <span class="hljs-title">mysquare</span> <span class="hljs-params">(T &amp;x)</span>

@@ -131,7 +131,7 @@ files, which made auto-generation of my main web page particularly easy.
 The files themselves live in the <code>src/data</code> directory, with the blog
 entries, for example, read straight from a <code>src/data/blog.yaml</code> file
 that looks like this:</p>
-<div class="code-example"><pre><code class="markdown"><span class="hljs-bullet">-
+<div class="code-example"><pre><code class="markdown hljs"><span class="hljs-bullet">-
     </span>title: how i made this site
 <span class="hljs-code">    description: &lt; blah blah blah &gt;</span>
 <span class="hljs-code">    created: 06 May 19</span>
@@ -182,7 +182,7 @@ it’, you are forced to revert to standard <code>css</code> (to define class
 structures) or <code>html</code> (to explicitly define elements). This blog page,
 for example, is defined by a simple entry in <code>src/assets/scss/app.scss</code>
 – the sole location needed to define all local classes - as:</p>
-<div class="code-example"><pre><code class="css"><span class="hljs-class">.blogClass</span><span class="hljs-rules">{
+<div class="code-example"><pre><code class="css hljs"><span class="hljs-class">.blogClass</span><span class="hljs-rules">{
     <span class="hljs-rule"><span class="hljs-attribute">margin-top</span>:<span class="hljs-value"> <span class="hljs-number">0px</span></span></span>;
     <span class="hljs-rule"><span class="hljs-attribute">margin-left</span>:<span class="hljs-value"> <span class="hljs-number">50px</span></span></span>;
     <span class="hljs-rule"><span class="hljs-attribute">margin-right</span>:<span class="hljs-value"> <span class="hljs-number">50px</span></span></span>;
@@ -190,7 +190,7 @@ for example, is defined by a simple entry in <code>src/assets/scss/app.scss</cod
 definitions all inherit the global properties specified in
 <code>src/assets/scss/_settings.scss</code> (definining standard properties of
 foundation’s <code>xy-grid</code>):</p>
-<div class="code-example"><pre><code class="css">$grid-margin-gutters: (
+<div class="code-example"><pre><code class="css hljs">$grid-margin-gutters: (
     small: 20px,
     medium: 30px
 );
@@ -200,11 +200,11 @@ are the background colours for each component of the code and blog
 sections. Remember that everything on the main page is a ‘callout’,
 meaning that they all inherit the global variables defined in
 <code>src/assets/scss/_settings.scss</code>. I defined the global background as</p>
-<div class="code-example"><pre><code class="css">$callout-backgroud: transparent;</code></pre></div><p>so the background image would appear underneath everything by default.
+<div class="code-example"><pre><code class="css hljs">$callout-backgroud: transparent;</code></pre></div><p>so the background image would appear underneath everything by default.
 This required local changes to render the components semi-transparent
 white, which was achieved with a simple two-line
 <code>src/partials/blog_header.html</code> of:</p>
-<div class="code-example"><pre><code class="html"><span class="hljs-tag">&lt;<span class="hljs-title">div</span> <span class="hljs-attribute">class</span>=<span class="hljs-value">"large-4 medium-6 cell"</span> <span class="hljs-attribute">style</span>=<span class="hljs-value">"background-color:#ffffffaa"</span>&gt;</span></code></pre></div><p>The code above with &#123;&#123;> blog_header &#125;&#125; simply inserts that header in
+<div class="code-example"><pre><code class="html hljs"><span class="hljs-tag">&lt;<span class="hljs-title">div</span> <span class="hljs-attribute">class</span>=<span class="hljs-value">"large-4 medium-6 cell"</span> <span class="hljs-attribute">style</span>=<span class="hljs-value">"background-color:#ffffffaa"</span>&gt;</span></code></pre></div><p>The code above with &#123;&#123;&gt; blog_header &#125;&#125; simply inserts that header in
 its rightful place.</p>
 <p>That is the very short version of how i got this site to look the way it
 does. It’s simple, but it was fairly easy, and most important to me was
@@ -264,7 +264,7 @@ rendering (via <code>rmarkdown::render()</code>) it to some kind of standard
 markdown, renaming that to <code>.html</code>, and inserting the 5 lines of header
 and four lines of footer shown above. The following function forms the
 basis of a <code>blog_render()</code> function:</p>
-<div class="code-example"><pre><code class="r">blog_render &lt;- <span class="hljs-keyword">function</span> (fname) {
+<div class="code-example"><pre><code class="r hljs">blog_render &lt;- <span class="hljs-keyword">function</span> (fname) {
     rmarkdown::render(paste0 (fname, <span class="hljs-string">".Rmd"</span>), rmarkdown::md_document(variant=<span class="hljs-string">'gfm'</span>))
     file.rename (paste0 (fname, <span class="hljs-string">".md"</span>), paste0 (fname, <span class="hljs-string">".html"</span>))
     conn &lt;- file (paste0 (fname, <span class="hljs-string">".html"</span>))
@@ -299,7 +299,7 @@ them to the appropriate place in the <a
 target="_blank" rel="noopener noreferrer" href="https://foundation.zurb.com">
 foundation </a> directory, which is <code>assets/img</code>, and any arbitrary
 sub-directories thereof. The following lines achieve this</p>
-<div class="code-example"><pre><code class="r">path &lt;- file.path (paste0 (fname, <span class="hljs-string">"_files"</span>), <span class="hljs-string">"figure-gfm"</span>)
+<div class="code-example"><pre><code class="r hljs">path &lt;- file.path (paste0 (fname, <span class="hljs-string">"_files"</span>), <span class="hljs-string">"figure-gfm"</span>)
 flist &lt;- list.files (path, full.names = <span class="hljs-literal">TRUE</span>)
 newpath &lt;- file.path (<span class="hljs-string">".."</span>, <span class="hljs-string">".."</span>, <span class="hljs-string">"assets"</span>, <span class="hljs-string">"img"</span>, fname)
 <span class="hljs-keyword">if</span> (!dir.exists (newpath))
@@ -320,13 +320,13 @@ essentially just strips the <code>yaml</code> header data out of each <code>.Rmd
 entry, and re-formats it slightly as the <code>data/blog.yml</code> file. This in
 turn relies on one main function, <code>get_one_blog_dat()</code> which, for
 example, converts the metadata for this entry of:</p>
-<div class="code-example"><pre><code class="markdown"><span class="hljs-horizontal_rule">---</span>
+<div class="code-example"><pre><code class="markdown hljs"><span class="hljs-horizontal_rule">---</span>
 title: how i made this site
 description: <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-title">blah</span> <span class="hljs-attribute">blah</span> <span class="hljs-attribute">blah</span>&gt;</span></span>
 date: 06/05/2019
 <span class="hljs-header">link: blog/blog001.html
 ---</span></code></pre></div><p>into the only slightly-modified version in <code>data/blog.yml</code> of</p>
-<div class="code-example"><pre><code class="markdown"><span class="hljs-bullet">-
+<div class="code-example"><pre><code class="markdown hljs"><span class="hljs-bullet">-
     </span>title: how i made this site
 <span class="hljs-code">    description: &lt;blah blah blah&gt;</span>
 <span class="hljs-code">    created: 06 May 19</span>
