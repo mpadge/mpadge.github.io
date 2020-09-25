@@ -22,13 +22,21 @@ parsing, yet not anything about how the mysterious `.Rd` objects supposedly
 parsed by the function are actually accessed in the first place. Absent that
 information, it remains very difficult to figure out how to use `parse_Rd`.
 
+## Extracting a help database in text form
+
 Help files for R packages (since around version 2 at least) are stored in
 a standard location, within the `"help"` directory of the local package
-installation. The following code demonstrates for the `tools` package, which
-includes the `parse_Rd()` function.
+installation. The following code demonstrates for the `stats` package, which
+includes the `rnorm()` function. Note that when you type `?rnorm` (or
+`help(rnorm)`), the help page that opens up includes details for `rnorm`,
+`pnorm`, `dnorm`, and `qnorm`. Also note that the help page itself is named
+`"Normal"` (generally in the top left corner). This is what is referred to as
+the
+["topic"](https://cran.r-project.org/doc/manuals/R-exts.html#Documenting-functions),
+and is not necessarily the name of the function for which help is sought.
 
 ```{r tools-pkg}
-loc <- file.path (R.home (), "library", "tools", "help")
+loc <- file.path (R.home (), "library", "stats", "help")
 list.files (loc)
 ```
 
@@ -42,7 +50,6 @@ function](https://stat.ethz.ch/R-manual/R-devel/library/base/html/lazyload.html)
 Armed with that knowledge, the following function illustrates one simple way to
 extract the contents of help files as text entries.
 
-
 ```{r}
 gethelp <- function (package, fn) {
     loc <- file.path (R.home (), "library", package, "help", package)
@@ -50,11 +57,136 @@ gethelp <- function (package, fn) {
     chk <- lazyLoad (loc, envir = e)
     get (fn, envir = e)
 }
-x <- gethelp ("tools", "parse_Rd")
+x <- gethelp ("stats", "Normal")
 class (x)
 print (x)
 ```
 
 So `lazyLoad()` can be used to directly access the `.Rd` objects containing the
-help files for any package and function.
+help files, but you first need to know the topic. If we had not already noted
+that the topic for `rnorm` was in fact `"Normal"`, then we could of course try
+`gethelp ("stats", "rnorm")`, but that would just produce an error because
+there is no topic called "rnorm". So is there any direct way to find the text
+context of the help topic for "rnorm"?
+
+
+## Digging deeper
+
+An alternative approach uses a trick that the [`utils::help`
+function](https://stat.ethz.ch/R-manual/R-devel/library/utils/html/help.html)
+can be called without specifying a `topic`. Additionally specifying `help_type
+= "text"` will then retrieve the entire database in text form.
+
+```{r}
+pacakge <- "stats"
+h <- utils::help (package = eval (substitute (pacakge)), help_type = "text")
+class (h)
+```
+At that point, attempting to `print` the object `h` will simply open the help
+file the usual way, rather than giving you the textual content. Noting the
+output of the following,
+```{r}
+str (h)
+```
+leads to the obvious next step of examining
+```{r hinfo-fakey, eval = FALSE, echo = TRUE}
+h$info
+```
+```{r hinfo, eval = TRUE, echo = FALSE}
+hcut <- lapply (h$info, function (i) i [1:10])
+hcut
+```
+which (shown above in artificially condensed form) is indeed a simple
+`character` vector containing the names of all of the help topics contained
+within the database. So that gives us a list of all of the topics, but we will
+do not know how to match `rnorm` on to its associated topic of `"Normal"`. One
+approach for finding topics associated with a specified function is to use the
+[`help.search()`
+function](https://stat.ethz.ch/R-manual/R-devel/library/utils/html/help.search.html)
+which returns the following kinds of results:
+
+```{r hs-fakey, echo = TRUE, eval = FALSE}
+hs <- help.search (pattern = "rnorm", package = "stats")
+str (hs)
+hs$matches
+```
+```{r hs, echo = FALSE, eval = TRUE}
+hs <- help.search (pattern = "rnorm", package = "stats")
+hs$lib.loc [1] <- "/<path>/<to>/<my>/<lib>/<loc>"
+str (hs)
+hs$matches
+```
+
+We can see there that the final, `"Entry"` column includes `rnorm`, and
+specifies that it is an `"alias"`. The associated `"Topic"` can thus be found
+simply as,
+
+```{r}
+hs$matches [hs$matches$Entry == "rnorm", ]
+```
+
+And the `"Topic"` for the `"alias"` of `rnorm` is "Normal".
+
+## What about extracting all help topics for a package?
+
+That procedure works for extracting the textual contents of the help file for
+any specified function. What if we want to extract entries for all functions
+for a given package? Packages may have many more functions that help topics, as
+with the example considered here where one topic describes four functions. We
+can list the functions for a package like this:
+
+```{r}
+fns <- ls ("package:stats")
+```
+
+However, that list includes not only functions, but methods, operators, and
+a variety of other possible things. The variety can be seen with the following
+code:
+```{r}
+fn_classes <- vapply (fns, function (i)
+                      class (get (i, envir = as.environment ("package:stats"))) [1],
+                      character (1))
+table (fn_classes)
+```
+We can use that to narrow the listed objects from a package down to functions
+only. We can then use the above results from `help.search` for each of those
+functions to find the associated `"Topic"` entry, and thus to extract the help
+file in textual form.
+
+## A final word of caution
+
+A final warning, by way of demonstrating how messy the business of extracting
+the textual content of help files can get, comes courtesy of the help topic
+`"FDist"`, again from the "stats" package.
+
+```{r}
+hs <- help.search (pattern = "FDist", package = "stats")
+hs$matches [hs$matches$Topic == "FDist", ]
+```
+
+So "FDist" is the official name of one of the help topics within the "stats"
+package, and therefore should also be the name of the entry within its help
+database. And yet look what happens via the first of the above approaches:
+
+```{r}
+loc <- file.path (R.home (), "library", package, "help", package)
+e <- new.env ()
+chk <- lazyLoad (loc, envir = e)
+fns <- ls (envir = e)
+fns [grep ("FDist", fns, ignore.case = TRUE)]
+```
+And the entry in the database is called "Fdist", yet the content of that entry
+declares a topic of "FDist". This mismatch means that the previous `get_help()`
+function will fail on the latter, and only work on the mis-typed version of
+"Fdist". It is also manifest in the official web page for that topic having the
+address
+[https://stat.ethz.ch/R-manual/R-devel/library/stats/html/Fdist.html](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/Fdist.html),
+with the same address using "FDist" **not** leading to the desired page, even
+though the first line of the resultant page clearly informs you that you're
+looking at a paged called "FDist" rather than "Fdist". I could dig further into
+where the actual names of the entries within the help databases come from, but
+that's likely enough to show how non-trivial this whole thing quickly becomes.
+But hopefully also helpful to anyone wanting to delve into the actual contents
+of R help files.
+
 

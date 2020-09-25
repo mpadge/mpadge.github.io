@@ -6,6 +6,10 @@
 <div class="sticky" data-sticky data-anchor="how-i-make-this-site" data-sticky-on="large" data-margin-top="5">
 <ul class="vertical menu" data-magellan>
 <li><a href="#The-troubles-with-getting-help-files-in-R" style="color:#111111">The troubles with getting help files in R</a></li>
+<li><a href="#Extracting-a-help-database-in-text-form" style="color:#111111">Extracting a help database in text form</a></li>
+<li><a href="#Digging-deeper" style="color:#111111">Digging deeper</a></li>
+<li><a href="#What-about-extracting-all-help-topics-for-a-package-" style="color:#111111">What about extracting all help topics for a package?</a></li>
+<li><a href="#A-final-word-of-caution" style="color:#111111">A final word of caution</a></li>
 </div>
 </nav>
 </div>
@@ -32,17 +36,26 @@ objects supposedly parsed by the function are actually accessed in the
 first place. Absent that information, it remains very difficult to
 figure out how to use `parse_Rd`.
 
+<section id="Extracting-a-help-database-in-text-form" data-magellan-target="Extracting-a-help-database-in-text-form"><h2>Extracting a help database in text form</h></section>
+
 Help files for R packages (since around version 2 at least) are stored
 in a standard location, within the `"help"` directory of the local
-package installation. The following code demonstrates for the `tools`
-package, which includes the `parse_Rd()` function.
+package installation. The following code demonstrates for the `stats`
+package, which includes the `rnorm()` function. Note that when you type
+`?rnorm` (or `help(rnorm)`), the help page that opens up includes
+details for `rnorm`, `pnorm`, `dnorm`, and `qnorm`. Also note that the
+help page itself is named `"Normal"` (generally in the top left corner).
+This is what is referred to as the
+[“topic”](https://cran.r-project.org/doc/manuals/R-exts.html#Documenting-functions),
+and is not necessarily the name of the function for which help is
+sought.
 
 ``` r
-loc <- file.path (R.home (), "library", "tools", "help")
+loc <- file.path (R.home (), "library", "stats", "help")
 list.files (loc)
 ```
 
-    ## [1] "aliases.rds" "AnIndex"     "paths.rds"   "tools.rdb"   "tools.rdx"
+    ## [1] "aliases.rds" "AnIndex"     "paths.rds"   "stats.rdb"   "stats.rdx"
 
 That directory does not contain any actual `.Rd` objects, or anything
 that can be submitted directly to `parse_Rd()`. And yet it does contain
@@ -61,7 +74,7 @@ gethelp <- function (package, fn) {
     chk <- lazyLoad (loc, envir = e)
     get (fn, envir = e)
 }
-x <- gethelp ("tools", "parse_Rd")
+x <- gethelp ("stats", "Normal")
 class (x)
 ```
 
@@ -71,85 +84,356 @@ class (x)
 print (x)
 ```
 
-    ## \title{Parse an Rd File}\name{parse_Rd}\alias{parse_Rd}\alias{print.Rd}\alias{as.character.Rd}\keyword{utilities}\keyword{documentation}\description{
-    ##   This function reads an R documentation (Rd) file and parses it, for
-    ##   processing by other functions.
+    ## \title{The Normal Distribution}\name{Normal}\alias{Normal}\alias{dnorm}\alias{pnorm}\alias{qnorm}\alias{rnorm}\concept{error function}\concept{erf}\concept{erfc}\concept{erfinv}\concept{erfcinv}\keyword{distribution}\description{
+    ##   Density, distribution function, quantile function and random
+    ##   generation for the normal distribution with mean equal to \code{mean}
+    ##   and standard deviation equal to \code{sd}.
     ## }\usage{
-    ## parse_Rd(file, srcfile = NULL, encoding = "unknown",
-    ##          verbose = FALSE, fragment = FALSE, warningCalls = TRUE,
-    ##   macros = file.path(R.home("share"), "Rd", "macros", "system.Rd"),
-    ##          permissive = FALSE)
-    ## \method{print}{Rd}(x, deparse = FALSE, \dots)
-    ## \method{as.character}{Rd}(x, deparse = FALSE, \dots)
+    ## dnorm(x, mean = 0, sd = 1, log = FALSE)
+    ## pnorm(q, mean = 0, sd = 1, lower.tail = TRUE, log.p = FALSE)
+    ## qnorm(p, mean = 0, sd = 1, lower.tail = TRUE, log.p = FALSE)
+    ## rnorm(n, mean = 0, sd = 1)
     ## }\arguments{
-    ##   \item{file}{A filename or text-mode connection.  At present filenames
-    ##     work best.}
-    ##   \item{srcfile}{\code{NULL}, or a \code{"srcfile"} object.  See the
-    ##     \sQuote{Details} section.}
-    ##   \item{encoding}{Encoding to be assumed for input strings.}
-    ##   \item{verbose}{Logical indicating whether detailed parsing
-    ##     information should be printed.}
-    ##   \item{fragment}{Logical indicating whether file represents a complete
-    ##     Rd file, or a fragment.}
-    ##   \item{warningCalls}{Logical: should parser warnings include the call?}
-    ##   \item{macros}{Filename or environment from which to load additional
-    ##     macros, or a logical value.  See the Details below.}
-    ##   \item{permissive}{Logical indicating that unrecognized macros
-    ##     should be treated as text with no warning.}
-    ##   \item{x}{An object of class Rd.}
-    ##   \item{deparse}{If \code{TRUE}, attempt to reinstate the escape characters
-    ##     so that the resulting characters will parse to the same object.}
-    ##   \item{\dots}{Further arguments to be passed to or from other methods.}
+    ##   \item{x, q}{vector of quantiles.}
+    ##   \item{p}{vector of probabilities.}
+    ##   \item{n}{number of observations. If \code{length(n) > 1}, the length
+    ##     is taken to be the number required.}
+    ##   \item{mean}{vector of means.}
+    ##   \item{sd}{vector of standard deviations.}
+    ##   \item{log, log.p}{logical; if TRUE, probabilities p are given as log(p).}
+    ##   \item{lower.tail}{logical; if TRUE (default), probabilities are
+    ##     \eqn{P[X \le x]} otherwise, \eqn{P[X > x]}.}
     ## }\details{
-    ##   This function parses \file{Rd} files according to the specification given
-    ##   in \url{https://developer.r-project.org/parseRd.pdf}.
+    ##   If \code{mean} or \code{sd} are not specified they assume the default
+    ##   values of \code{0} and \code{1}, respectively.
     ## 
-    ##   It generates a warning for each parse error and attempts to continue
-    ##   parsing.  In order to continue, it is generally necessary to drop some
-    ##   parts of the file, so such warnings should not be ignored.
-    ## 
-    ##   Files without a marked encoding are by default assumed to be in the
-    ##   native encoding.  An alternate default can be set using the
-    ##   \code{encoding} argument.  All text in files is translated to the
-    ##   UTF-8 encoding in the parsed object.
-    ## 
-    ##   As from \R version 3.2.0, User-defined macros may be given in a
-    ##   separate file using \samp{\newcommand} or \samp{\renewcommand}.
-    ##   An environment may also be given:  it would be produced by
-    ##   \code{\link{loadRdMacros&#125;&#125;, \code{\link{loadPkgRdMacros&#125;&#125;, or
-    ##   by a previous call to \code{parse_Rd}.  If a logical value
-    ##   is given, only the default built-in macros will be used;
-    ##   \code{FALSE} indicates that no \code{"macros"} attribute
-    ##   will be returned with the result.
-    ## 
-    ##   The \code{permissive} argument allows text to be parsed that is
-    ##   not completely in Rd format.  Typically it would be LaTeX code,
-    ##   used in an Rd fragment, e.g.\ifelse&#123;&#123;latex}{\out{~&#125;&#125;{ &#125;&#125;{}in a \code{\link{bibentry&#125;&#125;.
-    ##   With \code{permissive = TRUE}, this will be passed through as plain
-    ##   text.  Since \code{parse_Rd} doesn't know how many arguments
-    ##   belong in LaTeX macros, it will guess based on the presence
-    ##   of braces after the macro; this is not infallible.
+    ##   The normal distribution has density
+    ##   \deqn{
+    ##     f(x) =
+    ##     \frac{1}{\sqrt{2\pi}\sigma} e^{-(x-\mu)^2/2\sigma^2&#125;&#125;{
+    ##     f(x) = 1/(\sqrt(2 \pi) \sigma) e^-((x - \mu)^2/(2 \sigma^2))
+    ##   }
+    ##   where \eqn{\mu} is the mean of the distribution and
+    ##   \eqn{\sigma} the standard deviation.
     ## }\value{
-    ##   \code{parse_Rd} returns an object of class \code{"Rd"}.  The
-    ##   internal format of this object is subject to change.  The
-    ##   \code{as.character()} and \code{print()} methods defined for the
-    ##   class return character vectors and print them, respectively.
+    ##   \code{dnorm} gives the density,
+    ##   \code{pnorm} gives the distribution function,
+    ##   \code{qnorm} gives the quantile function, and
+    ##   \code{rnorm} generates random deviates.
+    ##   
+    ##   The length of the result is determined by \code{n} for
+    ##   \code{rnorm}, and is the maximum of the lengths of the
+    ##   numerical arguments for the other functions.  
+    ##   
+    ##   The numerical arguments other than \code{n} are recycled to the
+    ##   length of the result.  Only the first elements of the logical
+    ##   arguments are used.
+    ##   
+    ##   For \code{sd = 0} this gives the limit as \code{sd} decreases to 0, a
+    ##   point mass at \code{mu}.
+    ##   \code{sd < 0} is an error and returns \code{NaN}.
+    ## }\source{
+    ##   For \code{pnorm}, based on
     ## 
-    ##   Unless \code{macros = FALSE}, the object will have an attribute
-    ##   named \code{"macros"}, which is an environment containing the
-    ##   macros defined in \code{file}, in a format that can be used for
-    ##   further \code{parse_Rd} calls  in the same session.  It is not
-    ##   guaranteed to work if saved to a file and reloaded in a different
-    ##   session.
-    ## }\author{ Duncan Murdoch }\references{ \url{https://developer.r-project.org/parseRd.pdf} }\seealso{
-    ##   \code{\link{Rd2HTML&#125;&#125; for the converters that use the output of
-    ##   \code{parse_Rd()}.
+    ##   Cody, W. D. (1993)
+    ##   Algorithm 715: SPECFUN -- A portable FORTRAN package of special
+    ##   function routines and test drivers.
+    ##   \emph{ACM Transactions on Mathematical Software} \bold{19}, 22--32.
+    ## 
+    ##   For \code{qnorm}, the code is a C translation of
+    ## 
+    ##   Wichura, M. J. (1988)
+    ##   Algorithm AS 241: The percentage points of the normal distribution.
+    ##   \emph{Applied Statistics}, \bold{37}, 477--484.
+    ## 
+    ##   which provides precise results up to about 16 digits.
+    ## 
+    ##   For \code{rnorm}, see \link{RNG} for how to select the algorithm and
+    ##   for references to the supplied methods.
+    ## }\references{
+    ##   Becker, R. A., Chambers, J. M. and Wilks, A. R. (1988)
+    ##   \emph{The New S Language}.
+    ##   Wadsworth & Brooks/Cole.
+    ## 
+    ##   Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995)
+    ##   \emph{Continuous Univariate Distributions}, volume 1, chapter 13.
+    ##   Wiley, New York.
+    ## }\seealso{
+    ##   \link{Distributions} for other standard distributions, including
+    ##   \code{\link{dlnorm&#125;&#125; for the \emph{Log}normal distribution.
+    ## }\examples{
+    ## require(graphics)
+    ## 
+    ## dnorm(0) == 1/sqrt(2*pi)
+    ## dnorm(1) == exp(-1/2)/sqrt(2*pi)
+    ## dnorm(1) == 1/sqrt(2*pi*exp(1))
+    ## 
+    ## ## Using "log = TRUE" for an extended range :
+    ## par(mfrow = c(2,1))
+    ## plot(function(x) dnorm(x, log = TRUE), -60, 50,
+    ##      main = "log { Normal density }")
+    ## curve(log(dnorm(x)), add = TRUE, col = "red", lwd = 2)
+    ## mtext("dnorm(x, log=TRUE)", adj = 0)
+    ## mtext("log(dnorm(x))", col = "red", adj = 1)
+    ## 
+    ## plot(function(x) pnorm(x, log.p = TRUE), -50, 10,
+    ##      main = "log { Normal Cumulative }")
+    ## curve(log(pnorm(x)), add = TRUE, col = "red", lwd = 2)
+    ## mtext("pnorm(x, log=TRUE)", adj = 0)
+    ## mtext("log(pnorm(x))", col = "red", adj = 1)
+    ## 
+    ## ## if you want the so-called 'error function'
+    ## erf <- function(x) 2 * pnorm(x * sqrt(2)) - 1
+    ## ## (see Abramowitz and Stegun 29.2.29)
+    ## ## and the so-called 'complementary error function'
+    ## erfc <- function(x) 2 * pnorm(x * sqrt(2), lower = FALSE)
+    ## ## and the inverses
+    ## erfinv <- function (x) qnorm((1 + x)/2)/sqrt(2)
+    ## erfcinv <- function (x) qnorm(x/2, lower = FALSE)/sqrt(2)
     ## }
 
 So `lazyLoad()` can be used to directly access the `.Rd` objects
-containing the help files for any package and function.
+containing the help files, but you first need to know the topic. If we
+had not already noted that the topic for `rnorm` was in fact `"Normal"`,
+then we could of course try `gethelp ("stats", "rnorm")`, but that would
+just produce an error because there is no topic called “rnorm”. So is
+there any direct way to find the text context of the help topic for
+“rnorm”?
+
+<section id="Digging-deeper" data-magellan-target="Digging-deeper"><h2>Digging deeper</h></section>
+
+An alternative approach uses a trick that the [`utils::help`
+function](https://stat.ethz.ch/R-manual/R-devel/library/utils/html/help.html)
+can be called without specifying a `topic`. Additionally specifying
+`help_type = "text"` will then retrieve the entire database in text
+form.
+
+``` r
+pacakge <- "stats"
+h <- utils::help (package = eval (substitute (pacakge)), help_type = "text")
+class (h)
+```
+
+    ## [1] "packageInfo"
+
+At that point, attempting to `print` the object `h` will simply open the
+help file the usual way, rather than giving you the textual content.
+Noting the output of the following,
+
+``` r
+str (h)
+```
+
+    ## List of 3
+    ##  $ name: chr "stats"
+    ##  $ path: chr "/usr/lib64/R/library/stats"
+    ##  $ info:List of 3
+    ##   ..$ : chr [1:12] "Package:            stats" "Version:            4.0.2" "Priority:           base" "Title:              The R Stats Package" ...
+    ##   ..$ : chr [1:346] ".checkMFClasses         Functions to Check the Type of Variables passed" "                        to Model Frames" "AIC                     Akaike's An Information Criterion" "ARMAacf                 Compute Theoretical ACF for an ARMA Process" ...
+    ##   ..$ : NULL
+    ##  - attr(*, "class")= chr "packageInfo"
+
+leads to the obvious next step of examining
+
+``` r
+h$info
+```
+
+    ## [[1]]
+    ##  [1] "Package:            stats"                                   
+    ##  [2] "Version:            4.0.2"                                   
+    ##  [3] "Priority:           base"                                    
+    ##  [4] "Title:              The R Stats Package"                     
+    ##  [5] "Author:             R Core Team and contributors worldwide"  
+    ##  [6] "Maintainer:         R Core Team <R-core@r-project.org>"      
+    ##  [7] "Description:        R statistical functions."                
+    ##  [8] "License:            Part of R 4.0.2"                         
+    ##  [9] "Imports:            utils, grDevices, graphics"              
+    ## [10] "Suggests:           MASS, Matrix, SuppDists, methods, stats4"
+    ## 
+    ## [[2]]
+    ##  [1] ".checkMFClasses         Functions to Check the Type of Variables passed"
+    ##  [2] "                        to Model Frames"                                
+    ##  [3] "AIC                     Akaike's An Information Criterion"              
+    ##  [4] "ARMAacf                 Compute Theoretical ACF for an ARMA Process"    
+    ##  [5] "ARMAtoMA                Convert ARMA Process to Infinite MA Process"    
+    ##  [6] "Beta                    The Beta Distribution"                          
+    ##  [7] "Binomial                The Binomial Distribution"                      
+    ##  [8] "Box.test                Box-Pierce and Ljung-Box Tests"                 
+    ##  [9] "C                       Sets Contrasts for a Factor"                    
+    ## [10] "Cauchy                  The Cauchy Distribution"                        
+    ## 
+    ## [[3]]
+    ## NULL
+
+which (shown above in artificially condensed form) is indeed a simple
+`character` vector containing the names of all of the help topics
+contained within the database. So that gives us a list of all of the
+topics, but we will do not know how to match `rnorm` on to its
+associated topic of `"Normal"`. One approach for finding topics
+associated with a specified function is to use the [`help.search()`
+function](https://stat.ethz.ch/R-manual/R-devel/library/utils/html/help.search.html)
+which returns the following kinds of results:
+
+``` r
+hs <- help.search (pattern = "rnorm", package = "stats")
+str (hs)
+hs$matches
+```
+
+    ## List of 9
+    ##  $ pattern    : chr "rnorm"
+    ##  $ fields     : chr [1:3] "alias" "concept" "title"
+    ##  $ type       : chr "fuzzy"
+    ##  $ agrep      : NULL
+    ##  $ ignore.case: logi TRUE
+    ##  $ types      : chr [1:3] "vignette" "demo" "help"
+    ##  $ package    : chr "stats"
+    ##  $ lib.loc    : chr [1:2] "/<path>/<to>/<my>/<lib>/<loc>" "/usr/lib/R/library"
+    ##  $ matches    :'data.frame': 16 obs. of  9 variables:
+    ##   ..$ Topic  : chr [1:16] "Lognormal" "Lognormal" "Lognormal" "Lognormal" ...
+    ##   ..$ Title  : chr [1:16] "The Log Normal Distribution" "The Log Normal Distribution" "The Log Normal Distribution" "The Log Normal Distribution" ...
+    ##   ..$ Name   : chr [1:16] "Lognormal" "Lognormal" "Lognormal" "Lognormal" ...
+    ##   ..$ ID     : chr [1:16] "451/126" "451/126" "451/126" "451/126" ...
+    ##   ..$ Package: chr [1:16] "stats" "stats" "stats" "stats" ...
+    ##   ..$ LibPath: chr [1:16] "/usr/lib/R/library/stats" "/usr/lib/R/library/stats" "/usr/lib/R/library/stats" "/usr/lib/R/library/stats" ...
+    ##   ..$ Type   : chr [1:16] "help" "help" "help" "help" ...
+    ##   ..$ Field  : chr [1:16] "alias" "alias" "alias" "alias" ...
+    ##   ..$ Entry  : chr [1:16] "Lognormal" "dlnorm" "plnorm" "qlnorm" ...
+    ##  - attr(*, "class")= chr "hsearch"
+
+    ##           Topic                       Title         Name      ID Package                  LibPath Type   Field
+    ## 1     Lognormal The Log Normal Distribution    Lognormal 451/126   stats /usr/lib/R/library/stats help   alias
+    ## 2     Lognormal The Log Normal Distribution    Lognormal 451/126   stats /usr/lib/R/library/stats help   alias
+    ## 3     Lognormal The Log Normal Distribution    Lognormal 451/126   stats /usr/lib/R/library/stats help   alias
+    ## 4     Lognormal The Log Normal Distribution    Lognormal 451/126   stats /usr/lib/R/library/stats help   alias
+    ## 5     Lognormal The Log Normal Distribution    Lognormal 451/126   stats /usr/lib/R/library/stats help   alias
+    ## 6     Lognormal The Log Normal Distribution    Lognormal 451/126   stats /usr/lib/R/library/stats help   Title
+    ## 7        Normal     The Normal Distribution       Normal 451/164   stats /usr/lib/R/library/stats help   alias
+    ## 8        Normal     The Normal Distribution       Normal 451/164   stats /usr/lib/R/library/stats help   alias
+    ## 9        Normal     The Normal Distribution       Normal 451/164   stats /usr/lib/R/library/stats help   alias
+    ## 10       Normal     The Normal Distribution       Normal 451/164   stats /usr/lib/R/library/stats help   alias
+    ## 11       Normal     The Normal Distribution       Normal 451/164   stats /usr/lib/R/library/stats help   alias
+    ## 12       Normal     The Normal Distribution       Normal 451/164   stats /usr/lib/R/library/stats help   Title
+    ## 13       qqnorm     Quantile-Quantile Plots       qqnorm 451/216   stats /usr/lib/R/library/stats help   alias
+    ## 14       qqnorm     Quantile-Quantile Plots       qqnorm 451/216   stats /usr/lib/R/library/stats help   alias
+    ## 15       qqnorm     Quantile-Quantile Plots       qqnorm 451/216   stats /usr/lib/R/library/stats help concept
+    ## 16 shapiro.test Shapiro-Wilk Normality Test shapiro.test 451/236   stats /usr/lib/R/library/stats help   Title
+    ##                          Entry
+    ## 1                    Lognormal
+    ## 2                       dlnorm
+    ## 3                       plnorm
+    ## 4                       qlnorm
+    ## 5                       rlnorm
+    ## 6  The Log Normal Distribution
+    ## 7                       Normal
+    ## 8                        dnorm
+    ## 9                        pnorm
+    ## 10                       qnorm
+    ## 11                       rnorm
+    ## 12     The Normal Distribution
+    ## 13                      qqnorm
+    ## 14              qqnorm.default
+    ## 15     normal probability plot
+    ## 16 Shapiro-Wilk Normality Test
+
+We can see there that the final, `"Entry"` column includes `rnorm`, and
+specifies that it is an `"alias"`. The associated `"Topic"` can thus be
+found simply as,
+
+``` r
+hs$matches [hs$matches$Entry == "rnorm", ]
+```
+
+    ##     Topic                   Title   Name      ID Package                  LibPath Type Field Entry
+    ## 11 Normal The Normal Distribution Normal 451/164   stats /usr/lib/R/library/stats help alias rnorm
+
+And the `"Topic"` for the `"alias"` of `rnorm` is “Normal”.
+
+<section id="What-about-extracting-all-help-topics-for-a-package-" data-magellan-target="What-about-extracting-all-help-topics-for-a-package-"><h2>What about extracting all help topics for a package?</h></section>
+
+That procedure works for extracting the textual contents of the help
+file for any specified function. What if we want to extract entries for
+all functions for a given package? Packages may have many more functions
+that help topics, as with the example considered here where one topic
+describes four functions. We can list the functions for a package like
+this:
+
+``` r
+fns <- ls ("package:stats")
+```
+
+However, that list includes not only functions, but methods, operators,
+and a variety of other possible things. The variety can be seen with the
+following code:
+
+``` r
+fn_classes <- vapply (fns, function (i)
+                      class (get (i, envir = as.environment ("package:stats"))) [1],
+                      character (1))
+table (fn_classes)
+```
+
+    ## fn_classes
+    ## character  function selfStart 
+    ##         1       438        10
+
+We can use that to narrow the listed objects from a package down to
+functions only. We can then use the above results from `help.search` for
+each of those functions to find the associated `"Topic"` entry, and thus
+to extract the help file in textual form.
+
+<section id="A-final-word-of-caution" data-magellan-target="A-final-word-of-caution"><h2>A final word of caution</h></section>
+
+A final warning, by way of demonstrating how messy the business of
+extracting the textual content of help files can get, comes courtesy of
+the help topic `"FDist"`, again from the “stats” package.
+
+``` r
+hs <- help.search (pattern = "FDist", package = "stats")
+hs$matches [hs$matches$Topic == "FDist", ]
+```
+
+    ##    Topic              Title  Name     ID Package                  LibPath Type   Field
+    ## 30 FDist The F Distribution FDist 451/76   stats /usr/lib/R/library/stats help   alias
+    ## 31 FDist The F Distribution FDist 451/76   stats /usr/lib/R/library/stats help concept
+    ## 32 FDist The F Distribution FDist 451/76   stats /usr/lib/R/library/stats help   Title
+    ##                                           Entry
+    ## 30                                        FDist
+    ## 31 Probability Distributions and Random Numbers
+    ## 32                           The F Distribution
+
+So “FDist” is the official name of one of the help topics within the
+“stats” package, and therefore should also be the name of the entry
+within its help database. And yet look what happens via the first of the
+above approaches:
+
+``` r
+loc <- file.path (R.home (), "library", package, "help", package)
+e <- new.env ()
+chk <- lazyLoad (loc, envir = e)
+fns <- ls (envir = e)
+fns [grep ("FDist", fns, ignore.case = TRUE)]
+```
+
+    ## [1] "Fdist"
+
+And the entry in the database is called “Fdist”, yet the content of that
+entry declares a topic of “FDist”. This mismatch means that the previous
+`get_help()` function will fail on the latter, and only work on the
+mis-typed version of “Fdist”. It is also manifest in the official web
+page for that topic having the address
+<https://stat.ethz.ch/R-manual/R-devel/library/stats/html/Fdist.html>,
+with the same address using “FDist” **not** leading to the desired page,
+even though the first line of the resultant page clearly informs you
+that you’re looking at a paged called “FDist” rather than “Fdist”. I
+could dig further into where the actual names of the entries within the
+help databases come from, but that’s likely enough to show how
+non-trivial this whole thing quickly becomes. But hopefully also helpful
+to anyone wanting to delve into the actual contents of R help files.
 <div style="text-align: right">
 Originally posted: 08 Sep 20
+Updated: 25 Sep 20
 </div>
 {{/markdown}}
 </div>
