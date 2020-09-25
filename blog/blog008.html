@@ -298,58 +298,60 @@ hs$matches</code></pre></div><div class="code-example"><pre><code class="html hl
 ##   ..$ Entry  : chr [1:16] "Lognormal" "dlnorm" "plnorm" "qlnorm" ...
 ##  - attr(*, "class")= chr "hsearch"
 
-##           Topic                       Title         Name    ID Package                    LibPath Type   Field
-## 1     Lognormal The Log Normal Distribution    Lognormal 1/126   stats /usr/lib64/R/library/stats help   alias
-## 2     Lognormal The Log Normal Distribution    Lognormal 1/126   stats /usr/lib64/R/library/stats help   alias
-## 3     Lognormal The Log Normal Distribution    Lognormal 1/126   stats /usr/lib64/R/library/stats help   alias
-## 4     Lognormal The Log Normal Distribution    Lognormal 1/126   stats /usr/lib64/R/library/stats help   alias
-## 5     Lognormal The Log Normal Distribution    Lognormal 1/126   stats /usr/lib64/R/library/stats help   alias
-## 6     Lognormal The Log Normal Distribution    Lognormal 1/126   stats /usr/lib64/R/library/stats help   Title
-## 7        Normal     The Normal Distribution       Normal 1/164   stats /usr/lib64/R/library/stats help   alias
-## 8        Normal     The Normal Distribution       Normal 1/164   stats /usr/lib64/R/library/stats help   alias
-## 9        Normal     The Normal Distribution       Normal 1/164   stats /usr/lib64/R/library/stats help   alias
-## 10       Normal     The Normal Distribution       Normal 1/164   stats /usr/lib64/R/library/stats help   alias
-## 11       Normal     The Normal Distribution       Normal 1/164   stats /usr/lib64/R/library/stats help   alias
-## 12       Normal     The Normal Distribution       Normal 1/164   stats /usr/lib64/R/library/stats help   Title
-## 13       qqnorm     Quantile-Quantile Plots       qqnorm 1/216   stats /usr/lib64/R/library/stats help   alias
-## 14       qqnorm     Quantile-Quantile Plots       qqnorm 1/216   stats /usr/lib64/R/library/stats help   alias
-## 15       qqnorm     Quantile-Quantile Plots       qqnorm 1/216   stats /usr/lib64/R/library/stats help concept
-## 16 shapiro.test Shapiro-Wilk Normality Test shapiro.test 1/236   stats /usr/lib64/R/library/stats help   Title
-##                          Entry
-## 1                    Lognormal
-## 2                       dlnorm
-## 3                       plnorm
-## 4                       qlnorm
-## 5                       rlnorm
-## 6  The Log Normal Distribution
-## 7                       Normal
-## 8                        dnorm
-## 9                        pnorm
-## 10                       qnorm
-## 11                       rnorm
-## 12     The Normal Distribution
-## 13                      qqnorm
-## 14              qqnorm.default
-## 15     normal probability plot
-## 16 Shapiro-Wilk Normality Test</code></pre></div><p>We can see there that the final, <code>&quot;Entry&quot;</code> column includes <code>rnorm</code>, and
+##           Topic                       Title         Name    ID Package
+## 1     Lognormal The Log Normal Distribution    Lognormal 1/126   stats
+## 2     Lognormal The Log Normal Distribution    Lognormal 1/126   stats
+## 3     Lognormal The Log Normal Distribution    Lognormal 1/126   stats
+## 4     Lognormal The Log Normal Distribution    Lognormal 1/126   stats
+## 5     Lognormal The Log Normal Distribution    Lognormal 1/126   stats
+## 6     Lognormal The Log Normal Distribution    Lognormal 1/126   stats
+## 7        Normal     The Normal Distribution       Normal 1/164   stats
+## 8        Normal     The Normal Distribution       Normal 1/164   stats
+## 9        Normal     The Normal Distribution       Normal 1/164   stats
+## 10       Normal     The Normal Distribution       Normal 1/164   stats
+## 11       Normal     The Normal Distribution       Normal 1/164   stats
+## 12       Normal     The Normal Distribution       Normal 1/164   stats
+## 13       qqnorm     Quantile-Quantile Plots       qqnorm 1/216   stats
+## 14       qqnorm     Quantile-Quantile Plots       qqnorm 1/216   stats
+## 15       qqnorm     Quantile-Quantile Plots       qqnorm 1/216   stats
+## 16 shapiro.test Shapiro-Wilk Normality Test shapiro.test 1/236   stats
+##                       LibPath Type   Field                       Entry
+## 1  /usr/lib64/R/library/stats help   alias                   Lognormal
+## 2  /usr/lib64/R/library/stats help   alias                      dlnorm
+## 3  /usr/lib64/R/library/stats help   alias                      plnorm
+## 4  /usr/lib64/R/library/stats help   alias                      qlnorm
+## 5  /usr/lib64/R/library/stats help   alias                      rlnorm
+## 6  /usr/lib64/R/library/stats help   Title The Log Normal Distribution
+## 7  /usr/lib64/R/library/stats help   alias                      Normal
+## 8  /usr/lib64/R/library/stats help   alias                       dnorm
+## 9  /usr/lib64/R/library/stats help   alias                       pnorm
+## 10 /usr/lib64/R/library/stats help   alias                       qnorm
+## 11 /usr/lib64/R/library/stats help   alias                       rnorm
+## 12 /usr/lib64/R/library/stats help   Title     The Normal Distribution
+## 13 /usr/lib64/R/library/stats help   alias                      qqnorm
+## 14 /usr/lib64/R/library/stats help   alias              qqnorm.default
+## 15 /usr/lib64/R/library/stats help concept     normal probability plot
+## 16 /usr/lib64/R/library/stats help   Title Shapiro-Wilk Normality Test</code></pre></div><p>We can see there that the final, <code>&quot;Entry&quot;</code> column includes <code>rnorm</code>, and
 specifies that it is an <code>&quot;alias&quot;</code>. The associated <code>&quot;Topic&quot;</code> can thus be
 found simply as,</p>
-<div class="code-example"><pre><code class="r hljs">hs$matches [hs$matches$Entry == <span class="hljs-string">"rnorm"</span>, ]</code></pre></div><div class="code-example"><pre><code class="html hljs">##     Topic                   Title   Name    ID Package                    LibPath Type Field Entry
-## 11 Normal The Normal Distribution Normal 1/164   stats /usr/lib64/R/library/stats help alias rnorm</code></pre></div><p>And the <code>&quot;Topic&quot;</code> for the <code>&quot;alias&quot;</code> of <code>rnorm</code> is “Normal”.</p>
+<div class="code-example"><pre><code class="r hljs">hs$matches [hs$matches$Entry == <span class="hljs-string">"rnorm"</span>, ]</code></pre></div><div class="code-example"><pre><code class="html hljs">##     Topic                   Title   Name    ID Package
+## 11 Normal The Normal Distribution Normal 1/164   stats
+##                       LibPath Type Field Entry
+## 11 /usr/lib64/R/library/stats help alias rnorm</code></pre></div><p>And the <code>&quot;Topic&quot;</code> for the <code>&quot;alias&quot;</code> of <code>rnorm</code> is “Normal”.</p>
 <section id="A-final-word-of-caution" data-magellan-target="A-final-word-of-caution"><h2>A final word of caution</h></section>
 
 <p>A final warning, by way of demonstrating how messy the business of
 extracting the textual content of help files can get, comes courtesy of
 the help topic <code>&quot;FDist&quot;</code>, again from the “stats” package.</p>
 <div class="code-example"><pre><code class="r hljs">hs &lt;- help.search (pattern = <span class="hljs-string">"FDist"</span>, package = <span class="hljs-string">"stats"</span>)
-hs$matches [hs$matches$Topic == <span class="hljs-string">"FDist"</span>, ]</code></pre></div><div class="code-example"><pre><code class="html hljs">##    Topic              Title  Name   ID Package                    LibPath Type   Field
-## 30 FDist The F Distribution FDist 1/76   stats /usr/lib64/R/library/stats help   alias
-## 31 FDist The F Distribution FDist 1/76   stats /usr/lib64/R/library/stats help concept
-## 32 FDist The F Distribution FDist 1/76   stats /usr/lib64/R/library/stats help   Title
-##                                           Entry
-## 30                                        FDist
-## 31 Probability Distributions and Random Numbers
-## 32                           The F Distribution</code></pre></div><p>So “FDist” is the official name of one of the help topics within the
+hs$matches [hs$matches$Topic == <span class="hljs-string">"FDist"</span>, ]</code></pre></div><div class="code-example"><pre><code class="html hljs">##    Topic              Title  Name   ID Package                    LibPath Type
+## 30 FDist The F Distribution FDist 1/76   stats /usr/lib64/R/library/stats help
+## 31 FDist The F Distribution FDist 1/76   stats /usr/lib64/R/library/stats help
+## 32 FDist The F Distribution FDist 1/76   stats /usr/lib64/R/library/stats help
+##      Field                                        Entry
+## 30   alias                                        FDist
+## 31 concept Probability Distributions and Random Numbers
+## 32   Title                           The F Distribution</code></pre></div><p>So “FDist” is the official name of one of the help topics within the
 “stats” package, and therefore should also be the name of the entry
 within its help database. And yet look what happens via the first of the
 above approaches:</p>
@@ -369,8 +371,10 @@ to the desired page, even though the first line of the resultant page
 “FDist” rather than “Fdist”. I could dig further into where the actual
 names of the entries within the help databases come from, but that’s
 likely enough to show how non-trivial this whole thing quickly becomes.
-But hopefully this has also been helpful to anyone wanting to delve into
-the actual contents of R help files.</p>
+(And that little glitch will hopefully <a href="https://bugs.r-project.org/bugzilla/show_bug.cgi?id=17927">be
+resolved</a>
+soon anyway.) But hopefully this has also been helpful to anyone wanting
+to delve into the actual contents of R help files.</p>
 <div style="text-align: right">
 Originally posted: 25 Sep 20
 </div>
