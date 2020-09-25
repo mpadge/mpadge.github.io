@@ -1,6 +1,6 @@
 ---
 title: The troubles with getting help files in R
-description: How to extract the actual content of help files.
+description: A primer on ways to extract the actual content of help files. Because one day people will hopefully start text-mining these things, and show us all sorts of things we never knew about the people who make R packages. When they do, this entry will hopefully help.
 date: 25/09/2020
 link: blog/blog008.html
 ---
@@ -127,31 +127,6 @@ hs$matches [hs$matches$Entry == "rnorm", ]
 
 And the `"Topic"` for the `"alias"` of `rnorm` is "Normal".
 
-## What about extracting all help topics for a package?
-
-That procedure works for extracting the textual contents of the help file for
-any specified function. What if we want to extract entries for all functions
-for a given package? Packages may have many more functions that help topics, as
-with the example considered here where one topic describes four functions. We
-can list the functions for a package like this:
-
-```{r}
-fns <- ls ("package:stats")
-```
-
-However, that list includes not only functions, but methods, operators, and
-a variety of other possible things. The variety can be seen with the following
-code:
-```{r}
-fn_classes <- vapply (fns, function (i)
-                      class (get (i, envir = as.environment ("package:stats"))) [1],
-                      character (1))
-table (fn_classes)
-```
-We can use that to narrow the listed objects from a package down to functions
-only. We can then use the above results from `help.search` for each of those
-functions to find the associated `"Topic"` entry, and thus to extract the help
-file in textual form.
 
 ## A final word of caution
 
@@ -181,12 +156,12 @@ function will fail on the latter, and only work on the mis-typed version of
 "Fdist". It is also manifest in the official web page for that topic having the
 address
 [https://stat.ethz.ch/R-manual/R-devel/library/stats/html/Fdist.html](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/Fdist.html),
-with the same address using "FDist" **not** leading to the desired page, even
-though the first line of the resultant page clearly informs you that you're
-looking at a paged called "FDist" rather than "Fdist". I could dig further into
-where the actual names of the entries within the help databases come from, but
-that's likely enough to show how non-trivial this whole thing quickly becomes.
-But hopefully also helpful to anyone wanting to delve into the actual contents
-of R help files.
+with the same address using "FDist" giving an error rather than leading to the
+desired page, even though the first line of the resultant page (spelt wrongly)
+clearly informs you that you're looking at a page called "FDist" rather than
+"Fdist". I could dig further into where the actual names of the entries within
+the help databases come from, but that's likely enough to show how non-trivial
+this whole thing quickly becomes. But hopefully this has also been helpful to
+anyone wanting to delve into the actual contents of R help files.
 
 
