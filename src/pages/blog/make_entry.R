@@ -2,7 +2,7 @@ source ("update_main.R")
 
 blog_render <- function (fname, centre_images = TRUE) {
     rmarkdown::render(paste0 (fname, ".Rmd"),
-                      rmarkdown::md_document(variant = 'gfm'))
+                      rmarkdown::md_document(variant = 'markdown_github'))
     file.rename (paste0 (fname, ".md"), paste0 (fname, ".html"))
     conn <- file (paste0 (fname, ".html"), open = "r+")
     md <- readLines (conn)
@@ -27,6 +27,10 @@ blog_render <- function (fname, centre_images = TRUE) {
     md <- process_headers (md, 1)
     md <- process_headers (md, 2)
     md <- process_headers (md, 3)
+
+    # remove any alt-format header lines
+    if (any (grepl ("^=|-+$", md)))
+        md <- md [-grep ("^=|-+$", md)]
 
     # the foundation html header and footer:
     header <- c ('{{> header}}',
@@ -59,7 +63,14 @@ blog_render <- function (fname, centre_images = TRUE) {
 find_headers <- function (md)
 {
     md <- md [!seq (md) %in% find_code_lines (md)]
-    hdrs <- gsub ("\\#+ ", "", md [grep ("^\\#+", md)])
+    index1 <- grep ("^\\#+", md)
+    hdrs <- gsub ("\\#+ ", "", md [index1])
+    # also alternative syntax with underscore lines
+    index2 <- grep ("^=|-+$", md)
+    if (length (index2) > 0) {
+        index2 <- index2 - 1
+        hdrs <- c (hdrs, md [index2]) [order (c (index1, index2))]
+    }
     hdrs_link <- gsub ("[[:space:]]+|[[:punct:]]+", "-", hdrs)
     hdrs_link <- gsub ("-+", "-", hdrs_link)
 
@@ -102,6 +113,12 @@ process_headers <- function (md, level = 1)
 {
     ptn <- paste0 ("^", paste0 (rep ("\\#", level), collapse = ""), " ")
     hdrs <- grep (ptn, md)
+    if (any (grepl ("^=|-+$", md))) {
+        if (level == 1)
+            hdrs <- c (hdrs, grep ("^=+$", md) - 1)
+        else if (level == 2)
+            hdrs <- c (hdrs, grep ("^-+$", md) - 1)
+    }
     hdrs <- hdrs [!hdrs %in% find_code_lines (md)]
     repl <- paste0 (paste0 (rep ("#", level), collapse = ""), " ")
     for (h in hdrs)
