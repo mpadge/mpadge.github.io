@@ -161,7 +161,9 @@ desired page, even though the first line of the resultant page (spelt wrongly)
 clearly informs you that you're looking at a page called "FDist" rather than
 "Fdist". I could dig further into where the actual names of the entries within
 the help databases come from, but that's likely enough to show how non-trivial
-this whole thing quickly becomes. But hopefully this has also been helpful to
-anyone wanting to delve into the actual contents of R help files.
+this whole thing quickly becomes. (And that little glitch will hopefully [be
+resolved](https://bugs.r-project.org/bugzilla/show_bug.cgi?id=17927) soon
+anyway.) But hopefully this has also been helpful to anyone wanting to delve
+into the actual contents of R help files.
 
 
