@@ -1,7 +1,7 @@
 ---
 title: The troubles with getting help files in R
 description: How to extract the actual content of help files.
-date: 08/09/2020
+date: 25/09/2020
 link: blog/blog008.html
 ---
 
@@ -78,8 +78,8 @@ can be called without specifying a `topic`. Additionally specifying `help_type
 = "text"` will then retrieve the entire database in text form.
 
 ```{r}
-pacakge <- "stats"
-h <- utils::help (package = eval (substitute (pacakge)), help_type = "text")
+package <- "stats"
+h <- utils::help (package = eval (substitute (package)), help_type = "text")
 class (h)
 ```
 At that point, attempting to `print` the object `h` will simply open the help
