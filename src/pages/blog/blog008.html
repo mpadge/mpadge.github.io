@@ -6,9 +6,12 @@
 <div class="sticky" data-sticky data-anchor="how-i-make-this-site" data-sticky-on="large" data-margin-top="5">
 <ul class="vertical menu" data-magellan>
 <li><a href="#The-troubles-with-getting-help-files-in-R" style="color:#111111">The troubles with getting help files in R</a></li>
-<li><a href="#Extracting-a-help-database-in-text-form" style="color:#111111">Extracting a help database in text form</a></li>
-<li><a href="#Digging-deeper" style="color:#111111">Digging deeper</a></li>
-<li><a href="#A-final-word-of-caution" style="color:#111111">A final word of caution</a></li>
+<li><a href="#Databases-of-help-files-in-R" style="color:#111111">Databases of help files in R</a></li>
+<li><a href="#An-alternative-approach" style="color:#111111">An alternative approach</a></li>
+<li><a href="#Getting-help-content-for-a-particular-function" style="color:#111111">Getting help content for a particular function</a></li>
+<li><a href="#Getting-help-content-for-a-particular-function-2-" style="color:#111111">Getting help content for a particular function (\#2)</a></li>
+<li><a href="#Names-of-help-topics-names-of-help-files" style="color:#111111">Names of help topics; names of help files</a></li>
+<li><a href="#Conclusion" style="color:#111111">Conclusion</a></li>
 </div>
 </nav>
 </div>
@@ -18,197 +21,124 @@
 {{#markdown}}
 <section id="The-troubles-with-getting-help-files-in-R" data-magellan-target="The-troubles-with-getting-help-files-in-R"><h1>The troubles with getting help files in R</h></section>
 
+<section id="Databases-of-help-files-in-R" data-magellan-target="Databases-of-help-files-in-R"><h2>Databases of help files in R</h></section>
+
 R has a very well structured system for documenting and accessing help
-for packages. This entry describes how to extract the actual content of
-help files. The `tools` package has a few functions for working with
-help files, starting with
-[`parse_Rd`](https://stat.ethz.ch/R-manual/R-patched/library/tools/html/parse_Rd.html)
-which claims at the outset that,
+for packages. In most systems, attempts to access help files will result
+in a dedicated window opening up with nicely formatted help content for
+a requested topic. This blog entry address the issue of how to extract
+the underlying text of those files, for example in order to do any kind
+of text mining-type analyses.
 
-> This function parses ‘Rd’ files according to the specification given
-> in <https://developer.r-project.org/parseRd.pdf>
-
-The document referred to there tells you everything you maybe did not
-ever really want to know about *how* the `parse_Rd()` function actually
-does the parsing, yet not anything about how the mysterious `.Rd`
-objects supposedly parsed by the function are actually accessed in the
-first place. Absent that information, it remains very difficult to
-figure out how to use `parse_Rd`.
-
-<section id="Extracting-a-help-database-in-text-form" data-magellan-target="Extracting-a-help-database-in-text-form"><h2>Extracting a help database in text form</h></section>
-
-Help files for R packages (since around version 2 at least) are stored
-in a standard location, within the `"help"` directory of the local
-package installation. The following code demonstrates for the `stats`
-package, which includes the `rnorm()` function. Note that when you type
-`?rnorm` (or `help(rnorm)`), the help page that opens up includes
-details for `rnorm`, `pnorm`, `dnorm`, and `qnorm`. Also note that the
-help page itself is named `"Normal"` (generally in the top left corner).
-This is what is referred to as the
-[“topic”](https://cran.r-project.org/doc/manuals/R-exts.html#Documenting-functions),
-and is not necessarily the name of the function for which help is
-sought.
+The content of the help files can be extracted for a given package via
+the [`tools::Rd_db()`
+function](https://stat.ethz.ch/R-manual/R-devel/library/tools/html/Rdutils.html).
+That function works like this:
 
 ``` r
-loc <- file.path (R.home (), "library", "stats", "help")
-list.files (loc)
+x <- tools::Rd_db (package = "tools")
+class (x)
 ```
 
-    ## [1] "aliases.rds" "AnIndex"     "paths.rds"   "stats.rdb"   "stats.rdx"
-
-That directory does not contain any actual `.Rd` objects, or anything
-that can be submitted directly to `parse_Rd()`. And yet it does contain
-all of the help information, in the format of one `.rdb` and one `.rdx`
-file. As explained in one answer to [this StackOverflow
-question](https://stackoverflow.com/questions/46184224/how-to-open-rdb-file-using-r),
-these files can be loaded with the [`lazyload()`
-function](https://stat.ethz.ch/R-manual/R-devel/library/base/html/lazyload.html).
-Armed with that knowledge, the following function illustrates one simple
-way to extract the contents of help files as text entries.
+    ## [1] "list"
 
 ``` r
-gethelp <- function (package, fn) {
-    loc <- file.path (R.home (), "library", package, "help", package)
-    e <- new.env ()
-    chk <- lazyLoad (loc, envir = e)
-    get (fn, envir = e)
-}
-x <- gethelp ("stats", "Normal")
-class (x)
+length (x)
+```
+
+    ## [1] 65
+
+``` r
+class (x [[1]])
 ```
 
     ## [1] "Rd"
 
+Say I want to extract the help file shown on the `html` page for `Rd_db`
+linked to immediately above. Then I just have to find the entry in the
+`Rd_db` data. As a first try, I simply examine the names of the files in
+the database, and try to match (via `grep`) the one called something
+like `rd_db`:
+
 ``` r
-print (x)
+grep ("rd_db", names (x), ignore.case = TRUE)
 ```
 
-    ## \title{The Normal Distribution}\name{Normal}\alias{Normal}\alias{dnorm}\alias{pnorm}\alias{qnorm}\alias{rnorm}\concept{error function}\concept{erf}\concept{erfc}\concept{erfinv}\concept{erfcinv}\keyword{distribution}\description{
-    ##   Density, distribution function, quantile function and random
-    ##   generation for the normal distribution with mean equal to \code{mean}
-    ##   and standard deviation equal to \code{sd}.
-    ## }\usage{
-    ## dnorm(x, mean = 0, sd = 1, log = FALSE)
-    ## pnorm(q, mean = 0, sd = 1, lower.tail = TRUE, log.p = FALSE)
-    ## qnorm(p, mean = 0, sd = 1, lower.tail = TRUE, log.p = FALSE)
-    ## rnorm(n, mean = 0, sd = 1)
-    ## }\arguments{
-    ##   \item{x, q}{vector of quantiles.}
-    ##   \item{p}{vector of probabilities.}
-    ##   \item{n}{number of observations. If \code{length(n) > 1}, the length
-    ##     is taken to be the number required.}
-    ##   \item{mean}{vector of means.}
-    ##   \item{sd}{vector of standard deviations.}
-    ##   \item{log, log.p}{logical; if TRUE, probabilities p are given as log(p).}
-    ##   \item{lower.tail}{logical; if TRUE (default), probabilities are
-    ##     \eqn{P[X \le x]} otherwise, \eqn{P[X > x]}.}
-    ## }\details{
-    ##   If \code{mean} or \code{sd} are not specified they assume the default
-    ##   values of \code{0} and \code{1}, respectively.
-    ## 
-    ##   The normal distribution has density
-    ##   \deqn{
-    ##     f(x) =
-    ##     \frac{1}{\sqrt{2\pi}\sigma} e^{-(x-\mu)^2/2\sigma^2&#125;&#125;{
-    ##     f(x) = 1/(\sqrt(2 \pi) \sigma) e^-((x - \mu)^2/(2 \sigma^2))
-    ##   }
-    ##   where \eqn{\mu} is the mean of the distribution and
-    ##   \eqn{\sigma} the standard deviation.
-    ## }\value{
-    ##   \code{dnorm} gives the density,
-    ##   \code{pnorm} gives the distribution function,
-    ##   \code{qnorm} gives the quantile function, and
-    ##   \code{rnorm} generates random deviates.
-    ##   
-    ##   The length of the result is determined by \code{n} for
-    ##   \code{rnorm}, and is the maximum of the lengths of the
-    ##   numerical arguments for the other functions.  
-    ##   
-    ##   The numerical arguments other than \code{n} are recycled to the
-    ##   length of the result.  Only the first elements of the logical
-    ##   arguments are used.
-    ##   
-    ##   For \code{sd = 0} this gives the limit as \code{sd} decreases to 0, a
-    ##   point mass at \code{mu}.
-    ##   \code{sd < 0} is an error and returns \code{NaN}.
-    ## }\source{
-    ##   For \code{pnorm}, based on
-    ## 
-    ##   Cody, W. D. (1993)
-    ##   Algorithm 715: SPECFUN -- A portable FORTRAN package of special
-    ##   function routines and test drivers.
-    ##   \emph{ACM Transactions on Mathematical Software} \bold{19}, 22--32.
-    ## 
-    ##   For \code{qnorm}, the code is a C translation of
-    ## 
-    ##   Wichura, M. J. (1988)
-    ##   Algorithm AS 241: The percentage points of the normal distribution.
-    ##   \emph{Applied Statistics}, \bold{37}, 477--484.
-    ## 
-    ##   which provides precise results up to about 16 digits.
-    ## 
-    ##   For \code{rnorm}, see \link{RNG} for how to select the algorithm and
-    ##   for references to the supplied methods.
-    ## }\references{
-    ##   Becker, R. A., Chambers, J. M. and Wilks, A. R. (1988)
-    ##   \emph{The New S Language}.
-    ##   Wadsworth & Brooks/Cole.
-    ## 
-    ##   Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995)
-    ##   \emph{Continuous Univariate Distributions}, volume 1, chapter 13.
-    ##   Wiley, New York.
-    ## }\seealso{
-    ##   \link{Distributions} for other standard distributions, including
-    ##   \code{\link{dlnorm&#125;&#125; for the \emph{Log}normal distribution.
-    ## }\examples{
-    ## require(graphics)
-    ## 
-    ## dnorm(0) == 1/sqrt(2*pi)
-    ## dnorm(1) == exp(-1/2)/sqrt(2*pi)
-    ## dnorm(1) == 1/sqrt(2*pi*exp(1))
-    ## 
-    ## ## Using "log = TRUE" for an extended range :
-    ## par(mfrow = c(2,1))
-    ## plot(function(x) dnorm(x, log = TRUE), -60, 50,
-    ##      main = "log { Normal density }")
-    ## curve(log(dnorm(x)), add = TRUE, col = "red", lwd = 2)
-    ## mtext("dnorm(x, log=TRUE)", adj = 0)
-    ## mtext("log(dnorm(x))", col = "red", adj = 1)
-    ## 
-    ## plot(function(x) pnorm(x, log.p = TRUE), -50, 10,
-    ##      main = "log { Normal Cumulative }")
-    ## curve(log(pnorm(x)), add = TRUE, col = "red", lwd = 2)
-    ## mtext("pnorm(x, log=TRUE)", adj = 0)
-    ## mtext("log(pnorm(x))", col = "red", adj = 1)
-    ## 
-    ## ## if you want the so-called 'error function'
-    ## erf <- function(x) 2 * pnorm(x * sqrt(2)) - 1
-    ## ## (see Abramowitz and Stegun 29.2.29)
-    ## ## and the so-called 'complementary error function'
-    ## erfc <- function(x) 2 * pnorm(x * sqrt(2), lower = FALSE)
-    ## ## and the inverses
-    ## erfinv <- function (x) qnorm((1 + x)/2)/sqrt(2)
-    ## erfcinv <- function (x) qnorm(x/2, lower = FALSE)/sqrt(2)
-    ## }
+    ## integer(0)
 
-So `lazyLoad()` can be used to directly access the `.Rd` objects
-containing the help files, but you first need to know the topic. If we
-had not already noted that the topic for `rnorm` was in fact `"Normal"`,
-then we could of course try `gethelp ("stats", "rnorm")`, but that would
-just produce an error because there is no topic called “rnorm”. So is
-there any direct way to find the text context of the help topic for
-“rnorm”?
-
-<section id="Digging-deeper" data-magellan-target="Digging-deeper"><h2>Digging deeper</h></section>
-
-An alternative approach uses a trick that the [`utils::help`
-function](https://stat.ethz.ch/R-manual/R-devel/library/utils/html/help.html)
-can be called without specifying a `topic`. Additionally specifying
-`help_type = "text"` will then retrieve the entire database in text
-form.
+The database contains no file called `Rd_db` or the like. If you click
+again on the above link to the html entry you’ll notice that the page
+itself is called, `Rdutils`. Where does that name come from? Help files
+for R packages are contained within a `/man` directory of the package
+source. When a package is installed, all files within that directory
+(which end with a suffix of `.Rd`) are compiled into a binary database
+object which can then be read by the [`Rd_db()`
+function](https://stat.ethz.ch/R-manual/R-devel/library/tools/html/Rdutils.html).
+So the databases of help files for any given package contain one entry
+for each file in the original `/man` directory of the package source,
+with the names of those original files transferred over to the names of
+the corresponding entries in the `Rd_db` file. These databases in
+installed packages are no longer contained within directories named
+`/man`, rather they are compiled within a directory called `/help`. The
+contents of this directory can be readily examined with code like the
+following:
 
 ``` r
-package <- "stats"
+loc <- file.path (R.home (), "library", "tools", "help")
+list.files (loc)
+```
+
+    ## [1] "aliases.rds" "AnIndex"     "paths.rds"   "tools.rdb"   "tools.rdx"
+
+And the two `tools.rdb` and `toools.rdx` files represent the binary
+database of help files for the `tools` package. An alternative way to
+access the databases contained within that directory is via the
+[`lazyLoad()`
+function](https://stat.ethz.ch/R-manual/R-devel/library/base/html/lazyload.html).
+(And clicking on that website indicates another inconsistency that the
+function is called `lazyLoad`, yet the page is named `lazyload`, for
+reasons which should become clear as you read on.)
+
+``` r
+package <- "tools"
+loc <- file.path (R.home (), "library", package, "help", package)
+e <- new.env ()
+chk <- lazyLoad (loc, envir = e)
+head (names (x))
+```
+
+    ## [1] "add_datalist.Rd"    "assertCondition.Rd" "bibstyle.Rd"        "buildVignette.Rd"   "buildVignettes.Rd" 
+    ## [6] "charsets.Rd"
+
+``` r
+head (ls (envir = e))
+```
+
+    ## [1] "add_datalist"    "assertCondition" "bibstyle"        "buildVignette"   "buildVignettes"  "charsets"
+
+Those last two commands reveal that the entries in the object returned
+from `Rd_db()` are the original and full file names within the `/man`
+directory of the package source, while the corresponding names when
+`lazyLoad`ed have the suffix, `.Rd`, removed. The following line
+nevertheless confirms that the two methods yield identical results:
+
+``` r
+all (ls (envir = e) == gsub ("\\.Rd$", "", names (tools::Rd_db (package = "tools"))))
+```
+
+    ## [1] TRUE
+
+<section id="An-alternative-approach" data-magellan-target="An-alternative-approach"><h3>An alternative approach</h></section>
+
+An alternative approach to extract some of the information contained in
+the `Rd_db` object uses a trick that the [`utils::help`
+function](https://stat.ethz.ch/R-manual/R-devel/library/utils/html/help.html)
+can be called without specifying a `topic`. Additionally specifying
+`help_type = "text"` will then retrieve a few components of the database
+in text form.
+
+``` r
+package <- "tools"
 h <- utils::help (package = eval (substitute (package)), help_type = "text")
 class (h)
 ```
@@ -224,11 +154,11 @@ str (h)
 ```
 
     ## List of 3
-    ##  $ name: chr "stats"
-    ##  $ path: chr "/usr/lib64/R/library/stats"
+    ##  $ name: chr "tools"
+    ##  $ path: chr "/usr/lib64/R/library/tools"
     ##  $ info:List of 3
-    ##   ..$ : chr [1:12] "Package:            stats" "Version:            4.0.2" "Priority:           base" "Title:              The R Stats Package" ...
-    ##   ..$ : chr [1:346] ".checkMFClasses         Functions to Check the Type of Variables passed" "                        to Model Frames" "AIC                     Akaike's An Information Criterion" "ARMAacf                 Compute Theoretical ACF for an ARMA Process" ...
+    ##   ..$ : chr [1:11] "Package:            tools" "Version:            4.0.2" "Priority:           base" "Title:              Tools for Package Development" ...
+    ##   ..$ : chr [1:72] ".print.via.format       Printing Utilities" "Adobe_glyphs            Conversion Tables between Character Sets" "CRAN_package_db         CRAN Package Repository Tools" "HTMLheader              Generate a Standard HTML Header for R Help" ...
     ##   ..$ : NULL
     ##  - attr(*, "class")= chr "packageInfo"
 
@@ -239,171 +169,290 @@ h$info
 ```
 
     ## [[1]]
-    ##  [1] "Package:            stats"                                   
-    ##  [2] "Version:            4.0.2"                                   
-    ##  [3] "Priority:           base"                                    
-    ##  [4] "Title:              The R Stats Package"                     
-    ##  [5] "Author:             R Core Team and contributors worldwide"  
-    ##  [6] "Maintainer:         R Core Team <R-core@r-project.org>"      
-    ##  [7] "Description:        R statistical functions."                
-    ##  [8] "License:            Part of R 4.0.2"                         
-    ##  [9] "Imports:            utils, grDevices, graphics"              
-    ## [10] "Suggests:           MASS, Matrix, SuppDists, methods, stats4"
+    ##  [1] "Package:            tools"                                                           
+    ##  [2] "Version:            4.0.2"                                                           
+    ##  [3] "Priority:           base"                                                            
+    ##  [4] "Title:              Tools for Package Development"                                   
+    ##  [5] "Author:             R Core Team"                                                     
+    ##  [6] "Maintainer:         R Core Team <R-core@r-project.org>"                              
+    ##  [7] "Description:        Tools for package development, administration and documentation."
+    ##  [8] "License:            Part of R 4.0.2"                                                 
+    ##  [9] "Suggests:           codetools, methods, xml2, curl, commonmark"                      
+    ## [10] "NeedsCompilation:   yes"                                                             
     ## 
     ## [[2]]
-    ##  [1] ".checkMFClasses         Functions to Check the Type of Variables passed"
-    ##  [2] "                        to Model Frames"                                
-    ##  [3] "AIC                     Akaike's An Information Criterion"              
-    ##  [4] "ARMAacf                 Compute Theoretical ACF for an ARMA Process"    
-    ##  [5] "ARMAtoMA                Convert ARMA Process to Infinite MA Process"    
-    ##  [6] "Beta                    The Beta Distribution"                          
-    ##  [7] "Binomial                The Binomial Distribution"                      
-    ##  [8] "Box.test                Box-Pierce and Ljung-Box Tests"                 
-    ##  [9] "C                       Sets Contrasts for a Factor"                    
-    ## [10] "Cauchy                  The Cauchy Distribution"                        
+    ##  [1] ".print.via.format       Printing Utilities"                        
+    ##  [2] "Adobe_glyphs            Conversion Tables between Character Sets"  
+    ##  [3] "CRAN_package_db         CRAN Package Repository Tools"             
+    ##  [4] "HTMLheader              Generate a Standard HTML Header for R Help"
+    ##  [5] "QC                      QC Checks for R Code and/or Documentation" 
+    ##  [6] "R_user_dir              R User Directories"                        
+    ##  [7] "Rcmd                    R CMD Interface"                           
+    ##  [8] "Rd2HTML                 Rd Converters"                             
+    ##  [9] "Rd2txt_options          Set Formatting Options for Text Help"      
+    ## [10] "RdTextFilter            Select Text in an Rd File"                 
     ## 
     ## [[3]]
     ## NULL
 
-which (shown above in artificially condensed form) is indeed a simple
-`character` vector containing the names of all of the help topics
-contained within the database. So that gives us a list of all of the
-topics, but we will do not know how to match `rnorm` on to its
-associated topic of `"Normal"`. One approach for finding topics
-associated with a specified function is to use the [`help.search()`
+And the second component of the `h$info` object has the names and
+descriptions of each entry in the help database.
+
+<section id="Getting-help-content-for-a-particular-function" data-magellan-target="Getting-help-content-for-a-particular-function"><h2>Getting help content for a particular function</h></section>
+
+If we want to analyse the textual content of help files, then we
+obviously need a way to extract that content for any given function.
+Armed with the basics described above, let’s say we want to extract the
+content of the help file for the [`tools::Rd_db()`
+function](https://stat.ethz.ch/R-manual/R-devel/library/tools/html/Rdutils.html).
+If you click on that link, you’ll notice that the page which describes
+only the function `Rd_db()` is actually called, `Rdutils`. So how could
+we automatically extract the content of the help file for `Rd_db()`, or
+indeed any particular function, when the help files describing our
+desired function may have entirely arbitrary names?
+
+The full entry for `Rdutils` looks like this:
+
+``` r
+x [["Rdutils.Rd"]]
+```
+
+    ## \title{Rd Utilities}\name{Rdutils}\alias{Rd_db}\keyword{utilities}\keyword{documentation}\description{Utilities for computing on the information in Rd objects.}\usage{
+    ## Rd_db(package, dir, lib.loc = NULL, stages = "build")
+    ## }\arguments{
+    ##   \item{package}{a character string naming an installed package.}
+    ##   \item{dir}{a character string specifying the path to a package's root
+    ##     source directory.  This should contain the subdirectory \file{man}
+    ##     with \R documentation sources (in Rd format).  Only used if
+    ##     \code{package} is not given.}
+    ##   \item{lib.loc}{a character vector of directory names of \R libraries,
+    ##     or \code{NULL}.  The default value of \code{NULL} corresponds to all
+    ##     libraries currently known.  The specified library trees are used to
+    ##     search for \code{package}.}
+    ##   \item{stages}{if \code{dir} is specified and the database is being
+    ##     built from source, which stages of \verb{\Sexpr} processing should be
+    ##     processed?}
+    ## }\details{
+    ##   \code{Rd_db} builds a simple database of all Rd objects in a package,
+    ##   as a list of the results of running \code{\link{parse_Rd&#125;&#125; on the Rd
+    ##   source files in the package and processing platform conditionals
+    ##   and some \verb{\Sexpr} macros.
+    ## }\seealso{
+    ##   \code{\link{parse_Rd&#125;&#125;
+    ## }\examples{\donttest{
+    ## ## Build the Rd db for the (installed) base package.
+    ## db <- Rd_db("base")
+    ## 
+    ## ## Keyword metadata per Rd object.
+    ## keywords <- lapply(db, tools:::.Rd_get_metadata, "keyword")
+    ## ## Tabulate the keyword entries.
+    ## kw_table <- sort(table(unlist(keywords)))
+    ## ## The 5 most frequent ones:
+    ## rev(kw_table)[1 : 5]
+    ## ## The "most informative" ones:
+    ## kw_table[kw_table == 1]
+    ## 
+    ## ## Concept metadata per Rd file.
+    ## concepts <- lapply(db, tools:::.Rd_get_metadata, "concept")
+    ## ## How many files already have \concept metadata?
+    ## sum(sapply(concepts, length) > 0)
+    ## ## How many concept entries altogether?
+    ## length(unlist(concepts))
+    ## &#125;&#125;
+
+And you’ll notice at the top that `Rd_db` is given as an `alias`. The
+structure of these files is described in a section of the [“Writing R
+Extensions”
+manual](https://cran.r-project.org/doc/manuals/R-exts.html#Documenting-functions),
+which explains that these files contain a “name”, a “title”, and
+optional “alias” entries. Comparing the above text to the formatted
+`html` help page for
+[`Rd_db()`](https://stat.ethz.ch/R-manual/R-devel/library/tools/html/Rdutils.html)
+reveals what those three fields are:
+
+1.  The “name” field defines the name of a single help topic, which may
+    or may not be the name of the original `/man` directory file in the
+    package source (more on this below).
+2.  The “title” field specifies an arbitrary description which will
+    appear at the top of the help file.
+3.  The “alias” fields specify topics which will be linked to the given
+    help file.
+
+So to locate the help entry for a nominated function, we need to find
+match that function with an `alias` entry for some help file which we do
+not necessarily know the name of. As long as we know the package in
+which we are searching, we can then simply extract all `alias` entries
+for every single help file. The example in the help file for the
+[`Rd_db()`](https://stat.ethz.ch/R-manual/R-devel/library/tools/html/Rdutils.html)
+function use a non-exported function called `.Rd_get_metadata()`
+(non-exported meaning that function can only be called via the
+triple-colon method as `tools:::.Rd_get_metadata()`, and also meaning
+that there will be no help entry for this function). This function can
+be used to extract all “alias” fields for every help topic:
+
+``` r
+aliases <- lapply (x, function (i) tools:::.Rd_get_metadata (i, "alias"))
+```
+
+Code like the following can then be used to find the file which
+describes the `Rd_db` function.
+
+``` r
+myfn <- "Rd_db"
+aliases [which (vapply (aliases, function (i) myfn %in% i, logical (1)))]
+```
+
+    ## $Rdutils.Rd
+    ## [1] "Rd_db"
+
+And that gives us the name of the help file describing our desired
+function.
+
+<section id="Getting-help-content-for-a-particular-function-2-" data-magellan-target="Getting-help-content-for-a-particular-function-2-"><h2>Getting help content for a particular function (\#2)</h></section>
+
+An alternative approach to finding the names of help files associated
+with a specified function is to use the [`help.search()`
 function](https://stat.ethz.ch/R-manual/R-devel/library/utils/html/help.search.html)
 which returns the following kinds of results:
 
 ``` r
-hs <- help.search (pattern = "rnorm", package = "stats")
+hs <- help.search (pattern = "Rd_db", package = "tools")
 str (hs)
 hs$matches
 ```
 
     ## List of 9
-    ##  $ pattern    : chr "rnorm"
+    ##  $ pattern    : chr "Rd_db"
     ##  $ fields     : chr [1:3] "alias" "concept" "title"
-    ##  $ type       : chr "fuzzy"
+    ##  $ type       : chr "regexp"
     ##  $ agrep      : NULL
     ##  $ ignore.case: logi TRUE
     ##  $ types      : chr [1:3] "vignette" "demo" "help"
-    ##  $ package    : chr "stats"
+    ##  $ package    : chr "tools"
     ##  $ lib.loc    : chr [1:2] "/<path>/<to>/<my>/<lib>/<loc>" "/usr/lib/R/library"
-    ##  $ matches    :'data.frame': 16 obs. of  9 variables:
-    ##   ..$ Topic  : chr [1:16] "Lognormal" "Lognormal" "Lognormal" "Lognormal" ...
-    ##   ..$ Title  : chr [1:16] "The Log Normal Distribution" "The Log Normal Distribution" "The Log Normal Distribution" "The Log Normal Distribution" ...
-    ##   ..$ Name   : chr [1:16] "Lognormal" "Lognormal" "Lognormal" "Lognormal" ...
-    ##   ..$ ID     : chr [1:16] "1/126" "1/126" "1/126" "1/126" ...
-    ##   ..$ Package: chr [1:16] "stats" "stats" "stats" "stats" ...
-    ##   ..$ LibPath: chr [1:16] "/usr/lib64/R/library/stats" "/usr/lib64/R/library/stats" "/usr/lib64/R/library/stats" "/usr/lib64/R/library/stats" ...
-    ##   ..$ Type   : chr [1:16] "help" "help" "help" "help" ...
-    ##   ..$ Field  : chr [1:16] "alias" "alias" "alias" "alias" ...
-    ##   ..$ Entry  : chr [1:16] "Lognormal" "dlnorm" "plnorm" "qlnorm" ...
+    ##  $ matches    :'data.frame': 1 obs. of  9 variables:
+    ##   ..$ Topic  : chr "Rd_db"
+    ##   ..$ Title  : chr "Rd Utilities"
+    ##   ..$ Name   : chr "Rdutils"
+    ##   ..$ ID     : chr "1/45"
+    ##   ..$ Package: chr "tools"
+    ##   ..$ LibPath: chr "/usr/lib64/R/library/tools"
+    ##   ..$ Type   : chr "help"
+    ##   ..$ Field  : chr "alias"
+    ##   ..$ Entry  : chr "Rd_db"
     ##  - attr(*, "class")= chr "hsearch"
 
-    ##           Topic                       Title         Name    ID Package
-    ## 1     Lognormal The Log Normal Distribution    Lognormal 1/126   stats
-    ## 2     Lognormal The Log Normal Distribution    Lognormal 1/126   stats
-    ## 3     Lognormal The Log Normal Distribution    Lognormal 1/126   stats
-    ## 4     Lognormal The Log Normal Distribution    Lognormal 1/126   stats
-    ## 5     Lognormal The Log Normal Distribution    Lognormal 1/126   stats
-    ## 6     Lognormal The Log Normal Distribution    Lognormal 1/126   stats
-    ## 7        Normal     The Normal Distribution       Normal 1/164   stats
-    ## 8        Normal     The Normal Distribution       Normal 1/164   stats
-    ## 9        Normal     The Normal Distribution       Normal 1/164   stats
-    ## 10       Normal     The Normal Distribution       Normal 1/164   stats
-    ## 11       Normal     The Normal Distribution       Normal 1/164   stats
-    ## 12       Normal     The Normal Distribution       Normal 1/164   stats
-    ## 13       qqnorm     Quantile-Quantile Plots       qqnorm 1/216   stats
-    ## 14       qqnorm     Quantile-Quantile Plots       qqnorm 1/216   stats
-    ## 15       qqnorm     Quantile-Quantile Plots       qqnorm 1/216   stats
-    ## 16 shapiro.test Shapiro-Wilk Normality Test shapiro.test 1/236   stats
-    ##                       LibPath Type   Field                       Entry
-    ## 1  /usr/lib64/R/library/stats help   alias                   Lognormal
-    ## 2  /usr/lib64/R/library/stats help   alias                      dlnorm
-    ## 3  /usr/lib64/R/library/stats help   alias                      plnorm
-    ## 4  /usr/lib64/R/library/stats help   alias                      qlnorm
-    ## 5  /usr/lib64/R/library/stats help   alias                      rlnorm
-    ## 6  /usr/lib64/R/library/stats help   Title The Log Normal Distribution
-    ## 7  /usr/lib64/R/library/stats help   alias                      Normal
-    ## 8  /usr/lib64/R/library/stats help   alias                       dnorm
-    ## 9  /usr/lib64/R/library/stats help   alias                       pnorm
-    ## 10 /usr/lib64/R/library/stats help   alias                       qnorm
-    ## 11 /usr/lib64/R/library/stats help   alias                       rnorm
-    ## 12 /usr/lib64/R/library/stats help   Title     The Normal Distribution
-    ## 13 /usr/lib64/R/library/stats help   alias                      qqnorm
-    ## 14 /usr/lib64/R/library/stats help   alias              qqnorm.default
-    ## 15 /usr/lib64/R/library/stats help concept     normal probability plot
-    ## 16 /usr/lib64/R/library/stats help   Title Shapiro-Wilk Normality Test
-
-We can see there that the final, `"Entry"` column includes `rnorm`, and
-specifies that it is an `"alias"`. The associated `"Topic"` can thus be
-found simply as,
-
 ``` r
-hs$matches [hs$matches$Entry == "rnorm", ]
+hs$matches
 ```
 
-    ##     Topic                   Title   Name    ID Package
-    ## 11 Normal The Normal Distribution Normal 1/164   stats
-    ##                       LibPath Type Field Entry
-    ## 11 /usr/lib64/R/library/stats help alias rnorm
+    ##   Topic        Title    Name   ID Package                    LibPath Type Field Entry
+    ## 1 Rd_db Rd Utilities Rdutils 1/45   tools /usr/lib64/R/library/tools help alias Rd_db
 
-And the `"Topic"` for the `"alias"` of `rnorm` is “Normal”.
+We can see there that the final, `"Entry"` column includes `Rd_db`, and
+specifies that it is an `"alias"`. The name of the associated file is
+also given there as “Rdutils”.
 
-<section id="A-final-word-of-caution" data-magellan-target="A-final-word-of-caution"><h2>A final word of caution</h></section>
+<section id="Names-of-help-topics-names-of-help-files" data-magellan-target="Names-of-help-topics-names-of-help-files"><h2>Names of help topics; names of help files</h></section>
 
-A final warning, by way of demonstrating how messy the business of
-extracting the textual content of help files can get, comes courtesy of
-the help topic `"FDist"`, again from the “stats” package.
+I indicated above that the “name” field of an “Rd” file
+
+> defines the name of a single help topic, which may or may not be the
+> name of the original `/man` directory file in the package source
+
+An example of a help topic which differs from the name of the underlying
+file arises courtesy of the `"formatC"` function from the “base”
+package.
 
 ``` r
-hs <- help.search (pattern = "FDist", package = "stats")
-hs$matches [hs$matches$Topic == "FDist", ]
+hs <- help.search (pattern = "formatC", package = "base")
+hs$matches [hs$matches$Topic == "formatC", ]
 ```
 
-    ##    Topic              Title  Name   ID Package                    LibPath Type
-    ## 30 FDist The F Distribution FDist 1/76   stats /usr/lib64/R/library/stats help
-    ## 31 FDist The F Distribution FDist 1/76   stats /usr/lib64/R/library/stats help
-    ## 32 FDist The F Distribution FDist 1/76   stats /usr/lib64/R/library/stats help
-    ##      Field                                        Entry
-    ## 30   alias                                        FDist
-    ## 31 concept Probability Distributions and Random Numbers
-    ## 32   Title                           The F Distribution
+    ##      Topic                            Title    Name    ID Package                   LibPath Type Field
+    ## 18 formatC Formatting Using C-style Formats formatC 1/143    base /usr/lib64/R/library/base help alias
+    ## 19 formatC Formatting Using C-style Formats formatC 1/143    base /usr/lib64/R/library/base help alias
+    ## 20 formatC Formatting Using C-style Formats formatC 1/143    base /usr/lib64/R/library/base help Title
+    ##                               Entry
+    ## 18                          formatC
+    ## 19                    .format.zeros
+    ## 20 Formatting Using C-style Formats
 
-So “FDist” is the official name of one of the help topics within the
-“stats” package, and therefore should also be the name of the entry
-within its help database. And yet look what happens via the first of the
-above approaches:
+So “formatC” is the official name of one of the help topics within the
+“base” package, and therefore should also be the name of the entry
+within its help database. And yet look what happens when the help
+database is accessed via `lazyLoad`:
 
 ``` r
+package <- "base"
 loc <- file.path (R.home (), "library", package, "help", package)
 e <- new.env ()
 chk <- lazyLoad (loc, envir = e)
 fns <- ls (envir = e)
-fns [grep ("FDist", fns, ignore.case = TRUE)]
+fns [grep ("formatC", fns, ignore.case = TRUE)]
 ```
 
-    ## [1] "Fdist"
+    ## [1] "formatc"
 
-And the entry in the database is called “Fdist”, yet the content of that
-entry declares a topic of “FDist”. This mismatch means that the previous
-`get_help()` function will fail on the latter, and only work on the
-mis-typed version of “Fdist”. It is also manifest in the official web
-page for that topic having the address
-<https://stat.ethz.ch/R-manual/R-devel/library/stats/html/Fdist.html>,
-with the same address using “FDist” giving an error rather than leading
-to the desired page, even though the first line of the resultant page
-(spelt wrongly) clearly informs you that you’re looking at a page called
-“FDist” rather than “Fdist”. I could dig further into where the actual
-names of the entries within the help databases come from, but that’s
-likely enough to show how non-trivial this whole thing quickly becomes.
-(And that little glitch will hopefully [be
-resolved](https://bugs.r-project.org/bugzilla/show_bug.cgi?id=17927)
-soon anyway.) But hopefully this has also been helpful to anyone wanting
-to delve into the actual contents of R help files.
+And the entry in the database is called `formatc` (lower-case “c”), yet
+the content of that entry declares a “name” of `formatC` (upper-case
+“C”). So the “Name” entry in the object returned by the [`help.search()`
+function](https://stat.ethz.ch/R-manual/R-devel/library/utils/html/help.search.html)
+is not actually the name of the `/man` file in the source package,
+rather it is the “name” entry specified in the actual “Rd” file.
+
+The contents of the corresponding file can nevertheless be extracted via
+`Rd_db` like this:
+
+``` r
+x <- tools::Rd_db (package = "base")
+aliases <- lapply (x, function (i) tools:::.Rd_get_metadata (i, "alias"))
+myfn <- "formatC"
+i <- which (vapply (aliases, function (i) myfn %in% i, logical (1))) # number of entry in db
+names (x) [i]
+```
+
+    ## [1] "formatc.Rd"
+
+``` r
+tools:::.Rd_get_metadata (x [[i]], "name")
+```
+
+    ## [1] "formatC"
+
+This indicates that the `help.search()` function ought not be used to
+extract the contents of help files, but that the `Rd_db()` function can
+be used as illustrated above, with no need to worry about the names of
+the underlying files. A final function might look something like the
+following:
+
+``` r
+help_text <- function (fn_name, package) {
+    x <- tools::Rd_db (package = package)
+    aliases <- lapply (x, function (i) tools:::.Rd_get_metadata (i, "alias"))
+    i <- which (vapply (aliases, function (i) fn_name %in% i, logical (1)))
+    return (x [[i]])
+}
+```
+
+<section id="Conclusion" data-magellan-target="Conclusion"><h3>Conclusion</h></section>
+
+Hopefully this has been helpful to anyone wanting to extract the actual
+contents of R help files. While the objects extracted by the methods
+described above can generally be treated as `character` objects, and any
+form of parsing applied, they are also objects with a defined class of
+`Rd`. There are several methods already available to parse such objects,
+in particular those described in the help file for the [`parse_Rd()`
+function](https://stat.ethz.ch/R-manual/R-patched/library/tools/html/parse_Rd.html)
+which claims at the outset that,
+
+> This function parses ‘Rd’ files according to the specification given
+> in <https://developer.r-project.org/parseRd.pdf>
+
+The document referred to there goes in to extensive detail about methods
+for parsing these objects.
 <div style="text-align: right">
-Originally posted: 25 Sep 20
+Originally posted: 29 Sep 20
 </div>
 {{/markdown}}
 </div>

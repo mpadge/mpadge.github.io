@@ -1,7 +1,7 @@
 -
     title: The troubles with getting help files in R
     description: A primer on ways to extract the actual content of help files. Because one day people will hopefully start text-mining these things, and show us all sorts of things we never knew about the people who make R packages. When they do, this entry will hopefully help.
-    created: 25 Sep 20
+    created: 29 Sep 20
     link: blog/blog008.html
 -
     title: Using RcppParallel to aggregate to a vector

@@ -1,84 +1,101 @@
 ---
 title: The troubles with getting help files in R
 description: A primer on ways to extract the actual content of help files. Because one day people will hopefully start text-mining these things, and show us all sorts of things we never knew about the people who make R packages. When they do, this entry will hopefully help.
-date: 25/09/2020
+date: 29/09/2020
 link: blog/blog008.html
 ---
 
 # The troubles with getting help files in R
 
+## Databases of help files in R
+
 R has a very well structured system for documenting and accessing help for
-packages. This entry describes how to extract the actual content of help files.
-The `tools` package has a few functions for working with help files, starting
-with
-[`parse_Rd`](https://stat.ethz.ch/R-manual/R-patched/library/tools/html/parse_Rd.html)
-which claims at the outset that,
+packages. In most systems, attempts to access help files will result in
+a dedicated window opening up with nicely formatted help content for
+a requested topic. This blog entry address the issue of how to extract the
+underlying text of those files, for example in order to do any kind of 
+text mining-type analyses.
 
-> This function parses ‘Rd’ files according to the specification given in [https://developer.r-project.org/parseRd.pdf](https://developer.r-project.org/parseRd.pdf)
+The content of the help files can be extracted for a given package via the
+[`tools::Rd_db()`
+function](https://stat.ethz.ch/R-manual/R-devel/library/tools/html/Rdutils.html).
+That function works like this:
 
-The document referred to there tells you everything you maybe did not ever
-really want to know about *how* the `parse_Rd()` function actually does the
-parsing, yet not anything about how the mysterious `.Rd` objects supposedly
-parsed by the function are actually accessed in the first place. Absent that
-information, it remains very difficult to figure out how to use `parse_Rd`.
+```{r rd_db}
+x <- tools::Rd_db (package = "tools")
+class (x)
+length (x)
+class (x [[1]])
+```
 
-## Extracting a help database in text form
+Say I want to extract the help file shown on the `html` page for `Rd_db` linked
+to immediately above. Then I just have to find the entry in the `Rd_db` data.
+As a first try, I simply examine the names of the files in the database, and
+try to match (via `grep`) the one called something like `rd_db`:
 
-Help files for R packages (since around version 2 at least) are stored in
-a standard location, within the `"help"` directory of the local package
-installation. The following code demonstrates for the `stats` package, which
-includes the `rnorm()` function. Note that when you type `?rnorm` (or
-`help(rnorm)`), the help page that opens up includes details for `rnorm`,
-`pnorm`, `dnorm`, and `qnorm`. Also note that the help page itself is named
-`"Normal"` (generally in the top left corner). This is what is referred to as
-the
-["topic"](https://cran.r-project.org/doc/manuals/R-exts.html#Documenting-functions),
-and is not necessarily the name of the function for which help is sought.
+```{r rd_db2}
+grep ("rd_db", names (x), ignore.case = TRUE)
+```
 
-```{r tools-pkg}
-loc <- file.path (R.home (), "library", "stats", "help")
+The database contains no file called `Rd_db` or the like. If you click again on
+the above link to the html entry you'll notice that the page itself is called,
+`Rdutils`. Where does that name come from? Help files for R packages are
+contained within a `/man` directory of the package source. When a package is
+installed, all files within that directory (which end with a suffix of `.Rd`)
+are compiled into a binary database object which can then be read by the
+[`Rd_db()`
+function](https://stat.ethz.ch/R-manual/R-devel/library/tools/html/Rdutils.html).
+So the databases of help files for any given package contain one entry for each
+file in the original `/man` directory of the package source, with the names of
+those original files transferred over to the names of the corresponding entries
+in the `Rd_db` file. These databases in installed packages are no longer
+contained within directories named `/man`, rather they are compiled within
+a directory called `/help`. The contents of this directory can be readily
+examined with code like the following:
+
+
+```{r}
+loc <- file.path (R.home (), "library", "tools", "help")
 list.files (loc)
 ```
 
-That directory does not contain any actual `.Rd` objects, or anything that can
-be submitted directly to `parse_Rd()`. And yet it does contain all of the help
-information, in the format of one `.rdb` and one `.rdx` file. As explained in
-one answer to [this StackOverflow question](
-https://stackoverflow.com/questions/46184224/how-to-open-rdb-file-using-r),
-these files can be loaded with the [`lazyload()`
+And the two `tools.rdb` and `toools.rdx` files represent the binary database of
+help files for the `tools` package. An alternative way to access the databases
+contained within that directory is via the [`lazyLoad()`
 function](https://stat.ethz.ch/R-manual/R-devel/library/base/html/lazyload.html).
-Armed with that knowledge, the following function illustrates one simple way to
-extract the contents of help files as text entries.
+(And clicking on that website indicates another inconsistency that the function
+is called `lazyLoad`, yet the page is named `lazyload`, for reasons which
+should become clear as you read on.)
 
 ```{r}
-gethelp <- function (package, fn) {
-    loc <- file.path (R.home (), "library", package, "help", package)
-    e <- new.env ()
-    chk <- lazyLoad (loc, envir = e)
-    get (fn, envir = e)
-}
-x <- gethelp ("stats", "Normal")
-class (x)
-print (x)
+package <- "tools"
+loc <- file.path (R.home (), "library", package, "help", package)
+e <- new.env ()
+chk <- lazyLoad (loc, envir = e)
+head (names (x))
+head (ls (envir = e))
 ```
 
-So `lazyLoad()` can be used to directly access the `.Rd` objects containing the
-help files, but you first need to know the topic. If we had not already noted
-that the topic for `rnorm` was in fact `"Normal"`, then we could of course try
-`gethelp ("stats", "rnorm")`, but that would just produce an error because
-there is no topic called "rnorm". So is there any direct way to find the text
-context of the help topic for "rnorm"?
+Those last two commands reveal that the entries in the object returned from
+`Rd_db()` are the original and full file names within the `/man` directory of
+the package source, while the corresponding names when `lazyLoad`ed have the
+suffix, `.Rd`, removed. The following line nevertheless confirms that the two
+methods yield identical results:
 
+```{r rd-vs-lazyload}
+all (ls (envir = e) == gsub ("\\.Rd$", "", names (tools::Rd_db (package = "tools"))))
+```
 
-## Digging deeper
+### An alternative approach
 
-An alternative approach uses a trick that the [`utils::help`
+An alternative approach to extract some of the information contained in the
+`Rd_db` object uses a trick that the [`utils::help`
 function](https://stat.ethz.ch/R-manual/R-devel/library/utils/html/help.html)
 can be called without specifying a `topic`. Additionally specifying `help_type
-= "text"` will then retrieve the entire database in text form.
+= "text"` will then retrieve a few components of the database in text form.
 
 ```{r}
-package <- "stats"
+package <- "tools"
 h <- utils::help (package = eval (substitute (package)), help_type = "text")
 class (h)
 ```
@@ -96,74 +113,175 @@ h$info
 hcut <- lapply (h$info, function (i) i [1:10])
 hcut
 ```
-which (shown above in artificially condensed form) is indeed a simple
-`character` vector containing the names of all of the help topics contained
-within the database. So that gives us a list of all of the topics, but we will
-do not know how to match `rnorm` on to its associated topic of `"Normal"`. One
-approach for finding topics associated with a specified function is to use the
-[`help.search()`
+
+And the second component of the `h$info` object has the names and descriptions
+of each entry in the help database.
+
+## Getting help content for a particular function
+
+If we want to analyse the textual content of help files, then we obviously need
+a way to extract that content for any given function. Armed with the basics
+described above, let's say we want to extract the content of the help file for
+the [`tools::Rd_db()`
+function](https://stat.ethz.ch/R-manual/R-devel/library/tools/html/Rdutils.html).
+If you click on that link, you'll notice that the page which describes only the
+function `Rd_db()` is actually called, `Rdutils`. So how could we automatically
+extract the content of the help file for `Rd_db()`, or indeed any particular
+function, when the help files describing our desired function may have entirely
+arbitrary names?
+
+The full entry for `Rdutils` looks like this:
+
+```{r}
+x [["Rdutils.Rd"]]
+```
+
+And you'll notice at the top that `Rd_db` is given as an `alias`. The structure
+of these files is described in a section of the ["Writing R Extensions"
+manual](https://cran.r-project.org/doc/manuals/R-exts.html#Documenting-functions),
+which explains that these files contain a "name", a "title", and optional
+"alias" entries. Comparing the above text to the formatted `html` help page for
+[`Rd_db()`](https://stat.ethz.ch/R-manual/R-devel/library/tools/html/Rdutils.html)
+reveals what those three fields are:
+
+1. The "name" field defines the name of a single help topic, which may or may not
+   be the name of the original `/man` directory file in the package source
+   (more on this below).
+2. The "title" field specifies an arbitrary description which will appear at
+   the top of the help file.
+3. The "alias" fields specify topics which will be linked to the given help
+   file.
+
+So to locate the help entry for a nominated function, we need to find match that
+function with an `alias` entry for some help file which we do not necessarily
+know the name of. As long as we know the package in which we are searching, we
+can then simply extract all `alias` entries for every single help file. The
+example in the help file for the
+[`Rd_db()`](https://stat.ethz.ch/R-manual/R-devel/library/tools/html/Rdutils.html)
+function use a non-exported function called `.Rd_get_metadata()` (non-exported
+meaning that function can only be called via the triple-colon method as
+`tools:::.Rd_get_metadata()`, and also meaning that there will be no help entry
+for this function). This function can be used to extract all "alias" fields for
+every help topic:
+
+```{r get-aliases}
+aliases <- lapply (x, function (i) tools:::.Rd_get_metadata (i, "alias"))
+```
+
+Code like the following can then be used to find the file which describes the
+`Rd_db` function.
+
+```{r find-aliases}
+myfn <- "Rd_db"
+aliases [which (vapply (aliases, function (i) myfn %in% i, logical (1)))]
+```
+
+And that gives us the name of the help file describing our desired function.
+
+## Getting help content for a particular function (#2)
+
+An alternative approach to finding the names of help files associated with
+a specified function is to use the [`help.search()`
 function](https://stat.ethz.ch/R-manual/R-devel/library/utils/html/help.search.html)
 which returns the following kinds of results:
 
 ```{r hs-fakey, echo = TRUE, eval = FALSE}
-hs <- help.search (pattern = "rnorm", package = "stats")
+hs <- help.search (pattern = "Rd_db", package = "tools")
 str (hs)
 hs$matches
 ```
 ```{r hs, echo = FALSE, eval = TRUE}
-hs <- help.search (pattern = "rnorm", package = "stats")
+hs <- help.search (pattern = "Rd_db", package = "tools")
 hs$lib.loc [1] <- "/<path>/<to>/<my>/<lib>/<loc>"
 str (hs)
+```
+```{r hs-matches}
 hs$matches
 ```
 
-We can see there that the final, `"Entry"` column includes `rnorm`, and
-specifies that it is an `"alias"`. The associated `"Topic"` can thus be found
-simply as,
+We can see there that the final, `"Entry"` column includes `Rd_db`, and
+specifies that it is an `"alias"`. The name of the associated file is also
+given there as "Rdutils".
+
+
+## Names of help topics; names of help files
+
+I indicated above that the "name" field of an "Rd" file 
+
+> defines the name of a single help topic, which may or may not be the name of
+the original `/man` directory file in the package source
+
+An example of a help topic which differs from the name of the underlying file
+arises courtesy of the `"formatC"` function from the "base" package.
 
 ```{r}
-hs$matches [hs$matches$Entry == "rnorm", ]
+hs <- help.search (pattern = "formatC", package = "base")
+hs$matches [hs$matches$Topic == "formatC", ]
 ```
 
-And the `"Topic"` for the `"alias"` of `rnorm` is "Normal".
-
-
-## A final word of caution
-
-A final warning, by way of demonstrating how messy the business of extracting
-the textual content of help files can get, comes courtesy of the help topic
-`"FDist"`, again from the "stats" package.
-
-```{r}
-hs <- help.search (pattern = "FDist", package = "stats")
-hs$matches [hs$matches$Topic == "FDist", ]
-```
-
-So "FDist" is the official name of one of the help topics within the "stats"
+So "formatC" is the official name of one of the help topics within the "base"
 package, and therefore should also be the name of the entry within its help
-database. And yet look what happens via the first of the above approaches:
+database. And yet look what happens when the help database is accessed via
+`lazyLoad`:
 
 ```{r}
+package <- "base"
 loc <- file.path (R.home (), "library", package, "help", package)
 e <- new.env ()
 chk <- lazyLoad (loc, envir = e)
 fns <- ls (envir = e)
-fns [grep ("FDist", fns, ignore.case = TRUE)]
+fns [grep ("formatC", fns, ignore.case = TRUE)]
 ```
-And the entry in the database is called "Fdist", yet the content of that entry
-declares a topic of "FDist". This mismatch means that the previous `get_help()`
-function will fail on the latter, and only work on the mis-typed version of
-"Fdist". It is also manifest in the official web page for that topic having the
-address
-[https://stat.ethz.ch/R-manual/R-devel/library/stats/html/Fdist.html](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/Fdist.html),
-with the same address using "FDist" giving an error rather than leading to the
-desired page, even though the first line of the resultant page (spelt wrongly)
-clearly informs you that you're looking at a page called "FDist" rather than
-"Fdist". I could dig further into where the actual names of the entries within
-the help databases come from, but that's likely enough to show how non-trivial
-this whole thing quickly becomes. (And that little glitch will hopefully [be
-resolved](https://bugs.r-project.org/bugzilla/show_bug.cgi?id=17927) soon
-anyway.) But hopefully this has also been helpful to anyone wanting to delve
-into the actual contents of R help files.
 
+And the entry in the database is called `formatc` (lower-case "c"), yet the
+content of that entry declares a "name" of `formatC` (upper-case "C"). So the
+"Name" entry in the object returned by the [`help.search()`
+function](https://stat.ethz.ch/R-manual/R-devel/library/utils/html/help.search.html)
+is not actually the name
+of the `/man` file in the source package, rather it is the "name" entry
+specified in the actual "Rd" file.
+
+The contents of the corresponding file can nevertheless be extracted via
+`Rd_db` like this:
+
+```{r}
+x <- tools::Rd_db (package = "base")
+aliases <- lapply (x, function (i) tools:::.Rd_get_metadata (i, "alias"))
+myfn <- "formatC"
+i <- which (vapply (aliases, function (i) myfn %in% i, logical (1))) # number of entry in db
+names (x) [i]
+tools:::.Rd_get_metadata (x [[i]], "name")
+```
+
+This indicates that the `help.search()` function ought not be used to extract
+the contents of help files, but that the `Rd_db()` function can be used as
+illustrated above, with no need to worry about the names of the underlying
+files. A final function might look something like the following:
+
+```{r}
+help_text <- function (fn_name, package) {
+    x <- tools::Rd_db (package = package)
+    aliases <- lapply (x, function (i) tools:::.Rd_get_metadata (i, "alias"))
+    i <- which (vapply (aliases, function (i) fn_name %in% i, logical (1)))
+    return (x [[i]])
+}
+```
+
+
+
+### Conclusion
+
+Hopefully this has been helpful to anyone wanting to extract the actual
+contents of R help files. While the objects extracted by the methods described
+above can generally be treated as `character` objects, and any form of parsing
+applied, they are also objects with a defined class of `Rd`. There are several
+methods already available to parse such objects, in particular those described
+in the help file for the [`parse_Rd()`
+function](https://stat.ethz.ch/R-manual/R-patched/library/tools/html/parse_Rd.html)
+which claims at the outset that,
+
+> This function parses ‘Rd’ files according to the specification given in [https://developer.r-project.org/parseRd.pdf](https://developer.r-project.org/parseRd.pdf)
+
+The document referred to there goes in to extensive detail about methods for
+parsing these objects.
 
