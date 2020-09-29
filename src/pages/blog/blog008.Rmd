@@ -12,9 +12,9 @@ link: blog/blog008.html
 R has a very well structured system for documenting and accessing help for
 packages. In most systems, attempts to access help files will result in
 a dedicated window opening up with nicely formatted help content for
-a requested topic. This blog entry address the issue of how to extract the
-underlying text of those files, for example in order to do any kind of 
-text mining-type analyses.
+a requested topic. This blog entry addresses the issue of how to extract the
+underlying text of those files, for example in order to do any kind of text
+mining-type analyses.
 
 The content of the help files can be extracted for a given package via the
 [`tools::Rd_db()`
