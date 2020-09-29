@@ -24,7 +24,7 @@ rm -r dist
 
 # first line of index.html is blank, which mucks up github pages, so must be
 # removed:
-sed -i '1d' index.html
+#sed -i '1d' index.html
 
 echo -e "\033[0;32mUpdating git...\033[0m"
 git add index.html blog.html privacy.html blog/* assets/*
