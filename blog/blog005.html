@@ -1,0 +1,377 @@
+
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>mpadge</title>
+    <link rel="stylesheet" href="../assets/css/app.css" />
+    <link rel="stylesheet" href="../assets/foundation-icons/foundation-icons.css" />
+  </head>
+<body>
+<!--
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/gruvbox-dark.min.css">
+href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/atelier-dune-light.min.css">
+-->
+<link rel="stylesheet"
+href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/atom-one-light.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<div data-sticky-container>
+    <div class="top-bar" data-sticky data-options="marginTop:0;",style="width:100%;">
+        <div class="top-bar-left">
+            <ul class="dropdown menu" data-dropdown-menu>
+                <li class="menu-text"> mpadge </li>
+                <li><a href="..//#">home</a></li>
+                <li><a href="../blog.html">blog</a></li>
+                <li> <a href="..//#code">code</a> </li>
+                <li> <a href="../privacy.html">privacy</a> </li>
+            </ul>
+        </div>
+        <div class="top-bar-right">
+            <ul class="dropdown menu" data-dropdown-menu>
+                <li><a target="_blank" rel="noopener noreferrer"
+                                       href="https://github.com/mpadge">
+                        <i class="fi-social-github"></i></a></li>
+                <li><a target="_blank" rel="noopener noreferrer"
+                                       href="https://twitter.com/bikesRdata">
+                        <i class="fi-social-twitter"></i></a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="blogClass">
+<div class="grid-container">
+<div class="grid-x grid-padding-x">
+
+<div class="cell medium-2 large-2 left">
+<nav class="sticky-container" data-sticky-container>
+<div class="sticky" data-sticky data-anchor="how-i-make-this-site" data-sticky-on="large" data-margin-top="5">
+<ul class="vertical menu" data-magellan>
+<li><a href="#What-are-matrices-in-R-" style="color:#111111">What are matrices in R?</a></li>
+<li><a href="#An-initial-illustration" style="color:#111111">An initial illustration</a></li>
+<li><a href="#How-are-matrices-stored-" style="color:#111111">How are matrices stored?</a></li>
+<li><a href="#Conclusion" style="color:#111111">Conclusion</a></li>
+</div>
+</nav>
+</div>
+
+<div class="cell medium-10 large-10">
+<div class="sections">
+<section id="What-are-matrices-in-R-" data-magellan-target="What-are-matrices-in-R-"><h1>What are matrices in R?</h></section>
+
+<p>“R is a shockingly dreadful language for an exceptionally useful data
+analysis environment” (
+<a target="_blank" rel="noopener noreferrer" href="http://arrgh.tim-smith.us/">
+Tim Smith &amp; Kevin Ushey </a>). One of the strangest manifestations of
+claims like these is that,
+<a target="_blank" rel="noopener noreferrer" href="https://www.noamross.net/blog/2014/4/16/vectorization-in-r--why.html">
+“Everything in R is a vector” </a>. The simple question that then arises
+is, What is a matrix? One commonly cited current repository of things R
+is Hadley Wickham’s book,
+<a target="_blank" rel="noopener noreferrer" href="http://adv-r.had.co.nz">
+Advanced R </a>, which has a section on
+<a target="_blank" rel="noopener noreferrer" href="http://adv-r.had.co.nz/Data-structures.html">
+Data Structures </a> which simply states that a matrix is the two
+dimensional equivalent of a vector, and that,
+<a target="_blank" rel="noopener noreferrer" href="http://adv-r.had.co.nz/Data-structures.html#matrices-and-arrays">
+“Adding a <code>dim</code> attribute to an atomic vector allows it to behave like a
+multi-dimensional array.” </a> The chapter linked to above goes on to
+say that, “Vectors are not the only 1-dimensional data structure. You
+can have matrices with a single row or single column, or arrays with a
+single dimension. They may print similarly, but will behave differently.
+The differences aren’t too important.” This blog entry will attempt to
+illustrate the kind of circumstances under which differences between
+vectors and matrices actually become quite important indeed.</p>
+<section id="An-initial-illustration" data-magellan-target="An-initial-illustration"><h2>An initial illustration</h></section>
+
+<p>Vectors do differ from matrices, as the following code clearly
+illustrates:</p>
+<div class="code-example"><pre><code class="r hljs">n &lt;- <span class="hljs-number">1e6</span>
+x &lt;- runif (n)
+y &lt;- runif (n)
+xy &lt;- cbind (x, y) <span class="hljs-comment"># a matrix</span>
+rbenchmark::benchmark (
+                       res &lt;- x + y,
+                       res &lt;- rowSums (xy),
+                       replications = <span class="hljs-number">100</span>,
+                       order = <span class="hljs-literal">NULL</span>) [, <span class="hljs-number">1</span>:<span class="hljs-number">4</span>]</code></pre></div><table>
+<thead>
+<tr>
+<th align="left">test</th>
+<th align="right">replications</th>
+<th align="right">elapsed</th>
+<th align="right">relative</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">res &lt;- x + y</td>
+<td align="right">100</td>
+<td align="right">0.245</td>
+<td align="right">1.000</td>
+</tr>
+<tr>
+<td align="left">res &lt;- rowSums(xy)</td>
+<td align="right">100</td>
+<td align="right">0.912</td>
+<td align="right">3.722</td>
+</tr>
+</tbody></table>
+<p>Adding the two rows of a matrix takes 3-4 times longer than adding two
+otherwise equivalent vectors. And okay, that’s very likely something to
+do with the <code>rowSums</code> function rather than the matrix itself, but why
+should these two behave so differently? At that point, I must freely
+admit to being not sufficiently clever to have uncovered the actual
+reason in the
+<a target="_blank" rel="noopener noreferrer" href="https://github.com/wch/r-source/blob/trunk/src/main/array.c">
+underlying C source code. </a> The answer must lie somewhere in there,
+so any pointers would be greatly appreciated. Short of that, the
+following is a phenomenological explanation, derived through attempting
+to reconstruct in C code what <code>rowSums</code> is actually doing.</p>
+<p>Direct vector addition must work something like the following C code,
+written here in a form able to be directly parsed in R via the
+<a target="_blank" rel="noopener noreferrer" href="https://cran.r-project.org/package=inline">
+inline package </a>.</p>
+<div class="code-example"><pre><code class="r hljs"><span class="hljs-keyword">library</span> (inline)
+add &lt;- cfunction(c(a = <span class="hljs-string">"numeric"</span>, b = <span class="hljs-string">"numeric"</span>), <span class="hljs-string">"
+                 int n = length (a);
+                 SEXP result = PROTECT (allocVector (REALSXP, n));
+                 double *ra, *rb, *rout;
+                 ra = REAL (a);
+                 rb = REAL (b);
+                 rout = REAL (result);
+                 for (int i = 0; i &lt; n; i++)
+                     rout [i] = ra [i] + rb [i];
+                 UNPROTECT (1);
+
+                 return result;
+                 "</span>)</code></pre></div><p>That’s a simple C function to add two vectors and return the result,
+with most of the code providing the necessary scaffolding for an R
+function. The following benchmark compares that with the previous two
+equivalent functions.</p>
+<div class="code-example"><pre><code class="r hljs">rbenchmark::benchmark (
+                       res &lt;- x + y,
+                       res &lt;- add (x, y),
+                       res &lt;- rowSums (xy),
+                       replications = <span class="hljs-number">100</span>,
+                       order = <span class="hljs-literal">NULL</span>) [, <span class="hljs-number">1</span>:<span class="hljs-number">4</span>]</code></pre></div><table>
+<thead>
+<tr>
+<th align="left">test</th>
+<th align="right">replications</th>
+<th align="right">elapsed</th>
+<th align="right">relative</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">res &lt;- x + y</td>
+<td align="right">100</td>
+<td align="right">0.203</td>
+<td align="right">1.000</td>
+</tr>
+<tr>
+<td align="left">res &lt;- add(x, y)</td>
+<td align="right">100</td>
+<td align="right">0.217</td>
+<td align="right">1.069</td>
+</tr>
+<tr>
+<td align="left">res &lt;- rowSums(xy)</td>
+<td align="right">100</td>
+<td align="right">0.931</td>
+<td align="right">4.586</td>
+</tr>
+</tbody></table>
+<p>So our <code>add</code> function is broadly equivalent to R’s underlying code for
+vector addition, and correspondingly, considerably more efficient than
+<code>rowSums</code> applied to an equivalent matrix. This naturally fosters the
+question of whether the inefficiency arises in <code>rowSums</code> itself, or
+whether it is somehow something inherent to R’s internal representation
+of matrices and/or matrix operations? The following code provides an
+initial answer to that quesiton.</p>
+<div class="code-example"><pre><code class="r hljs">rbenchmark::benchmark (
+                       res &lt;- x + y,
+                       res &lt;- add (x, y),
+                       res &lt;- rowSums (xy),
+                       res &lt;- xy [, <span class="hljs-number">1</span>] + xy [, <span class="hljs-number">2</span>],
+                       replications = <span class="hljs-number">100</span>,
+                       order = <span class="hljs-literal">NULL</span>) [, <span class="hljs-number">1</span>:<span class="hljs-number">4</span>]</code></pre></div><table>
+<thead>
+<tr>
+<th align="left">test</th>
+<th align="right">replications</th>
+<th align="right">elapsed</th>
+<th align="right">relative</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">res &lt;- x + y</td>
+<td align="right">100</td>
+<td align="right">0.208</td>
+<td align="right">1.000</td>
+</tr>
+<tr>
+<td align="left">res &lt;- add(x, y)</td>
+<td align="right">100</td>
+<td align="right">0.250</td>
+<td align="right">1.202</td>
+</tr>
+<tr>
+<td align="left">res &lt;- rowSums(xy)</td>
+<td align="right">100</td>
+<td align="right">0.840</td>
+<td align="right">4.038</td>
+</tr>
+<tr>
+<td align="left">res &lt;- xy[, 1] + xy[, 2]</td>
+<td align="right">100</td>
+<td align="right">0.742</td>
+<td align="right">3.567</td>
+</tr>
+</tbody></table>
+<p>And direct addition of two columns of a matrix, through indexing into
+those columns, is roughly as <em>inefficient</em> as <code>rowSums</code> itself, while
+direct addition of the equivalent vectors remains 3-4 times more
+efficient.</p>
+<section id="How-are-matrices-stored-" data-magellan-target="How-are-matrices-stored-"><h3>How are matrices stored?</h></section>
+
+<p>So the reason for the relative inefficiency of <code>rowSums</code> is likely to
+extend directly from the column selection operation, <code>xy[, i]</code>. The
+reference manual for the C-level details of data storage and
+sub-selection in R is the online compendium,
+<a target="_blank" rel="noopener noreferrer" href="https://cran.r-project.org/doc/manuals/r-release/R-ints.html#SEXPs">
+R Internals </a>, yet even this has remarkably little to say in regard
+to how matrices are actually stored or manipulated. The key is a single
+incidental statement that,
+<a target="_blank" rel="noopener noreferrer" href="https://cran.r-project.org/doc/manuals/R-ints.html#Large-matrices">
+“Matrices are stored as vectors” </a>. The storage can then be
+understood through reading the details of vector storage, and then
+simply figuring out how the indexing of a matrix-as-vector is
+implemented. This can be easily discerned from direct conversion within
+R:</p>
+<div class="code-example"><pre><code class="r hljs">as.vector (cbind (<span class="hljs-number">1</span>:<span class="hljs-number">5</span>, <span class="hljs-number">6</span>:<span class="hljs-number">10</span>))</code></pre></div><div class="code-example"><pre><code class="html hljs">##  [1]  1  2  3  4  5  6  7  8  9 10</code></pre></div><p>The columns of a matrix are directly concatenated within the vector
+object. This enables us to then re-write the above C code for vector
+addition to instead accept a matrix object, noting that the indices <code>i</code>
+and <code>n + i</code> respectively refer to the first and second columns of the
+matrix.</p>
+<div class="code-example"><pre><code class="r hljs">matadd &lt;- cfunction(c(a = <span class="hljs-string">"numeric"</span>), <span class="hljs-string">"
+                 int n = floor (length (a) / 2);
+                 SEXP result = PROTECT (allocVector (REALSXP, n));
+                 double *ra, *rout;
+                 ra = REAL (a);
+                 rout = REAL (result);
+                 for (int i = 0; i &lt; n; i++)
+                     rout [i] = ra [i] + ra [n + i];
+                 UNPROTECT (1);
+
+                 return result;
+                 "</span>)</code></pre></div><p>Benchmarking that against the previous versions, and including an
+additional comparison of direct matrix addition, gives the following
+results.</p>
+<div class="code-example"><pre><code class="r hljs">rbenchmark::benchmark (
+                       res &lt;- x + y,
+                       res &lt;- add (x, y),
+                       res &lt;- rowSums (xy),
+                       res &lt;- xy [, <span class="hljs-number">1</span>] + xy [, <span class="hljs-number">2</span>],
+                       res &lt;- matadd (xy),
+                       res &lt;- xy + xy,
+                       replications = <span class="hljs-number">100</span>,
+                       order = <span class="hljs-literal">NULL</span>) [, <span class="hljs-number">1</span>:<span class="hljs-number">4</span>]</code></pre></div><table>
+<thead>
+<tr>
+<th align="left">test</th>
+<th align="right">replications</th>
+<th align="right">elapsed</th>
+<th align="right">relative</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">res &lt;- x + y</td>
+<td align="right">100</td>
+<td align="right">0.214</td>
+<td align="right">1.000</td>
+</tr>
+<tr>
+<td align="left">res &lt;- add(x, y)</td>
+<td align="right">100</td>
+<td align="right">0.215</td>
+<td align="right">1.005</td>
+</tr>
+<tr>
+<td align="left">res &lt;- rowSums(xy)</td>
+<td align="right">100</td>
+<td align="right">0.824</td>
+<td align="right">3.850</td>
+</tr>
+<tr>
+<td align="left">res &lt;- xy[, 1] + xy[, 2]</td>
+<td align="right">100</td>
+<td align="right">0.767</td>
+<td align="right">3.584</td>
+</tr>
+<tr>
+<td align="left">res &lt;- matadd(xy)</td>
+<td align="right">100</td>
+<td align="right">0.219</td>
+<td align="right">1.023</td>
+</tr>
+<tr>
+<td align="left">res &lt;- xy + xy</td>
+<td align="right">100</td>
+<td align="right">0.407</td>
+<td align="right">1.902</td>
+</tr>
+</tbody></table>
+<p>That benchmark demonstrates that operations on matrix columns are only
+as efficient as equivalent operations on vectors when the matrices are
+treated as singular vector objects. Direct addition of entire matrices
+(<code>xy + xy</code>) is also as efficient as vector addition, taking here around
+twice as long because twice as many values are being added.
+Inefficiencies arise in handling matrices only when extracting
+individual rows or columns – the <code>xy[, i]</code> operations, presumably
+because these operations involve creating an additional copy of the
+entire row or column.</p>
+<section id="Conclusion" data-magellan-target="Conclusion"><h2>Conclusion</h></section>
+
+<p>What the above code was intended to demonstrate was that matrices should
+only be considered to be <strong>like</strong> vectors in the sense of operations on
+the entire objects. Sub-setting or sub-selecting of matrices involves
+creating additional copies of the sub-set/sub-selected portions, and is
+comparably less efficient than equivalent vector operations. In
+particular, efficient C or C++ operations on matrices should index
+directly into the underlying vector object, rather than sub-setting
+particular rows or columns of the matrices.</p>
+<p>The assertion that everything in R is a vector hereby deepens: Even
+matrices in R are vectors, and should in many circumstances be treated
+as such.</p>
+<div style="text-align: right">
+Originally posted: 31 Jul 19
+</div>
+</div>
+</div>
+
+<script src="https://utteranc.es/client.js"
+        repo="mpadge/mpadge.github.io"
+        issue-term="pathname"
+        label="blog_comments"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script>
+
+</div>
+</div>
+</div>
+<div class="large-12 cell" style="background-color:#ffffff00">
+    <div class="callout">
+        <p class="text-center" style="font-size:8pt">Copyright &#169; 2019--20 mark padgham</p>
+    </div>
+</div>
+
+
+<script src="../assets/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,398 @@
+
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>mpadge</title>
+    <link rel="stylesheet" href="../assets/css/app.css" />
+    <link rel="stylesheet" href="../assets/foundation-icons/foundation-icons.css" />
+  </head>
+<body>
+<!--
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/gruvbox-dark.min.css">
+href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/atelier-dune-light.min.css">
+-->
+<link rel="stylesheet"
+href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/atom-one-light.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<div data-sticky-container>
+    <div class="top-bar" data-sticky data-options="marginTop:0;",style="width:100%;">
+        <div class="top-bar-left">
+            <ul class="dropdown menu" data-dropdown-menu>
+                <li class="menu-text"> mpadge </li>
+                <li><a href="..//#">home</a></li>
+                <li><a href="../blog.html">blog</a></li>
+                <li> <a href="..//#code">code</a> </li>
+                <li> <a href="../privacy.html">privacy</a> </li>
+            </ul>
+        </div>
+        <div class="top-bar-right">
+            <ul class="dropdown menu" data-dropdown-menu>
+                <li><a target="_blank" rel="noopener noreferrer"
+                                       href="https://github.com/mpadge">
+                        <i class="fi-social-github"></i></a></li>
+                <li><a target="_blank" rel="noopener noreferrer"
+                                       href="https://twitter.com/bikesRdata">
+                        <i class="fi-social-twitter"></i></a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="blogClass">
+<div class="grid-container">
+<div class="grid-x grid-padding-x">
+
+<div class="cell medium-2 large-2 left">
+<nav class="sticky-container" data-sticky-container>
+<div class="sticky" data-sticky data-anchor="how-i-make-this-site" data-sticky-on="large" data-margin-top="5">
+<ul class="vertical menu" data-magellan>
+<li><a href="#how-i-made-this-site-from-scratch-" style="color:#111111">how i made this site (from scratch)</a></li>
+<li><a href="#visual-style" style="color:#111111">visual style</a></li>
+<li><a href="#the-content" style="color:#111111">the content</a></li>
+<li><a href="#images" style="color:#111111">images</a></li>
+<li><a href="#meta-data-yaml-data-and-the-front-page" style="color:#111111">meta-data, yaml data, and the front page</a></li>
+<li><a href="#conclusion" style="color:#111111">conclusion</a></li>
+</div>
+</nav>
+</div>
+
+<div class="cell medium-10 large-10">
+<div class="sections">
+<section id="how-i-made-this-site-from-scratch-" data-magellan-target="how-i-made-this-site-from-scratch-"><h1>how i made this site (from scratch)</h></section>
+
+<p>New blog, new website, so here we go. I’ll start by describing how i
+built the website. From scratch. The site is built with
+<a target="_blank" rel="noopener noreferrer" href="https://foundation.zurb.com">
+zurb foundation </a> , because i had read that it did everything that
+<a target="_blank" rel="noopener noreferrer" href="https://gohugo.io">
+hugo </a> could, but that final products were more lightweight and
+flexible. Plus i had no idea about it, and learning something new is
+<del>always</del> <del>often</del> sometimes worthwhile. I was also frustrated that
+standard
+<a target="_blank" rel="noopener noreferrer" href="https://gohugo.io">
+hugo </a> advice seemed to be, ‘’oh, just pick a template and off you
+go,’’ yet there is surprisingly little advice on how to modify any given
+template, let alone how to start from scratch. It turned out that
+<a target="_blank" rel="noopener noreferrer" href="https://foundation.zurb.com">
+foundation </a> at least made starting from scratch fairly easy, and so
+this entry is about that process. Note that i consider myself a
+technically-oriented, back-end programmer more focussed on getting stuff
+in and processing it than on getting stuff out. So when i say ‘’starting
+from scratch,’’ i mean that most sincerely.</p>
+<section id="visual-style" data-magellan-target="visual-style"><h2>visual style</h></section>
+
+<p>This is largely <code>html</code>-related ramblings, so if you’re interested in the
+code stuff, you might like to skip straight ahead to the <a href="#the-content">next
+section</a>.
+<a target="_blank" rel="noopener noreferrer" href="https://foundation.zurb.com">
+zurb </a> provides a template (see
+<a target="_blank" rel="noopener noreferrer"
+                   href="https://foundation.zurb.com/sites/docs/starter-projects.html">
+here </a> for details) which deposits a basic infrastructure on your
+local playground, along with the required
+<a target="_blank" rel="noopener noreferrer" href="https://foundation.zurb.com">
+foundation </a> libraries. The basic system is fairly well
+<a target="_blank" rel="noopener noreferrer"
+    href="https://foundation.zurb.com/sites/docs"> documented </a>, so
+there’s little point going into that here. The top of this site is a
+standard <a target="_blank" rel="noopener noreferrer"
+                   href="https://foundation.zurb.com/sites/docs/top-bar.html">
+top bar </a>, and most of the rest is built from standard
+<a target="_blank" rel="noopener noreferrer"
+                   href="https://foundation.zurb.com/sites/docs/callout.html">
+callout </a> containers or plain cells. This and all blog pages, for
+example, are full-width <a target="_blank" rel="noopener noreferrer"
+                   href="https://foundation.zurb.com/sites/docs/xy-grid.html">
+xy-grid </a> containers with simple headers of</p>
+<pre><code class="hljs xml">&lt;div class="grid-x grid-padding-x"&gt;
+    &lt;div class="cell medium-12 large-12"&gt;
+</code></pre>
+
+<p>The entire site lives within the local <code>src/</code> directory, with the
+remainder being stuff used by
+<a target="_blank" rel="noopener noreferrer" href="https://foundation.zurb.com">
+foundation </a> to build the site. This <code>src</code> directory really is
+impressively lightweight.</p>
+<p>The primary components of
+<a target="_blank" rel="noopener noreferrer" href="https://foundation.zurb.com">
+foundation </a> are ‘’pages’’ and ‘’partials,’’ with the latter
+identical to most other systems for building websites. Crudely
+interpreted, ‘’pages’’ hold the actual content, while ‘’partials’’
+define the styles, generally as <code>html</code> header and footer components
+inserted before and after the content of a page.
+<a target="_blank" rel="noopener noreferrer" href="https://foundation.zurb.com">
+foundation </a> integrates directly with arbitrarily-structured <code>yaml</code>
+files, which made auto-generation of my main web page particularly easy.
+The files themselves live in the <code>src/data</code> directory, with the blog
+entries, for example, read straight from a <code>src/data/blog.yaml</code> file
+that looks like this:</p>
+<div class="code-example"><pre><code class="markdown hljs"><span class="hljs-bullet">-
+    </span>title: how i made this site
+<span class="hljs-code">    description: &lt; blah blah blah &gt;</span>
+<span class="hljs-code">    created: 06 May 19</span>
+<span class="hljs-code">    modified: 06 May 19</span>
+<span class="hljs-code">    link: blog/blog001.html</span>
+<span class="hljs-bullet">- 
+    </span>title: C++ templates and Rcpp
+<span class="hljs-code">    description: &lt; blah blah blah &gt;</span>
+<span class="hljs-code">    created: 07 May 19</span>
+<span class="hljs-code">    modified: 07 May 19</span>
+<span class="hljs-code">    link: blog/blog002.html</span></code></pre></div><p>More on how that gets automatically generated below; for now, just
+pretend it’s a static file. This has two entries, each of which has a
+variety of components (such as <code>title</code>, <code>description</code>, and <code>link</code>). The
+‘’blog’’ section on the main page is generated directly from these
+<code>yaml</code> meta-data, using the &#123;&#123;#each blog&#125;&#125; command to automatically
+loop over each of the above entries in the <code>data/blog.yml</code> file, using
+the same double-curly-bracket syntax from zurb’s
+<a target="_blank" rel="noopener noreferrer"
+                   href="https://foundation.zurb.com/sites/docs/panini.html">
+panini </a> to insert variables into the <code>html</code> code:</p>
+<pre><code class="hljs xml">&#123;&#123;&#35;each blog&#125;&#125;
+    &#123;&#123;> blog_header&#125;&#125;
+        &lt;a href=&#123;&#123; link &#125;&#125;, style="color:#262626;"&gt;
+            &lt;div align="center"&gt;
+                &lt;h3&gt;&#123;&#123; title &#125;&#125;&lt;/h3&gt;
+            &lt;/div&gt;
+            &lt;div align="center"&gt;
+                &lt;p&gt;&#123;&#123; description &#125;&#125;&lt;/p&gt;
+            &lt;/div&gt;
+        &lt;/a&gt;
+    &#123;&#123;> blog_footer&#125;&#125;
+&#123;&#123;/each blog&#125;&#125;
+</code></pre>
+
+<p>The whole site is set up with a grid 12 squares across, so these are
+full-width containers with <code>grid-padding-x</code>, which by default reads
+values from the global <code>/src/assets/scss/_settings.scss</code> file. Yep, it’s
+an
+<a target="_blank" rel="noopener noreferrer" href="https://sass-lang.com/">
+scss </a> file, which is both great and … not so great. It means that
+almost all variables used to generate your site - this site - can be
+modified through directly modifying the values in
+<code>src/assets/scss/_settings.scss</code>. The not so great is that these are
+<em>global variables</em> which are translated during compilation into <code>css</code>
+variables which generally won’t share the same names. So if you want to
+change these values locally rather than globally, you can’t ‘just do
+it’, you are forced to revert to standard <code>css</code> (to define class
+structures) or <code>html</code> (to explicitly define elements). This blog page,
+for example, is defined by a simple entry in <code>src/assets/scss/app.scss</code>
+– the sole location needed to define all local classes - as:</p>
+<div class="code-example"><pre><code class="css hljs"><span class="hljs-class">.blogClass</span><span class="hljs-rules">{
+    <span class="hljs-rule"><span class="hljs-attribute">margin-top</span>:<span class="hljs-value"> <span class="hljs-number">0px</span></span></span>;
+    <span class="hljs-rule"><span class="hljs-attribute">margin-left</span>:<span class="hljs-value"> <span class="hljs-number">50px</span></span></span>;
+    <span class="hljs-rule"><span class="hljs-attribute">margin-right</span>:<span class="hljs-value"> <span class="hljs-number">50px</span></span></span>;
+}</span></code></pre></div><p>The <code>margin-</code> elements are bog-standard <code>css</code>, and absent these custom
+definitions all inherit the global properties specified in
+<code>src/assets/scss/_settings.scss</code> (definining standard properties of
+foundation’s <code>xy-grid</code>):</p>
+<div class="code-example"><pre><code class="css hljs">$grid-margin-gutters: (
+    small: 20px,
+    medium: 30px
+);
+$grid-padding-gutters: $grid-margin-gutters;
+$grid-container-padding: $grid-padding-gutters;</code></pre></div><p>Examples of <code>html</code> modifications to the global default <code>scss</code> variables
+are the background colours for each component of the code and blog
+sections. Remember that everything on the main page is a ‘callout’,
+meaning that they all inherit the global variables defined in
+<code>src/assets/scss/_settings.scss</code>. I defined the global background as</p>
+<div class="code-example"><pre><code class="css hljs">$callout-backgroud: transparent;</code></pre></div><p>so the background image would appear underneath everything by default.
+This required local changes to render the components semi-transparent
+white, which was achieved with a simple two-line
+<code>src/partials/blog_header.html</code> of:</p>
+<div class="code-example"><pre><code class="html hljs"><span class="hljs-tag">&lt;<span class="hljs-title">div</span> <span class="hljs-attribute">class</span>=<span class="hljs-value">"large-4 medium-6 cell"</span> <span class="hljs-attribute">style</span>=<span class="hljs-value">"background-color:#ffffffaa"</span>&gt;</span></code></pre></div><p>The code above with &#123;&#123;&gt; blog_header &#125;&#125; simply inserts that header in
+its rightful place.</p>
+<p>That is the very short version of how i got this site to look the way it
+does. It’s simple, but it was fairly easy, and most important to me was
+that i didn’t have to borrow somebody else’s arbitrary and
+way-more-difficult-to-modify-than-i-thought template for whatever other
+site/blog-generating system i may otherwise have chosen.</p>
+<section id="the-content" data-magellan-target="the-content"><h2>the content</h></section>
+
+<p>The steps roughly described above yielded a static site largely as you
+see here. The only remaining step was automating the procedure of
+updating the site. Perhaps the easiest approach would be to do this
+manually, but as most of the content is contained within <code>yaml</code> files,
+this is a procedure ripe for automation. As the end product of most of
+my coding efforts is packaged in <strong>R</strong>-form, i opted to automate this
+procedure within <strong>R</strong>, although the same principles apply to any other
+language. What this section effectively describes is how easy
+<a target="_blank" rel="noopener noreferrer" href="https://foundation.zurb.com">
+foundation </a> made the task of effectively recreating
+<a target="_blank" rel="noopener noreferrer" href="https://yihui.name">
+Yihui Xie </a> ’s fabulous <a target="_blank" rel="noopener noreferrer"
+    href="https://github.com/rstudio/blogdown"> blogdown </a> package.
+Subjective judgement here, but the blogdown package was first released
+to cran in August 2017, and a lot has changed in that short time. As
+often happens, the enormity of the task Yihui achieved with that package
+can now be recreated in
+<a target="_blank" rel="noopener noreferrer" href="https://foundation.zurb.com">
+foundation </a> form much easier, and with much less code. In the case
+of this site, it effectively amounts to connecting some kind of
+<code>blog_render()</code> function to a simple update of a <code>yaml</code> text file, with
+a few more tricks for other included elements, notably graphics.</p>
+<p>With the help of partials, the entire <code>html</code> formatting of a blog page
+is as simple as a header with these few lines:</p>
+<pre><code class="hljs xml">&#123;&#123;> header&#125;&#125;
+&lt;div class="blogClass"&gt;
+  &lt;div class="grid-x grid-padding-x"&gt;
+    &lt;div class="cell medium-12 large-12"&gt;
+      &#123;&#123;&#35;markdown&#125;&#125;
+</code></pre>
+
+<p>and a footer simply closing each section with:</p>
+<pre><code class="hljs xml">    &#123;&#123;/markdown&#125;&#125;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+
+<p>(plus just a couple of extra lines to add the navigation bar at the side
+– shown
+<a href="https://github.com/mpadge/mpadge.github.io/blob/master/src/pages/blog/make_entry.R#L67">here</a>
+in a <code>navbar()</code> function, if you’re interested). In between is
+‘’standard’’ markdown (at least in a form I’ve yet to encounter any
+particular idosynracies with ..), which
+<a target="_blank" rel="noopener noreferrer" href="https://foundation.zurb.com">
+foundation </a> interprets seamlessly. Converting an <strong>R</strong>markdown
+(<code>.Rmd</code>) document to a blog entry is thus in essence as simple as
+rendering (via <code>rmarkdown::render()</code>) it to some kind of standard
+markdown, renaming that to <code>.html</code>, and inserting the 5 lines of header
+and four lines of footer shown above. The following function forms the
+basis of a <code>blog_render()</code> function:</p>
+<div class="code-example"><pre><code class="r hljs">blog_render &lt;- <span class="hljs-keyword">function</span> (fname) {
+    rmarkdown::render(paste0 (fname, <span class="hljs-string">".Rmd"</span>), rmarkdown::md_document(variant=<span class="hljs-string">'gfm'</span>))
+    file.rename (paste0 (fname, <span class="hljs-string">".md"</span>), paste0 (fname, <span class="hljs-string">".html"</span>))
+    conn &lt;- file (paste0 (fname, <span class="hljs-string">".html"</span>))
+    md &lt;- readLines (conn)
+
+    header &lt;- c (&lt;<span class="hljs-keyword">...</span> defined above <span class="hljs-keyword">...</span>&gt;)
+    footer &lt;- c (&lt;<span class="hljs-keyword">...</span> defined above <span class="hljs-keyword">...</span>&gt;)
+    md &lt;- c (header, md, footer)
+    writeLines (md, conn)
+    close (conn)
+}</code></pre></div><p>Simply calling <code>blog_render (&quot;this_page&quot;)</code> will then render and
+transform <code>this_page.Rmd</code> into <code>this_page.html</code> formatted for this
+website. The full function used to generate these pages has a couple of
+other sub-functions, mostly to move images to locations accessible by
+<a target="_blank" rel="noopener noreferrer" href="https://foundation.zurb.com">
+foundation </a>, and to replace a few character fields not otherwise
+interpretable in either standard <code>html</code> or
+<a target="_blank" rel="noopener noreferrer" href="https://foundation.zurb.com">
+foundation </a> terms. Examples of the latter are the &#123;&#123; breadcrumbs &#125;&#125;
+used by <a target="_blank" rel="noopener noreferrer"
+    href="https://foundation.zurb.com/sites/docs/panini.html">
+foundation’s panini</a> interpreter, which are replaced by corresponding
+<code>html</code> encodings; or the <strong>R</strong>markdown code chunk delimiter, ```{r},
+from which the curly brackets must be removed to replace it with, ```
+r.</p>
+<section id="images" data-magellan-target="images"><h3>images</h></section>
+
+<p>While it is possible to specify an image directory in the <code>yaml</code>
+front-matter of an <code>.Rmd</code>document, it was just as easy, and more
+explict, to add another function to my <code>blog_render()</code> function to move
+them to the appropriate place in the <a
+target="_blank" rel="noopener noreferrer" href="https://foundation.zurb.com">
+foundation </a> directory, which is <code>assets/img</code>, and any arbitrary
+sub-directories thereof. The following lines achieve this</p>
+<div class="code-example"><pre><code class="r hljs">path &lt;- file.path (paste0 (fname, <span class="hljs-string">"_files"</span>), <span class="hljs-string">"figure-gfm"</span>)
+flist &lt;- list.files (path, full.names = <span class="hljs-literal">TRUE</span>)
+newpath &lt;- file.path (<span class="hljs-string">".."</span>, <span class="hljs-string">".."</span>, <span class="hljs-string">"assets"</span>, <span class="hljs-string">"img"</span>, fname)
+<span class="hljs-keyword">if</span> (!dir.exists (newpath))
+    dir.create (newpath, recursive = <span class="hljs-literal">TRUE</span>)
+file.rename (flist, file.path (newpath, list.files (path)))
+unlink (paste0 (fname, <span class="hljs-string">"_files"</span>), recursive = <span class="hljs-literal">TRUE</span>)</code></pre></div><p>along with a simple replacement in the main file of the former with the
+latter path. A final parameter called <code>center_images</code>, when <code>TRUE</code>,
+inserts simple <code>&lt;center&gt;</code> and <code>&lt;/center&gt;</code> lines before and after the
+standard markdown image insertion command (<code>![](&lt;path&gt;/&lt;to&gt;/&lt;image&gt;)</code>).</p>
+<section id="meta-data-yaml-data-and-the-front-page" data-magellan-target="meta-data-yaml-data-and-the-front-page"><h2>meta-data, yaml data, and the front page</h></section>
+
+<p>The <code>blog_render()</code> function then worked, but I still needed to
+automatically update the front page to link directly to the latest
+entry. Another fairly straightforward <code>yaml</code>-processing task, this time
+stripping the <code>yaml</code> headers from all blog entries. This became the
+second, and only other, main function, <code>update_main()</code>. This function
+essentially just strips the <code>yaml</code> header data out of each <code>.Rmd</code> blog
+entry, and re-formats it slightly as the <code>data/blog.yml</code> file. This in
+turn relies on one main function, <code>get_one_blog_dat()</code> which, for
+example, converts the metadata for this entry of:</p>
+<div class="code-example"><pre><code class="markdown hljs"><span class="hljs-horizontal_rule">---</span>
+title: how i made this site
+description: <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-title">blah</span> <span class="hljs-attribute">blah</span> <span class="hljs-attribute">blah</span>&gt;</span></span>
+date: 06/05/2019
+<span class="hljs-header">link: blog/blog001.html
+---</span></code></pre></div><p>into the only slightly-modified version in <code>data/blog.yml</code> of</p>
+<div class="code-example"><pre><code class="markdown hljs"><span class="hljs-bullet">-
+    </span>title: how i made this site
+<span class="hljs-code">    description: &lt;blah blah blah&gt;</span>
+<span class="hljs-code">    created: 06 May 19</span>
+<span class="hljs-code">    modified: 06 May 19</span>
+<span class="hljs-code">    link: blog/blog001.html</span></code></pre></div><p>The “created” date is read from the original <code>date</code> field of the <code>.Rmd</code>
+metadata, while the “modified” date is the actual date of file
+modification. These two dates enable blog entries to be sorted by dates
+of either creation or modification with a simple binary parameter.</p>
+<section id="conclusion" data-magellan-target="conclusion"><h1>conclusion</h></section>
+
+<p>That’s it. It took me a little while to construct this site, but most of
+the time was me learning how
+<a target="_blank" rel="noopener noreferrer" href="https://foundation.zurb.com">
+zurb foundation </a> works. Most of the mechanics of site construction
+and updating are nevertheless done via the <strong>R</strong> code, which is really
+very short and efficient. If you’re interested, the two files that do
+the work are <a href="https://github.com/mpadge/mpadge.github.io/blob/source/src/pages/blog/make_entry.R">here, for rendering a blog
+entry</a>
+and <a href="https://github.com/mpadge/mpadge.github.io/blob/source/src/pages/blog/update_main.R">here, for updating the main
+page</a>.
+The <code>render_blog()</code> function calls the main updating function anyway, so
+all I ever need to do is to call one simple function to render any new
+blog entry and update the website.</p>
+<p>The site itself is housed on the <code>master</code> branch of
+<a href="https://github.com/mpadge/mpadge.github.io">mpadge.github.io</a>, while
+the generating code behind the site is on the <a href="https://github.com/mpadge/mpadge.github.io/tree/source"><code>source</code>
+branch</a>.
+Deployment is controlled with a very simple <a href="https://github.com/mpadge/mpadge.github.io/blob/source/script.sh">bash
+script</a>,
+called by a single <a href="https://github.com/mpadge/mpadge.github.io/blob/source/makefile"><code>makefile</code>
+command</a>,
+which builds the foundation site, copies everything across from the
+<code>source</code> to <code>master</code> branches, adds the changes to <code>git</code>, and creates a
+commit to update the site. That’s it.</p>
+<p>Advantages of having done this my own way:</p>
+<ul>
+<li>no borrowed templates!</li>
+<li>no blogdown</li>
+<li>full control over everything<div style="text-align: right">
+Originally posted: 06 May 19
+Updated: 07 May 19
+</div>
+</li>
+</ul>
+</div>
+</div>
+
+<script src="https://utteranc.es/client.js"
+        repo="mpadge/mpadge.github.io"
+        issue-term="pathname"
+        label="blog_comments"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script>
+
+</div>
+</div>
+</div>
+<div class="large-12 cell" style="background-color:#ffffff00">
+    <div class="callout">
+        <p class="text-center" style="font-size:8pt">Copyright &#169; 2019--20 mark padgham</p>
+    </div>
+</div>
+
+
+<script src="../assets/js/app.js"></script>
+</body>
+</html>
