@@ -18,6 +18,10 @@ cp -r mpadge.github.io/src/pages blank/src/.
 cp -r mpadge.github.io/src/partials blank/src/.
 
 cp -r mpadge.github.io/.git blank/.
+cp mpadge.github.io/makefile blank/.
+cp mpadge.github.io/script.sh blank/.
+cp mpadge.github.io/blank-build.sh blank/.
+cp mpadge.github.io/.gitignore blank/.
 
 rm -rf mpadge.github.io
 mv blank mpadge.github.io
