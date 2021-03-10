@@ -1,4 +1,9 @@
 -
+    title: The allcontributors package
+    description: An alternative implementation in R of the original 'allcontributors.org' to acknowledge all contributors in your 'README' (or elsewhere). The original is intended to help acknowledge all contributions including those beyond the contents of an actual repository, such as community or other or less-tangible organisational contributions. This version only acknowledges tangible contributions to a repository, but automates that task to a single function call, in the hope that such simplicity will spur greater usage.
+    created: 10 Mar 21
+    link: blog/blog009.html
+-
     title: The troubles with getting help files in R
     description: A primer on ways to extract the actual content of help files. Because one day people will hopefully start text-mining these things, and show us all sorts of things we never knew about the people who make R packages. When they do, this entry will hopefully help.
     created: 29 Sep 20
@@ -23,8 +28,3 @@
     description: I recently encountered a problem while bundling an old C library into a new R package. The library itself depends on, and includes, an external "dictionary" in plain text format used to construct a large lookup table. The creators of this library of course assume that this dictionary file will always reside in the same directory as the compiled object, and so can always be directly linked. The `src` directory of R packages is, however, only permitted to contain source code, which text files definitively are not. This blog entry is about where to put such files, and how to link them within the source code.
     created: 04 Jul 19
     link: blog/blog004.html
--
-    title: Caching via background R processes
-    description: Caching is implemented because it saves time, generally by saving the results of one function call for subsequent reuse. Background processes are also commonly implemented as time-saving measures, through delegating long-running tasks to "somewhere else", allowing you to keep focussing on whatever (un)important things you were doing in the meantime. This blog entry describes how to combine the two to save double time through caching via background processes.
-    created: 06 Jun 19
-    link: blog/blog003.html

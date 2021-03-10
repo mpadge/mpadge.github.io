@@ -1,4 +1,9 @@
 -
+    title: The allcontributors package
+    description: An alternative implementation in R of the original 'allcontributors.org' to acknowledge all contributors in your 'README' (or elsewhere). The original is intended to help acknowledge all contributions including those beyond the contents of an actual repository, such as community or other or less-tangible organisational contributions. This version only acknowledges tangible contributions to a repository, but automates that task to a single function call, in the hope that such simplicity will spur greater usage.
+    created: 10 Mar 21
+    link: blog/blog009.html
+-
     title: The troubles with getting help files in R
     description: A primer on ways to extract the actual content of help files. Because one day people will hopefully start text-mining these things, and show us all sorts of things we never knew about the people who make R packages. When they do, this entry will hopefully help.
     created: 29 Sep 20
