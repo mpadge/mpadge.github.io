@@ -2,7 +2,7 @@ source ("update_main.R")
 
 blog_render <- function (fname, centre_images = TRUE) {
     rmarkdown::render(paste0 (fname, ".Rmd"),
-                      rmarkdown::md_document(variant = 'markdown_github'))
+                      rmarkdown::md_document(variant = "gfm"))
     file.rename (paste0 (fname, ".md"), paste0 (fname, ".html"))
     conn <- file (paste0 (fname, ".html"), open = "r+")
     md <- readLines (conn)
@@ -180,4 +180,4 @@ clean_figure_files <- function (md, fname, dest_dir = c ("assets", "img"))
         unlink (figpath, recursive = TRUE)
 }
 
-blog_render ("blog008")
+blog_render ("blog009")
