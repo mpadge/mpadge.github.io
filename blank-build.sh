@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# IMPORTANT: First call foundation new to make new site called "blank"!
+
 cd ..
 #foundation new
 # menu-driven stuff ...
