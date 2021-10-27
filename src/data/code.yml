@@ -1,24 +1,30 @@
 -
     link: https://ropensci.github.io/osmdata
     title: osmdata
+    cran: yes
     cranlink: http://cran.r-project.org/package=osmdata
     cranlogs: http://cranlogs.r-pkg.org/badges/grand-total/osmdata?color=orange
+    ros: yes
     roslink: https://github.com/ropensci/onboarding/issues/103
     rosstatus: https://badges.ropensci.org/103_status.svg
     description: import Open Street Map data
 - 
     link: https://atfutures.github.io/dodgr
     title: dodgr
+    cran: yes
     cranlink: http://cran.r-project.org/package=dodgr
     cranlogs: http://cranlogs.r-pkg.org/badges/grand-total/dodgr?color=orange
+    ros: no
     roslink:
     rosstatus:
     description: distances on directed graphs
 -
     link: https://ropensci.github.io/bikedata
     title: bikedata
+    cran: yes
     cranlink: http://cran.r-project.org/package=bikedata
     cranlogs: http://cranlogs.r-pkg.org/badges/grand-total/bikedata?color=orange
+    ros: yes
     roslink: https://github.com/ropensci/onboarding/issues/116
     rosstatus: https://badges.ropensci.org/103_status.svg
     description: historical trip data from all public bicycle hire systems which
@@ -26,24 +32,30 @@
 - 
     link: https://atfutures.github.io/gtfs-router
     title: gtfsrouter
+    cran: yes
     cranlink: http://cran.r-project.org/package=gtfsrouter
     cranlogs: http://cranlogs.r-pkg.org/badges/grand-total/gtfsrouter?color=orange
+    ros: no
     roslink:
     rosstatus:
     description: routing with gtfs (general transit feed specification) data
 -
     link: https://ropensci.github.io/osmplotr
     title: osmplotr
+    cran: yes
     cranlink: http://cran.r-project.org/package=osmplotr
     cranlogs: http://cranlogs.r-pkg.org/badges/grand-total/osmplotr?color=orange
+    ros: yes
     roslink: https://github.com/ropensci/onboarding/issues/27
     rosstatus: https://badges.ropensci.org/103_status.svg
     description: bespoke plots with Open Street Map data
 -
     link: https://hypertidy.github.io/geodist
     title: geodist
+    cran: yes
     cranlink: http://cran.r-project.org/package=geodist
     cranlogs: http://cranlogs.r-pkg.org/badges/grand-total/geodist?color=orange
+    ros: no
     roslink:
     rosstatus:
     description: ultra-lightweight, ultra-fast calculation of geodesic distances
