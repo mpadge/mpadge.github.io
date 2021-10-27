@@ -1,0 +1,161 @@
+
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>mpadge</title>
+    <link rel="stylesheet" href="../assets/css/app.css" />
+    <link rel="stylesheet" href="../assets/foundation-icons/foundation-icons.css" />
+  </head>
+<body>
+<!--
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/gruvbox-dark.min.css">
+href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/atelier-dune-light.min.css">
+-->
+<link rel="stylesheet"
+href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/atom-one-light.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<div data-sticky-container>
+    <div class="top-bar" data-sticky data-options="marginTop:0;",style="width:100%;">
+        <div class="top-bar-left">
+            <ul class="dropdown menu" data-dropdown-menu>
+                <li class="menu-text"> mpadge </li>
+                <li><a href="..//#">home</a></li>
+                <li><a href="../blog.html">blog</a></li>
+                <li> <a href="..//#code">code</a> </li>
+                <li> <a href="../privacy.html">privacy</a> </li>
+            </ul>
+        </div>
+        <div class="top-bar-right">
+            <ul class="dropdown menu" data-dropdown-menu>
+                <li><a target="_blank" rel="noopener noreferrer"
+                                       href="https://github.com/mpadge">
+                        <i class="fi-social-github"></i></a></li>
+                <li><a target="_blank" rel="noopener noreferrer"
+                                       href="https://twitter.com/bikesRdata">
+                        <i class="fi-social-twitter"></i></a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="blogClass">
+<div class="grid-container">
+<div class="grid-x grid-padding-x">
+
+<div class="cell medium-2 large-2 left">
+<nav class="sticky-container" data-sticky-container>
+<div class="sticky" data-sticky data-anchor="how-i-make-this-site" data-sticky-on="large" data-margin-top="5">
+<ul class="vertical menu" data-magellan>
+<li><a href="#GitHub-notifications-from-the-terminal" style="color:#111111">GitHub notifications from the terminal</a></li>
+<li><a href="#The-script" style="color:#111111">The script</a></li>
+<li><a href="#The-gh-notifications-functions" style="color:#111111">The `gh_notifications` functions</a></li>
+</div>
+</nav>
+</div>
+
+<div class="cell medium-10 large-10">
+<div class="sections">
+<section id="GitHub-notifications-from-the-terminal" data-magellan-target="GitHub-notifications-from-the-terminal"><h1>GitHub notifications from the terminal</h></section>
+
+<p>I work almost entirely from the terminal, and regret the few remaining
+tasks which still require me to venture elsewhere, such as a web
+browser. Until recently, one of my main reasons for constantly switching
+to my browser was to check my GitHub notifications. This post describes
+how I view my notifications within the terminal, including an option to
+mark them as “read” on GitHub. The internal functionality is ended in R,
+although the functions are mere <code>http::GET</code> calls which could easily be
+translated into any other language.</p>
+<section id="The-script" data-magellan-target="The-script"><h2>The script</h></section>
+
+<p>Like almost everything I do, I associate this with an alias, in this
+case <code>gn</code> for, of course, GitHub Notifications. The alias calls the
+following very simple <code>bash</code> script:</p>
+<div class="code-example"><pre><code class="bash hljs"><span class="hljs-shebang">#!/usr/bin/bash
+</span>
+<span class="hljs-keyword">if</span> [ <span class="hljs-string">"<span class="hljs-variable">$1</span>"</span> == <span class="hljs-string">""</span> ]; <span class="hljs-keyword">then</span>
+    Rscript <span class="hljs-operator">-e</span> <span class="hljs-string">"mpmisc::gh_notifications ()"</span>
+<span class="hljs-keyword">elif</span> [ <span class="hljs-string">"<span class="hljs-variable">$1</span>"</span> == <span class="hljs-string">"done"</span> ]; <span class="hljs-keyword">then</span>
+    Rscript <span class="hljs-operator">-e</span> <span class="hljs-string">"mpmisc::mark_gh_notifications_as_read()"</span>
+<span class="hljs-keyword">else</span>
+    Rscript <span class="hljs-operator">-e</span> <span class="hljs-string">"mpmisc::open_gh_notification (<span class="hljs-variable">$1</span>)"</span>
+<span class="hljs-keyword">fi</span></code></pre></div><p>That shows the three options currently implemented:</p>
+<ol>
+<li> <code>gn</code> to view notifications;</li>
+<li> <code>gn done</code> to mark all notifications as read; and</li>
+<li> <code>gn &lt;number&gt;</code> to open the nominated notification in GitHub</li>
+</ol>
+<p>All of these options call functions from an <a href="https://github.com/mpadge/mpmisc">R package I use to hold my
+miscellaneous functions, <code>mpmisc</code></a>.</p>
+<section id="The-gh-notifications-functions" data-magellan-target="The-gh-notifications-functions"><h2>The `gh_notifications` functions</h></section>
+
+<p>All of these functions are contained within <a href="https://github.com/mpadge/mpmisc/blob/master/R/github-notifications.R">a single file of that
+package</a>,
+itself containing less than 200 lines of code. The functions use
+GitHub’s REST (version 3) API, because notifications are not yet (at the
+time of writing) able to be accessed via the more recent GraphQL (verion
+4) API. Once they are accessible via GraphQL queries, much more will be
+possible than the three options listed above.</p>
+<p>The main <code>gh_notifications()</code> function is a simple <code>GET</code> call to the API
+endpoint, which delivers a JSON payload of notification data. From that,
+I extract a few essential details including:</p>
+<ol>
+<li> Title of the notification;</li>
+<li> Repository, in <code>org/repo</code> format;</li>
+<li>Issue Number (where present; not for notifications from such things
+ as commit messages);</li>
+<li> Notification URL;</li>
+<li> Time at which notification updated/issued; and</li>
+<li> Time at which notification or issue was last read.</li>
+</ol>
+<p>These notifications are then cached for immediate recall by other
+functions. Finally the notifications are printed to screen with a
+separate function which formats output using [ANSII escape
+codes](<a href="https://en.wikipedia.org/wiki/ANSI_escape_code#SGR_(Select_Graphic_Rendition)">https://en.wikipedia.org/wiki/ANSI_escape_code#SGR_(Select_Graphic_Rendition)</a>.
+The result then looks something like this:</p>
+<p>→ <span style="color:red">org1/repo2 #3</span>:<span
+style="color:green"> title one</span><br> → <span
+style="color:red">org4/repo5 #6</span>:<span style="color:green"> title
+two</span></p>
+<p>Typing <code>gn 1</code> will then open the first notification in my default web
+browser. The notifications for <a href="https://github.com/mpadge/mpmisc/blob/master/R/github-notifications.R#L102-L133">the <code>open_gh_notification()</code>
+function</a>
+are loaded from the cached version, so opening is effectively
+instantaeous. Finally, the REST API offers one additional function to
+mark all notifications as read by issuing a <code>POST</code> command to the same
+API endpoint. <a href="https://github.com/mpadge/mpmisc/blob/c4fbbeb32b9a6e9ef9a10c58643fe9ea18afb470/R/github-notifications.R#L141-L151">The <code>mark_gh_notifications_as_read()</code>
+function</a>
+does exactly that, and is aliased in the above shell script to
+<code>gn done</code>.</p>
+<div style="text-align: right">
+Originally posted: 27 Oct 21
+</div>
+</div>
+</div>
+
+<script src="https://utteranc.es/client.js"
+        repo="mpadge/mpadge.github.io"
+        issue-term="pathname"
+        label="blog_comments"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script>
+
+</div>
+</div>
+</div>
+<div class="large-12 cell" style="background-color:#ffffff00">
+    <div class="callout">
+        <p class="text-center" style="font-size:8pt">Copyright &#169; 2019--20 mark padgham</p>
+    </div>
+</div>
+
+
+<script src="../assets/js/app.js"></script>
+</body>
+</html>
