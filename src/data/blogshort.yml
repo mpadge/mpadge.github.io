@@ -1,4 +1,9 @@
 -
+    title: GitHub notifications from the terminal
+    description: How I get my GitHub notifications straight from the terminal.
+    created: 27 Oct 21
+    link: blog/blog010.html
+-
     title: The allcontributors package
     description: An alternative implementation in R of the original 'allcontributors.org' to acknowledge all contributors in your 'README' (or elsewhere). The original is intended to help acknowledge all contributions including those beyond the contents of an actual repository, such as community or other or less-tangible organisational contributions. This version only acknowledges tangible contributions to a repository, but automates that task to a single function call, in the hope that such simplicity will spur greater usage.
     created: 10 Mar 21
@@ -23,8 +28,3 @@
     description: If everything in R is a vector, then what is a matrix? This entry will demonstrate that even matrices are vectors, and that processing of matrices can in certain circumstances be considerably more efficient if they are treated as simple vectors.
     created: 31 Jul 19
     link: blog/blog005.html
--
-    title: Calling external files from C in R
-    description: I recently encountered a problem while bundling an old C library into a new R package. The library itself depends on, and includes, an external "dictionary" in plain text format used to construct a large lookup table. The creators of this library of course assume that this dictionary file will always reside in the same directory as the compiled object, and so can always be directly linked. The `src` directory of R packages is, however, only permitted to contain source code, which text files definitively are not. This blog entry is about where to put such files, and how to link them within the source code.
-    created: 04 Jul 19
-    link: blog/blog004.html

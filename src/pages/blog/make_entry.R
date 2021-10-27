@@ -180,4 +180,4 @@ clean_figure_files <- function (md, fname, dest_dir = c ("assets", "img"))
         unlink (figpath, recursive = TRUE)
 }
 
-blog_render ("blog009")
+blog_render ("blog010")
