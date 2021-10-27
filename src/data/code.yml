@@ -59,3 +59,43 @@
     roslink:
     rosstatus:
     description: ultra-lightweight, ultra-fast calculation of geodesic distances
+-
+    link: https://docs.ropensci.org/allcontributors/
+    title: allcontributors
+    cran: yes
+    cranlink: http://cran.r-project.org/package=allcontributors
+    cranlogs: http://cranlogs.r-pkg.org/badges/grand-total/allcontributors?color=orange
+    ros: no
+    roslink:
+    rosstatus:
+    description: all-contributions as an R package
+-
+    link: https://docs.ropensci.org/pkgstats/
+    title: pkgstats
+    cran: no
+    cranlink:
+    cranlogs:
+    ros: no
+    roslink:
+    rosstatus:
+    description: Historical statistics of every R package ever
+-
+    link: https://docs.ropensci.org/pkgcheck/
+    title: pkgcheck
+    cran: no
+    cranlink:
+    cranlogs:
+    ros: no
+    roslink:
+    rosstatus:
+    description: rOpenSci package checking software
+-
+    link: https://docs.ropensci.org/autotest/
+    title: autotest
+    cran: no
+    cranlink:
+    cranlogs:
+    ros: no
+    roslink:
+    rosstatus:
+    description: Automatic testing of R packages
