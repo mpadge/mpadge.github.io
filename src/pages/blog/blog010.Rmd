@@ -1,0 +1,85 @@
+---
+title: GitHub notifications from the terminal
+description: How I get my GitHub notifications straight from the terminal.
+date: 27/10/2021
+link: blog/blog010.html
+---
+
+# GitHub notifications from the terminal
+
+I work almost entirely from the terminal, and regret the few remaining tasks
+which still require me to venture elsewhere, such as a web browser. Until
+recently, one of my main reasons for constantly switching to my browser was to
+check my GitHub notifications. This post describes how I view my notifications
+within the terminal, including an option to mark them as "read" on GitHub. The
+internal functionality is ended in R, although the functions are mere
+`http::GET` calls which could easily be translated into any other language.
+
+## The script
+
+Like almost everything I do, I associate this with an alias, in this case `gn`
+for, of course, GitHub Notifications. The alias calls the following very simple
+`bash` script:
+
+```{bash, eval = FALSE}
+#!/usr/bin/bash
+
+if [ "$1" == "" ]; then
+    Rscript -e "mpmisc::gh_notifications ()"
+elif [ "$1" == "done" ]; then
+    Rscript -e "mpmisc::mark_gh_notifications_as_read()"
+else
+    Rscript -e "mpmisc::open_gh_notification ($1)"
+fi
+```
+
+That shows the three options currently implemented:
+
+1. `gn` to view notifications;
+2. `gn done` to mark all notifications as read; and
+3. `gn <number>` to open the nominated notification in GitHub
+
+All of these options call functions from an [R package I use to hold my
+miscellaneous functions, `mpmisc`](https://github.com/mpadge/mpmisc).
+
+## The `gh_notifications` functions
+
+All of these functions are contained within [a single file of that
+package](https://github.com/mpadge/mpmisc/blob/master/R/github-notifications.R),
+itself containing less than 200 lines of code. The functions use GitHub's REST
+(version 3) API, because notifications are not yet (at the time of writing)
+able to be accessed via the more recent GraphQL (verion 4) API. Once they are
+accessible via GraphQL queries, much more will be possible than the three
+options listed above.
+
+The main `gh_notifications()` function is a simple `GET` call to the API
+endpoint, which delivers a JSON payload of notification data. From that,
+I extract a few essential details including:
+
+1. Title of the notification;
+2. Repository, in `org/repo` format;
+3. Issue Number (where present; not for notifications from such things as commit messages);
+4. Notification URL;
+5. Time at which notification updated/issued; and
+6. Time at which notification or issue was last read.
+
+These notifications are then cached for immediate recall by other functions.
+Finally the notifications are printed to screen with a separate function which
+formats output using [ANSII escape
+codes](https://en.wikipedia.org/wiki/ANSI_escape_code#SGR_(Select_Graphic_Rendition).
+The result then looks something like this:
+
+
+&#8594; <span style="color:red">org1/repo2 #3</span>:<span style="color:green"> title one</span><br>
+&#8594; <span style="color:red">org4/repo5 #6</span>:<span style="color:green"> title two</span>
+
+Typing `gn 1` will then open the first notification in my default web browser.
+The notifications for [the `open_gh_notification()`
+function](https://github.com/mpadge/mpmisc/blob/master/R/github-notifications.R#L102-L133)
+are loaded from the cached version, so opening is effectively instantaeous.
+Finally, the REST API offers one additional function to mark all notifications
+as read by issuing a `POST` command to the same API endpoint. [The
+`mark_gh_notifications_as_read()`
+function](https://github.com/mpadge/mpmisc/blob/c4fbbeb32b9a6e9ef9a10c58643fe9ea18afb470/R/github-notifications.R#L141-L151)
+does exactly that, and is aliased in the above shell script to `gn done`.
+
