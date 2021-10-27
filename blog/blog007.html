@@ -100,30 +100,30 @@ vector, and so has of total length <code>nrow * ncol</code>. The demonstration
 includes a few notable features:</p>
 <ol>
 <li><p>The main <code>input</code> simply provides an integer index into the rows of
-the matrix, with the parallel job splitting the task among elements
-of that index. This explicit specification of an index vector is not
-necessary, but serves here to clarify what the worker is actually
-doing. An alternative would be for <code>input</code> to be <code>the_matrix</code>, and
-subsequently call the parallel worker only over <code>[0 ... nrow]</code> of
-that vector which has a total length of <code>nrow * ncol</code>.</p>
+ the matrix, with the parallel job splitting the task among elements
+ of that index. This explicit specification of an index vector is not
+ necessary, but serves here to clarify what the worker is actually
+ doing. An alternative would be for <code>input</code> to be <code>the_matrix</code>, and
+ subsequently call the parallel worker only over <code>[0 ... nrow]</code> of
+ that vector which has a total length of <code>nrow * ncol</code>.</p>
 </li>
 <li><p>We are passing two additional variables specifying <code>nrow</code> and
-<code>ncol</code>. Although one of these could be inferred at run time, we pass
-them simply to demonstrate how this is done. Note in particular the
-form in the second constructor, called for each <code>Split</code> job, which
-accepts as input the variables as defined by the main constructor,
-and so all variable definitions are of the form,
-<code>nrow(oneJob.nrow)</code>. The initial constructor also has input
-variables explicitly defined with <code>_in</code> suffices, to clarify exactly
-how such variable passing works.</p>
+ <code>ncol</code>. Although one of these could be inferred at run time, we pass
+ them simply to demonstrate how this is done. Note in particular the
+ form in the second constructor, called for each <code>Split</code> job, which
+ accepts as input the variables as defined by the main constructor,
+ and so all variable definitions are of the form,
+ <code>nrow(oneJob.nrow)</code>. The initial constructor also has input
+ variables explicitly defined with <code>_in</code> suffices, to clarify exactly
+ how such variable passing works.</p>
 </li>
 <li><p>No initial values for the <code>output</code> are passed to the constructors.
-Rather, <code>output</code> must be resized to the desired size by each of
-those constructors, and so each repeats the line
-<code>output.resize(nrow, 0.0)</code>, which also initialises the values. (This
-is more readily done using a <code>std::vector</code> than an <code>Rcpp</code> vector,
-with final conversion to an <code>Rcpp</code> vector result achieved through a
-simple <code>Rcpp::wrap</code> call.)</p>
+ Rather, <code>output</code> must be resized to the desired size by each of
+ those constructors, and so each repeats the line
+ <code>output.resize(nrow, 0.0)</code>, which also initialises the values. (This
+ is more readily done using a <code>std::vector</code> than an <code>Rcpp</code> vector,
+ with final conversion to an <code>Rcpp</code> vector result achieved through a
+ simple <code>Rcpp::wrap</code> call.)</p>
 </li>
 </ol>
 <!-- end list -->

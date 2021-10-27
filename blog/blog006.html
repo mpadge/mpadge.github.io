@@ -90,17 +90,17 @@ github to do the authentication. <code>git push</code> then just works. My probl
 with this is twofold:</p>
 <ol>
 <li><em>i like typing in both my github name, and my password</em>, especially
-because i have long learnt to appreciate the brief cognitive
-disconnect this gives me, one which not infrequently leads to me
-realising that, no, i really do not want to push that commit. The
-necessity of me manually entering my name and password for each push
-provides an extra level of security against me inadvertently pushing
-breaking or otherwise silly commits. I like that.</li>
+ because i have long learnt to appreciate the brief cognitive
+ disconnect this gives me, one which not infrequently leads to me
+ realising that, no, i really do not want to push that commit. The
+ necessity of me manually entering my name and password for each push
+ provides an extra level of security against me inadvertently pushing
+ breaking or otherwise silly commits. I like that.</li>
 <li>The immediacy of SSH pushes disturbs me somewhat. Yes, my local
-machine is absolutely authenticated, but this means that anybody who
-happens to get their maws on my machine can push whatever they want
-anytime. Although this is wildly unlikely to ever happen, the mere
-notion that it could nevertheless disturbs me.</li>
+ machine is absolutely authenticated, but this means that anybody who
+ happens to get their maws on my machine can push whatever they want
+ anytime. Although this is wildly unlikely to ever happen, the mere
+ notion that it could nevertheless disturbs me.</li>
 </ol>
 <p>I like having to type my name and password. It is impossible for me to
 type my name and PAT. For a brief moment after having switched on 2FA on
@@ -130,15 +130,15 @@ each time i need to <code>git push</code>? No way! And so … on to my solution.
 <p>My solution involved two main tricks:</p>
 <ol>
 <li>Replacing my pushes in the form <code>git push origin master</code>, where
-<code>origin</code> can be identified via <code>git remote -v</code> as something like
-<code>https://github.com/mpadge/&lt;repo&gt;</code>, and which necessitates entering
-<code>&quot;mpadge&quot;</code> and my PAT, with <code>git push https://mpadge:&lt;PAT&gt;@github.com/mpadge/&lt;repo&gt;</code>, where the PAT is
-passed directly to github, circumventing the need to enter it
-manually, so that the push is directly sent and accepted; and</li>
+ <code>origin</code> can be identified via <code>git remote -v</code> as something like
+ <code>https://github.com/mpadge/&lt;repo&gt;</code>, and which necessitates entering
+ <code>&quot;mpadge&quot;</code> and my PAT, with <code>git push  https://mpadge:&lt;PAT&gt;@github.com/mpadge/&lt;repo&gt;</code>, where the PAT is
+ passed directly to github, circumventing the need to enter it
+ manually, so that the push is directly sent and accepted; and</li>
 <li>Writing a script requiring my (github or other) password, and using
-that to automatically decrypt my PAT, convert it to an environmental
-variable, and using that to convert <code>git push</code> into the form above
-with my PAT embedded.</li>
+ that to automatically decrypt my PAT, convert it to an environmental
+ variable, and using that to convert <code>git push</code> into the form above
+ with my PAT embedded.</li>
 </ol>
 <p>The second of those steps looks, in the form of a <code>bash</code> script, like
 this:</p>

@@ -298,15 +298,14 @@ cache objects via background <strong>R</strong> processes.</p>
 
 <ol>
 <li>Define a function to generate the object to be cached, and include a
-<code>tempdir()</code> parameter if that is to be used as the cache location.</li>
+ <code>tempdir()</code> parameter if that is to be used as the cache location.</li>
 <li>Use <code>callr::r_bg()</code> to call that function in the background and
-deliver the result to the desired location.</li>
+ deliver the result to the desired location.</li>
 <li>Examine the handle of the process returned by <code>r_bg()</code> to determine
-whether it has finished or not.</li>
-<li>… use the cached result.<div style="text-align: right">
+ whether it has finished or not.</li>
+<li> … use the cached result.<div style="text-align: right">
 Originally posted: 06 Jun 19
-</div>
-</li>
+</div></li>
 </ol>
 </div>
 </div>
