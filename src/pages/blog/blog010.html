@@ -22,9 +22,19 @@ tasks which still require me to venture elsewhere, such as a web
 browser. Until recently, one of my main reasons for constantly switching
 to my browser was to check my GitHub notifications. This post describes
 how I view my notifications within the terminal, including an option to
-mark them as “read” on GitHub. The internal functionality is ended in R,
-although the functions are mere `http::GET` calls which could easily be
-translated into any other language.
+mark them as “read” on GitHub. The internal functionality is encoded in
+R, although the functions are mere `http::GET` calls which could easily
+be translated into any other language.
+
+The code described and linked to here uses GitHub’s REST (version 3)
+API, because notifications are not yet (at the time of writing) able to
+be accessed via the more recent GraphQL (verion 4) API. The [GitHub
+Command-Line-Interface (cli)](https://cli.github.com) relies exclusively
+on the GraphQL API, and so also can’t (yet) be used to access
+notifications. Once notifications are accessible via GraphQL queries,
+the `cli` will be able to be used directly to do everything described
+here and much more. Until that time, the following provides one way to
+access GitHub notifications from the terminal.
 
 <section id="The-script" data-magellan-target="The-script"><h2>The script</h></section>
 
@@ -39,8 +49,11 @@ if [ "$1" == "" ]; then
     Rscript -e "mpmisc::gh_notifications ()"
 elif [ "$1" == "done" ]; then
     Rscript -e "mpmisc::mark_gh_notifications_as_read()"
-else
+elif [[ "$1" =~ ^[0-9]+$ ]]; then
     Rscript -e "mpmisc::open_gh_notification ($1)"
+else
+    echo "gn only accepts 'done' or a single number"
+    exit 1
 fi
 ```
 
@@ -57,15 +70,14 @@ miscellaneous functions, `mpmisc`](https://github.com/mpadge/mpmisc).
 
 All of these functions are contained within [a single file of that
 package](https://github.com/mpadge/mpmisc/blob/master/R/github-notifications.R),
-itself containing less than 200 lines of code. The functions use
-GitHub’s REST (version 3) API, because notifications are not yet (at the
-time of writing) able to be accessed via the more recent GraphQL (verion
-4) API. Once they are accessible via GraphQL queries, much more will be
-possible than the three options listed above.
-
-The main `gh_notifications()` function is a simple `GET` call to the API
-endpoint, which delivers a JSON payload of notification data. From that,
-I extract a few essential details including:
+itself containing less than 200 lines of code. The main
+`gh_notifications()` function is a simple [`GET` call to the API
+endpoint](https://docs.github.com/en/rest/reference/activity#notifications).
+The request requires authentication with a GitHub API token, and returns
+notifications for the user associated with the token. The request
+returns a wealth of JSON data [described in the API docs (under
+“Response”)](https://docs.github.com/en/rest/reference/activity#list-notifications-for-the-authenticated-user),
+from which I extract a few essential details including:
 
 1.  Title of the notification;
 2.  Repository, in `org/repo` format;
@@ -90,14 +102,17 @@ Typing `gn 1` will then open the first notification in my default web
 browser. The notifications for [the `open_gh_notification()`
 function](https://github.com/mpadge/mpmisc/blob/master/R/github-notifications.R#L102-L133)
 are loaded from the cached version, so opening is effectively
-instantaeous. Finally, the REST API offers one additional function to
-mark all notifications as read by issuing a `POST` command to the same
-API endpoint. [The `mark_gh_notifications_as_read()`
+instantaeous. Finally, the REST API offers [one additional function to
+mark all notifications as read by issuing a `PUT` command to the same
+API
+endpoint](https://docs.github.com/en/rest/reference/activity#mark-notifications-as-read).
+[The `mark_gh_notifications_as_read()`
 function](https://github.com/mpadge/mpmisc/blob/c4fbbeb32b9a6e9ef9a10c58643fe9ea18afb470/R/github-notifications.R#L141-L151)
 does exactly that, and is aliased in the above shell script to
 `gn done`.
 <div style="text-align: right">
 Originally posted: 27 Oct 21
+Updated: 28 Oct 21
 </div>
 {{/markdown}}
 </div>

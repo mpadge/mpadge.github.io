@@ -1,6 +1,6 @@
 -
     title: GitHub notifications from the terminal
-    description: How I get my GitHub notifications straight from the terminal.
+    description: I work almost entirely from the terminal, and regret the few remaining tasks which still require me to venture elsewhere, such as a web browser. Until recently, one of my main reasons for constantly switching to my browser was to check my GitHub notifications. This post describes how I view my notifications within the terminal, including an option to mark them as "read" on GitHub.
     created: 27 Oct 21
     link: blog/blog010.html
 -
