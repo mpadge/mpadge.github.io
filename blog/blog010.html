@@ -67,9 +67,18 @@ tasks which still require me to venture elsewhere, such as a web
 browser. Until recently, one of my main reasons for constantly switching
 to my browser was to check my GitHub notifications. This post describes
 how I view my notifications within the terminal, including an option to
-mark them as “read” on GitHub. The internal functionality is ended in R,
-although the functions are mere <code>http::GET</code> calls which could easily be
-translated into any other language.</p>
+mark them as “read” on GitHub. The internal functionality is encoded in
+R, although the functions are mere <code>http::GET</code> calls which could easily
+be translated into any other language.</p>
+<p>The code described and linked to here uses GitHub’s REST (version 3)
+API, because notifications are not yet (at the time of writing) able to
+be accessed via the more recent GraphQL (verion 4) API. The <a href="https://cli.github.com">GitHub
+Command-Line-Interface (cli)</a> relies exclusively
+on the GraphQL API, and so also can’t (yet) be used to access
+notifications. Once notifications are accessible via GraphQL queries,
+the <code>cli</code> will be able to be used directly to do everything described
+here and much more. Until that time, the following provides one way to
+access GitHub notifications from the terminal.</p>
 <section id="The-script" data-magellan-target="The-script"><h2>The script</h></section>
 
 <p>Like almost everything I do, I associate this with an alias, in this
@@ -81,8 +90,11 @@ following very simple <code>bash</code> script:</p>
     Rscript <span class="hljs-operator">-e</span> <span class="hljs-string">"mpmisc::gh_notifications ()"</span>
 <span class="hljs-keyword">elif</span> [ <span class="hljs-string">"<span class="hljs-variable">$1</span>"</span> == <span class="hljs-string">"done"</span> ]; <span class="hljs-keyword">then</span>
     Rscript <span class="hljs-operator">-e</span> <span class="hljs-string">"mpmisc::mark_gh_notifications_as_read()"</span>
-<span class="hljs-keyword">else</span>
+<span class="hljs-keyword">elif</span> [[ <span class="hljs-string">"<span class="hljs-variable">$1</span>"</span> =~ ^[<span class="hljs-number">0</span>-<span class="hljs-number">9</span>]+$ ]]; <span class="hljs-keyword">then</span>
     Rscript <span class="hljs-operator">-e</span> <span class="hljs-string">"mpmisc::open_gh_notification (<span class="hljs-variable">$1</span>)"</span>
+<span class="hljs-keyword">else</span>
+    <span class="hljs-built_in">echo</span> <span class="hljs-string">"gn only accepts 'done' or a single number"</span>
+    <span class="hljs-built_in">exit</span> <span class="hljs-number">1</span>
 <span class="hljs-keyword">fi</span></code></pre></div><p>That shows the three options currently implemented:</p>
 <ol>
 <li> <code>gn</code> to view notifications;</li>
@@ -95,14 +107,14 @@ miscellaneous functions, <code>mpmisc</code></a>.</p>
 
 <p>All of these functions are contained within <a href="https://github.com/mpadge/mpmisc/blob/master/R/github-notifications.R">a single file of that
 package</a>,
-itself containing less than 200 lines of code. The functions use
-GitHub’s REST (version 3) API, because notifications are not yet (at the
-time of writing) able to be accessed via the more recent GraphQL (verion
-4) API. Once they are accessible via GraphQL queries, much more will be
-possible than the three options listed above.</p>
-<p>The main <code>gh_notifications()</code> function is a simple <code>GET</code> call to the API
-endpoint, which delivers a JSON payload of notification data. From that,
-I extract a few essential details including:</p>
+itself containing less than 200 lines of code. The main
+<code>gh_notifications()</code> function is a simple <a href="https://docs.github.com/en/rest/reference/activity#notifications"><code>GET</code> call to the API
+endpoint</a>.
+The request requires authentication with a GitHub API token, and returns
+notifications for the user associated with the token. The request
+returns a wealth of JSON data <a href="https://docs.github.com/en/rest/reference/activity#list-notifications-for-the-authenticated-user">described in the API docs (under
+“Response”)</a>,
+from which I extract a few essential details including:</p>
 <ol>
 <li> Title of the notification;</li>
 <li> Repository, in <code>org/repo</code> format;</li>
@@ -125,14 +137,17 @@ two</span></p>
 browser. The notifications for <a href="https://github.com/mpadge/mpmisc/blob/master/R/github-notifications.R#L102-L133">the <code>open_gh_notification()</code>
 function</a>
 are loaded from the cached version, so opening is effectively
-instantaeous. Finally, the REST API offers one additional function to
-mark all notifications as read by issuing a <code>POST</code> command to the same
-API endpoint. <a href="https://github.com/mpadge/mpmisc/blob/c4fbbeb32b9a6e9ef9a10c58643fe9ea18afb470/R/github-notifications.R#L141-L151">The <code>mark_gh_notifications_as_read()</code>
+instantaeous. Finally, the REST API offers <a href="https://docs.github.com/en/rest/reference/activity#mark-notifications-as-read">one additional function to
+mark all notifications as read by issuing a <code>PUT</code> command to the same
+API
+endpoint</a>.
+<a href="https://github.com/mpadge/mpmisc/blob/c4fbbeb32b9a6e9ef9a10c58643fe9ea18afb470/R/github-notifications.R#L141-L151">The <code>mark_gh_notifications_as_read()</code>
 function</a>
 does exactly that, and is aliased in the above shell script to
 <code>gn done</code>.</p>
 <div style="text-align: right">
 Originally posted: 27 Oct 21
+Updated: 28 Oct 21
 </div>
 </div>
 </div>
