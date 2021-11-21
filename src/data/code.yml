@@ -70,6 +70,16 @@
     rosstatus:
     description: all-contributions as an R package
 -
+    link: https://docs.ropensci.org/mapscanner/
+    title: mapscanner
+    cran: yes
+    cranlink: http://cran.r-project.org/package=mapscanner
+    cranlogs: http://cranlogs.r-pkg.org/badges/grand-total/mapscanner?color=orange
+    ros: yes
+    roslink: https://github.com/ropensci/software-review/issues/330
+    rosstatus: https://badges.ropensci.org/103_status.svg
+    description: print maps, draw on them, scan them back in
+-
     link: https://docs.ropensci.org/pkgstats/
     title: pkgstats
     cran: no
