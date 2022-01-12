@@ -1,0 +1,99 @@
+---
+title: Time out on parallel threads in R
+description: Python's `multiprocessing` and `threading` libraries both have a timeout operation when re-joining threads after they've finished. This provides an easy way to launch multi-threaded jobs while ensuing that no single thread exceeds a specified timeout. This post describes one way to implement an equivalent functionality in R.
+date: 12/01/2022
+link: blog/blog011.html
+---
+
+# Time out on parallel threads in R
+
+Python's
+[`multiprocessing`](https://docs.python.org/3/library/multiprocessing.html) and
+[`threading`](https://docs.python.org/3/library/threading.html) libraries both
+have a timeout operation when re-joining threads after they've finished. This
+provides an easy way to launch multi-threaded jobs while ensuing that no single
+thread exceeds a specified timeout. This is very useful in implementing a
+standard "timeout on a function call" operation, as detailed in [this Stack
+Overflow question of that
+title](https://stackoverflow.com/questions/492519/timeout-on-a-function-call)
+which offers a bewildering variety of approaches to that problem. The easiest
+one of those is [the recommendation to rely on the `multiprocessing`
+libraries's `join()` operation](https://stackoverflow.com/a/14924210) which
+accepts a `timeout` parameter, [as described in the library's
+documentation](https://docs.python.org/3/library/multiprocessing.html#multiprocessing.Process.join),
+with an equivalent parameter [described for the `threading`
+library](https://docs.python.org/3/library/threading.html#threading.Thread.join).
+
+A nice example of the usefulness of this `timeout` parameter in action is given
+in [the `fitter` package](https://github.com/cokelaer/fitter) by
+[@cokelaer](https://github.com/cokelaer) for fitting probability distributions
+to observed data. The main function fits a wide range of different
+distributions, and can even "automagically" select the best distribution
+according to specified criteria. This is done through fitting different
+distributions in parallel on different threads, generally greatly speeding up
+calculations. Distributional fitting is, however, often an iterative procedure,
+and so may take an unknown duration to generate a fit within some specified
+tolerance. Parallel threads by default must wait for all to terminate before
+individual results can be joined. To ensure distributional fits are generated
+within a reasonable duration, [`fitter` has a `_timed_run`
+function](https://github.com/cokelaer/fitter/blob/cf222aab741492917bd3a2d1af821e0b5344907d/src/fitter/fitter.py#L429)
+to:
+
+> spawn a thread and run the given function ... and return the given default
+> value if the timeout is exceeded.
+
+The bit of that function which controls the timeout consists of the following
+lines (with code for exception handling removed here):
+
+```{python, eval = FALSE}
+def _timed_run (self, func, args=()):
+    class InterruptableThread(threading.Thread):
+        def __init__(self):
+            threading.Thread.__init__(self)
+            self.result = default
+
+        def run(self):
+            self.result = func(args)
+
+    it = InterruptableThread()
+    it.start()
+    it.join(self.timeout)
+    return it.result
+```
+
+That represents a succinct way to run a multi-threaded job in which each thread
+obeys a specified timeout parameter. There is no equivalent of this
+functionality in R, and so this post describes one approach to implementing
+equivalent functionality.
+
+## Single-thread timeout on parallel jobs in R
+
+R offers a wide variety of packages for parallel processing, from the
+[recommended `parallel`
+package](https://stat.ethz.ch/R-manual/R-devel/library/parallel/doc/parallel.pdf)
+to the one-stop shop of [the `future`
+package](https://future.futureverse.org/). Almost all contributed libraries
+like `future` nevertheless have two common attributes relevant in this context:
+
+1. They rely on the underlying functionality of the `parallel` package; and
+2. They offer no equivalent of the `timeout` parameter of the equivalent python
+   libraries.
+
+There is nevertheless one R package which does offer precisely this timeout
+functionality: [the `callr` package by Gábor Csárdi and
+others](https://callr.r-lib.org/index.html) for "calling R from R" - that is, for,
+
+> performing computation in a separate R process, without affecting the current R process
+
+This package offers two main modes of calling processes: [as blocking,
+foreground processes via
+`callr::r()`](https://callr.r-lib.org/reference/r.html), or [as non-blocking,
+background processes via
+`callr::r_bg()`](https://callr.r-lib.org/reference/r_bg.html). The `r()`
+function has an explicit `timeout` parameter, which returns a
+`system_command_timeout_error` if the specified timeout (in seconds) is
+exceeded. The following code demonstrates this functionality:
+
+
+
+

@@ -1,4 +1,9 @@
 -
+    title: Time out on parallel threads in R
+    description: Python's `multiprocessing` and `threading` libraries both have a timeout operation when re-joining threads after they've finished. This provides an easy way to launch multi-threaded jobs while ensuing that no single thread exceeds a specified timeout. This post describes one way to implement an equivalent functionality in R.
+    created: 12 Jan 22
+    link: blog/blog011.html
+-
     title: GitHub notifications from the terminal
     description: I work almost entirely from the terminal, and regret the few remaining tasks which still require me to venture elsewhere, such as a web browser. Until recently, one of my main reasons for constantly switching to my browser was to check my GitHub notifications. This post describes how I view my notifications within the terminal, including an option to mark them as "read" on GitHub.
     created: 27 Oct 21
