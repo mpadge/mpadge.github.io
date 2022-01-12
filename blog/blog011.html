@@ -1,0 +1,290 @@
+
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>mpadge</title>
+    <link rel="stylesheet" href="../assets/css/app.css" />
+    <link rel="stylesheet" href="../assets/foundation-icons/foundation-icons.css" />
+  </head>
+<body>
+<!--
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/gruvbox-dark.min.css">
+href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/atelier-dune-light.min.css">
+-->
+<link rel="stylesheet"
+href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/atom-one-light.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<div data-sticky-container>
+    <div class="top-bar" data-sticky data-options="marginTop:0;",style="width:100%;">
+        <div class="top-bar-left">
+            <ul class="dropdown menu" data-dropdown-menu>
+                <li class="menu-text"> mpadge </li>
+                <li><a href="..//#">home</a></li>
+                <li><a href="../blog.html">blog</a></li>
+                <li> <a href="..//#code">code</a> </li>
+                <li> <a href="../privacy.html">privacy</a> </li>
+            </ul>
+        </div>
+        <div class="top-bar-right">
+            <ul class="dropdown menu" data-dropdown-menu>
+                <li><a target="_blank" rel="noopener noreferrer"
+                                       href="https://github.com/mpadge">
+                        <i class="fi-social-github"></i></a></li>
+                <li><a target="_blank" rel="noopener noreferrer"
+                                       href="https://twitter.com/bikesRdata">
+                        <i class="fi-social-twitter"></i></a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="blogClass">
+<div class="grid-container">
+<div class="grid-x grid-padding-x">
+
+<div class="cell medium-2 large-2 left">
+<nav class="sticky-container" data-sticky-container>
+<div class="sticky" data-sticky data-anchor="how-i-make-this-site" data-sticky-on="large" data-margin-top="5">
+<ul class="vertical menu" data-magellan>
+<li><a href="#Timeout-on-parallel-threads-in-R" style="color:#111111">Timeout on parallel threads in R</a></li>
+<li><a href="#Timeout-on-parallel-jobs-in-R" style="color:#111111">Timeout on parallel jobs in R</a></li>
+<li><a href="#callr-s-timeout-parameter" style="color:#111111">callr’s timeout parameter</a></li>
+<li><a href="#Timeout-in-parallel-jobs-" style="color:#111111">Timeout in parallel jobs.</a></li>
+<li><a href="#Timeout-parameters-and-future-packages" style="color:#111111">Timeout parameters and ‘future’ packages</a></li>
+</div>
+</nav>
+</div>
+
+<div class="cell medium-10 large-10">
+<div class="sections">
+<section id="Timeout-on-parallel-threads-in-R" data-magellan-target="Timeout-on-parallel-threads-in-R"><h1>Timeout on parallel threads in R</h></section>
+
+<p>Python’s
+<a href="https://docs.python.org/3/library/multiprocessing.html"><code>multiprocessing</code></a>
+and <a href="https://docs.python.org/3/library/threading.html"><code>threading</code></a>
+libraries both have a timeout parameter for re-joining threads after
+they’ve finished. This provides an easy way to launch multi-threaded
+jobs while ensuing that no single thread run for longer than a specified
+timeout. This is very useful in implementing a standard “timeout on a
+function call” operation, as detailed in <a href="https://stackoverflow.com/questions/492519/timeout-on-a-function-call">this Stack Overflow question
+of that
+title</a>
+which offers a bewildering variety of approaches to that problem. Among
+the easiest of those is <a href="https://stackoverflow.com/a/14924210">the recommendation to rely on the
+<code>multiprocessing</code> libraries’s <code>join()</code>
+operation</a> which accepts a
+<code>timeout</code> parameter, <a href="https://docs.python.org/3/library/multiprocessing.html#multiprocessing.Process.join">as described in the library’s
+documentation</a>.
+There is also an equivalent parameter <a href="https://docs.python.org/3/library/threading.html#threading.Thread.join">for python’s other main
+parallelisation library,
+<code>threading</code></a>.</p>
+<p>A nice example of the usefulness of this <code>timeout</code> parameter in action
+is given in <a href="https://github.com/cokelaer/fitter">the <code>fitter</code> package</a>
+by <a href="https://github.com/cokelaer">@cokelaer</a> for fitting probability
+distributions to observed data. The main function fits a wide range of
+different distributions, and can even automagically select the best
+distribution according to specified criteria. This is done through
+fitting different distributions in parallel on different threads,
+generally greatly speeding up calculations. Distributional fitting is,
+however, often an iterative procedure, meaning the duration required to
+generate a fit within some specified tolerance can not be known in
+advance. Parallel threads by default must wait for all to terminate
+before individual results can be joined. To ensure distributional fits
+are generated within a reasonable duration, <a href="https://github.com/cokelaer/fitter/blob/cf222aab741492917bd3a2d1af821e0b5344907d/src/fitter/fitter.py#L429"><code>fitter</code> has a <code>_timed_run</code>
+function</a>
+to:</p>
+<blockquote>
+<p>spawn a thread and run the given function … and return the given
+default value if the timeout is exceeded.</p>
+</blockquote>
+<p>The bit of that function which controls the timeout consists of the
+following lines (with code for exception handling removed here):</p>
+<div class="code-example"><pre><code class="python hljs"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">_timed_run</span> <span class="hljs-params">(self, func, args=<span class="hljs-params">()</span>)</span>:</span>
+    <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">InterruptableThread</span><span class="hljs-params">(threading.Thread)</span>:</span>
+        <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">__init__</span><span class="hljs-params">(self)</span>:</span>
+            threading.Thread.__init__(self)
+            self.result = default
+
+        <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">run</span><span class="hljs-params">(self)</span>:</span>
+            self.result = func(args)
+
+    it = InterruptableThread()
+    it.start()
+    it.join(self.timeout)
+    <span class="hljs-keyword">return</span> it.result</code></pre></div><p>That represents a succinct way to run a multi-threaded job in which each
+thread obeys a specified timeout parameter. There is no equivalent of
+this functionality within any of the parallelisation packages in R, and
+so this post describes one approach to implementing equivalent
+functionality.</p>
+<section id="Timeout-on-parallel-jobs-in-R" data-magellan-target="Timeout-on-parallel-jobs-in-R"><h2>Timeout on parallel jobs in R</h></section>
+
+<p>R offers a wide variety of packages for parallel processing, from the
+<a href="https://stat.ethz.ch/R-manual/R-devel/library/parallel/doc/parallel.pdf"><code>parallel</code>
+package</a>
+that is part of R’s “recommended” software included with every
+distribution (the equivalent of Python’s standard library), to the
+one-stop shop of <a href="https://future.futureverse.org/">the <code>future</code>
+package</a>. Almost all contributed
+libraries like <code>future</code> nevertheless have two common attributes relevant
+in this context:</p>
+<ol>
+<li>They rely on the underlying functionality of the <code>parallel</code> package;
+ and</li>
+<li> They offer no equivalent of Python’s <code>timeout</code> parameter.</li>
+</ol>
+<p>There is nevertheless one R package which does offer precisely this
+timeout functionality: <a href="https://callr.r-lib.org">the <code>callr</code> package by Gábor Csárdi and Winston
+Chang</a> for “calling R from R” - that is, for,</p>
+<blockquote>
+<p>performing computation in a separate R process, without affecting the
+current R process</p>
+</blockquote>
+<section id="callr-s-timeout-parameter" data-magellan-target="callr-s-timeout-parameter"><h3>callr’s timeout parameter</h></section>
+
+<p>The <code>callr</code> package offers two main modes of calling processes: <a href="https://callr.r-lib.org/reference/r.html">as
+blocking, foreground processes via
+<code>callr::r()</code></a>, or <a href="https://callr.r-lib.org/reference/r_bg.html">as
+non-blocking, background processes via
+<code>callr::r_bg()</code></a>. The
+foreground <code>r()</code> function has an explicit <code>timeout</code> parameter, which
+returns a <code>system_command_timeout_error</code> if the specified timeout (in
+seconds) is exceeded. The following code demonstrates this
+functionality, wrapping the main call in <code>tryCatch()</code> to process the
+timeout errors:</p>
+<div class="code-example"><pre><code class="r hljs">timeout_fn &lt;- <span class="hljs-keyword">function</span> (x = <span class="hljs-number">1L</span>, timeout = <span class="hljs-number">10</span>) {
+    <span class="hljs-keyword">tryCatch</span> (
+        callr::r (fn, args = list (x = x), timeout = timeout),
+        error = <span class="hljs-keyword">function</span> (e) <span class="hljs-literal">NA</span>
+        )
+}</code></pre></div><p>The following code then constructs an arbitrarily slow function and
+passes it to our timeout function:</p>
+<div class="code-example"><pre><code class="r hljs">fn &lt;- <span class="hljs-keyword">function</span> (x = <span class="hljs-number">10L</span>) {
+    vapply (seq (x), <span class="hljs-keyword">function</span> (i) {
+                Sys.sleep (<span class="hljs-number">0.2</span>)
+                runif (<span class="hljs-number">1</span>)
+        }, numeric (<span class="hljs-number">1</span>))
+}
+system.time (
+    x &lt;- timeout_fn (x = <span class="hljs-number">10</span>, timeout = <span class="hljs-number">2</span>)
+    )
+x</code></pre></div><br>
+
+<div class="code-example"><pre><code class="html hljs">##    user  system elapsed 
+##   0.158   0.040   1.903
+
+## [1] NA</code></pre></div><br>
+
+<p>That function timed out as expected, because the requested <code>x = 10</code>
+values, each taking 0.2s, equals the specified timeout value. (The
+overhead associated with all the other code lines is enough to push the
+total calculation beyond that limit.) Compare what happens when the
+<code>timeout</code> is extended well beyond that limit:</p>
+<div class="code-example"><pre><code class="r hljs">system.time (
+    x &lt;- timeout_fn (x = <span class="hljs-number">10</span>, timeout = <span class="hljs-number">10</span>)
+    )
+x</code></pre></div><br>
+
+<div class="code-example"><pre><code class="html hljs">##    user  system elapsed 
+##   0.142   0.042   2.185
+
+##  [1] 0.2032365 0.6609313 0.6951730 0.3279127 0.2385309 0.8886383 0.2419106 0.2214722 0.1957082 0.5873230</code></pre></div><p>The <code>timeout</code> parameter of <code>callr::r()</code> can thus be used to directly
+implement a timeout parameter. The following sub-section demonstrates
+how to extend this to parallel jobs.</p>
+<section id="Timeout-in-parallel-jobs-" data-magellan-target="Timeout-in-parallel-jobs-"><h3>Timeout in parallel jobs.</h></section>
+
+<p>The following code uses the <code>mclapply</code> function of the <code>parallel</code>
+package to call the <code>timeout_fn</code> a specified number of times, with
+different values of <code>x</code> each time.</p>
+<div class="code-example"><pre><code class="r hljs">set.seed (<span class="hljs-number">1</span>)
+n &lt;- sample (<span class="hljs-number">1</span>:<span class="hljs-number">20</span>, size = <span class="hljs-number">10</span>, replace = <span class="hljs-literal">TRUE</span>)
+nc &lt;- parallel::detectCores () - <span class="hljs-number">1L</span>
+system.time (
+    res &lt;- parallel::mclapply (mc.cores = nc, n, <span class="hljs-keyword">function</span> (i)
+                               timeout_fn (x = i, timeout = <span class="hljs-number">2</span>))
+    )</code></pre></div><br>
+
+<div class="code-example"><pre><code class="html hljs">##    user  system elapsed 
+##   1.754   0.544   3.008</code></pre></div><br>
+
+<div class="code-example"><pre><code class="r hljs">print (res)</code></pre></div><br>
+
+<div class="code-example"><pre><code class="html hljs">## [[1]]
+## [1] 0.20134728 0.09508085 0.75240848 0.30041337
+## 
+## [[2]]
+## [1] 0.5837042 0.6133771 0.3121486 0.2943205 0.4455983 0.5102744 0.8867751
+## 
+## [[3]]
+## [1] 0.9381157
+## 
+## [[4]]
+## [1] 0.9201705 0.9656466
+## 
+## [[5]]
+## [1] NA
+## 
+## [[6]]
+## [1] NA
+## 
+## [[7]]
+## [1] NA
+## 
+## [[8]]
+## [1] NA
+## 
+## [[9]]
+## [1] 0.7515151
+## 
+## [[10]]
+## [1] NA</code></pre></div><p>And that took 3 seconds to calculate 10 jobs, of which 5 timed out at
+the specified time of 2 seconds. That demonstrates how the functionality
+of the <code>callr</code> package can be combined with R’s parallelisation routines
+to achieve the functionality, if not the elegance, of Python’s
+<code>multiprocessing</code> and <code>threading</code> libraries.</p>
+<section id="Timeout-parameters-and-future-packages" data-magellan-target="Timeout-parameters-and-future-packages"><h3>Timeout parameters and ‘future’ packages</h></section>
+
+<p>Processes triggered by the <code>callr</code> package do not generally play nicely
+with the core <code>future</code> package, which was likely one motivation for
+Henrik Bengtsson to develop <a href="https://future.callr.futureverse.org/">the <code>future.callr</code>
+package</a> which explicitly uses
+<code>callr</code> to run each process. The processes are nevertheless triggered as
+<code>callr::r_bg()</code> processes which do not have a <code>timeout</code> parameter. While
+it is possible to directly implement a timeout parameter of <code>r_bg</code>
+processes by monitoring until timeout and then using the <code>kill</code> method,
+the <code>future.callr</code> package does not directly expose the <code>r_bg</code> processes
+necessary to enable this. There is therefore currently no safe way to
+implement a timeout parameter along the lines demonstrated here within
+any <code>futureverse</code> packages.</p>
+<div style="text-align: right">
+Originally posted: 12 Jan 22
+</div>
+</div>
+</div>
+
+<script src="https://utteranc.es/client.js"
+        repo="mpadge/mpadge.github.io"
+        issue-term="pathname"
+        label="blog_comments"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script>
+
+</div>
+</div>
+</div>
+<div class="large-12 cell" style="background-color:#ffffff00">
+    <div class="callout">
+        <p class="text-center" style="font-size:8pt">Copyright &#169; 2019--20 mark padgham</p>
+    </div>
+</div>
+
+
+<script src="../assets/js/app.js"></script>
+</body>
+</html>
