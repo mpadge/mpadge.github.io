@@ -5,9 +5,11 @@
 <nav class="sticky-container" data-sticky-container>
 <div class="sticky" data-sticky data-anchor="how-i-make-this-site" data-sticky-on="large" data-margin-top="5">
 <ul class="vertical menu" data-magellan>
-<li><a href="#Time-out-on-parallel-threads-in-R" style="color:#111111">Time out on parallel threads in R</a></li>
-<li><a href="#Single-thread-timeout-on-parallel-jobs-in-R" style="color:#111111">Single-thread timeout on parallel jobs in R</a></li>
-<li><a href="#timeout-functionality-the-callr-package-by-Gábor-Csárdi-and" style="color:#111111">timeout functionality: [the `callr` package by Gábor Csárdi and</a></li>
+<li><a href="#Timeout-on-parallel-threads-in-R" style="color:#111111">Timeout on parallel threads in R</a></li>
+<li><a href="#Timeout-on-parallel-jobs-in-R" style="color:#111111">Timeout on parallel jobs in R</a></li>
+<li><a href="#callr-s-timeout-parameter" style="color:#111111">callr’s timeout parameter</a></li>
+<li><a href="#Timeout-in-parallel-jobs-" style="color:#111111">Timeout in parallel jobs.</a></li>
+<li><a href="#Timeout-parameters-and-future-packages" style="color:#111111">Timeout parameters and ‘future’ packages</a></li>
 </div>
 </nav>
 </div>
@@ -15,39 +17,41 @@
 <div class="cell medium-10 large-10">
 <div class="sections">
 {{#markdown}}
-<section id="Time-out-on-parallel-threads-in-R" data-magellan-target="Time-out-on-parallel-threads-in-R"><h1>Time out on parallel threads in R</h></section>
+<section id="Timeout-on-parallel-threads-in-R" data-magellan-target="Timeout-on-parallel-threads-in-R"><h1>Timeout on parallel threads in R</h></section>
 
 Python’s
 [`multiprocessing`](https://docs.python.org/3/library/multiprocessing.html)
 and [`threading`](https://docs.python.org/3/library/threading.html)
-libraries both have a timeout operation when re-joining threads after
+libraries both have a timeout parameter for re-joining threads after
 they’ve finished. This provides an easy way to launch multi-threaded
-jobs while ensuing that no single thread exceeds a specified timeout.
-This is very useful in implementing a standard “timeout on a function
-call” operation, as detailed in [this Stack Overflow question of that
+jobs while ensuing that no single thread run for longer than a specified
+timeout. This is very useful in implementing a standard “timeout on a
+function call” operation, as detailed in [this Stack Overflow question
+of that
 title](https://stackoverflow.com/questions/492519/timeout-on-a-function-call)
-which offers a bewildering variety of approaches to that problem. The
-easiest one of those is [the recommendation to rely on the
+which offers a bewildering variety of approaches to that problem. Among
+the easiest of those is [the recommendation to rely on the
 `multiprocessing` libraries’s `join()`
 operation](https://stackoverflow.com/a/14924210) which accepts a
 `timeout` parameter, [as described in the library’s
-documentation](https://docs.python.org/3/library/multiprocessing.html#multiprocessing.Process.join),
-with an equivalent parameter [described for the `threading`
-library](https://docs.python.org/3/library/threading.html#threading.Thread.join).
+documentation](https://docs.python.org/3/library/multiprocessing.html#multiprocessing.Process.join).
+There is also an equivalent parameter [for python’s other main
+parallelisation library,
+`threading`](https://docs.python.org/3/library/threading.html#threading.Thread.join).
 
 A nice example of the usefulness of this `timeout` parameter in action
 is given in [the `fitter` package](https://github.com/cokelaer/fitter)
-by \[@cokelaer\](<https://github.com/cokelaer>) for fitting probability
+by [@cokelaer](https://github.com/cokelaer) for fitting probability
 distributions to observed data. The main function fits a wide range of
-different distributions, and can even “automagically” select the best
+different distributions, and can even automagically select the best
 distribution according to specified criteria. This is done through
 fitting different distributions in parallel on different threads,
 generally greatly speeding up calculations. Distributional fitting is,
-however, often an iterative procedure, and so may take an unknown
-duration to generate a fit within some specified tolerance. Parallel
-threads by default must wait for all to terminate before individual
-results can be joined. To ensure distributional fits are generated
-within a reasonable duration, [`fitter` has a `_timed_run`
+however, often an iterative procedure, meaning the duration required to
+generate a fit within some specified tolerance can not be known in
+advance. Parallel threads by default must wait for all to terminate
+before individual results can be joined. To ensure distributional fits
+are generated within a reasonable duration, [`fitter` has a `_timed_run`
 function](https://github.com/cokelaer/fitter/blob/cf222aab741492917bd3a2d1af821e0b5344907d/src/fitter/fitter.py#L429)
 to:
 
@@ -75,36 +79,183 @@ def _timed_run (self, func, args=()):
 
 That represents a succinct way to run a multi-threaded job in which each
 thread obeys a specified timeout parameter. There is no equivalent of
-this functionality in R, and so this post describes one approach to
-implementing equivalent functionality.
+this functionality within any of the parallelisation packages in R, and
+so this post describes one approach to implementing equivalent
+functionality.
 
-<section id="Single-thread-timeout-on-parallel-jobs-in-R" data-magellan-target="Single-thread-timeout-on-parallel-jobs-in-R"><h2>Single-thread timeout on parallel jobs in R</h></section>
+<section id="Timeout-on-parallel-jobs-in-R" data-magellan-target="Timeout-on-parallel-jobs-in-R"><h2>Timeout on parallel jobs in R</h></section>
 
 R offers a wide variety of packages for parallel processing, from the
-[recommended `parallel`
+[`parallel`
 package](https://stat.ethz.ch/R-manual/R-devel/library/parallel/doc/parallel.pdf)
-to the one-stop shop of [the `future`
+that is part of R’s “recommended” software included with every
+distribution (the equivalent of Python’s standard library), to the
+one-stop shop of [the `future`
 package](https://future.futureverse.org/). Almost all contributed
 libraries like `future` nevertheless have two common attributes relevant
 in this context:
 
 1.  They rely on the underlying functionality of the `parallel` package;
     and
-2.  They offer no equivalent of the `timeout` parameter of the
-    equivalent python libraries.
+2.  They offer no equivalent of Python’s `timeout` parameter.
 
 There is nevertheless one R package which does offer precisely this
-timeout functionality: [the `callr` package by Gábor Csárdi and
-that is, for,
+timeout functionality: [the `callr` package by Gábor Csárdi and Winston
+Chang](https://callr.r-lib.org) for “calling R from R” - that is, for,
 
 > performing computation in a separate R process, without affecting the
 > current R process
 
-This package offers two main modes of calling processes: [as blocking,
-foreground processes via
+<section id="callr-s-timeout-parameter" data-magellan-target="callr-s-timeout-parameter"><h3>callr’s timeout parameter</h></section>
+
+The `callr` package offers two main modes of calling processes: [as
+blocking, foreground processes via
 `callr::r()`](https://callr.r-lib.org/reference/r.html), or [as
 non-blocking, background processes via
-`callr::r_bg()`](https://callr.r-lib.org/reference/r_bg.html).
+`callr::r_bg()`](https://callr.r-lib.org/reference/r_bg.html). The
+foreground `r()` function has an explicit `timeout` parameter, which
+returns a `system_command_timeout_error` if the specified timeout (in
+seconds) is exceeded. The following code demonstrates this
+functionality, wrapping the main call in `tryCatch()` to process the
+timeout errors:
+
+``` r
+timeout_fn <- function (x = 1L, timeout = 10) {
+    tryCatch (
+        callr::r (fn, args = list (x = x), timeout = timeout),
+        error = function (e) NA
+        )
+}
+```
+
+The following code then constructs an arbitrarily slow function and
+passes it to our timeout function:
+
+``` r
+fn <- function (x = 10L) {
+    vapply (seq (x), function (i) {
+                Sys.sleep (0.2)
+                runif (1)
+        }, numeric (1))
+}
+system.time (
+    x <- timeout_fn (x = 10, timeout = 2)
+    )
+x
+```
+
+<br>
+
+    ##    user  system elapsed 
+    ##   0.158   0.040   1.903
+
+    ## [1] NA
+
+<br>
+
+That function timed out as expected, because the requested `x = 10`
+values, each taking 0.2s, equals the specified timeout value. (The
+overhead associated with all the other code lines is enough to push the
+total calculation beyond that limit.) Compare what happens when the
+`timeout` is extended well beyond that limit:
+
+``` r
+system.time (
+    x <- timeout_fn (x = 10, timeout = 10)
+    )
+x
+```
+
+<br>
+
+    ##    user  system elapsed 
+    ##   0.142   0.042   2.185
+
+    ##  [1] 0.2032365 0.6609313 0.6951730 0.3279127 0.2385309 0.8886383 0.2419106 0.2214722 0.1957082 0.5873230
+
+The `timeout` parameter of `callr::r()` can thus be used to directly
+implement a timeout parameter. The following sub-section demonstrates
+how to extend this to parallel jobs.
+
+<section id="Timeout-in-parallel-jobs-" data-magellan-target="Timeout-in-parallel-jobs-"><h3>Timeout in parallel jobs.</h></section>
+
+The following code uses the `mclapply` function of the `parallel`
+package to call the `timeout_fn` a specified number of times, with
+different values of `x` each time.
+
+``` r
+set.seed (1)
+n <- sample (1:20, size = 10, replace = TRUE)
+nc <- parallel::detectCores () - 1L
+system.time (
+    res <- parallel::mclapply (mc.cores = nc, n, function (i)
+                               timeout_fn (x = i, timeout = 2))
+    )
+```
+
+<br>
+
+    ##    user  system elapsed 
+    ##   1.754   0.544   3.008
+
+<br>
+
+``` r
+print (res)
+```
+
+<br>
+
+    ## [[1]]
+    ## [1] 0.20134728 0.09508085 0.75240848 0.30041337
+    ## 
+    ## [[2]]
+    ## [1] 0.5837042 0.6133771 0.3121486 0.2943205 0.4455983 0.5102744 0.8867751
+    ## 
+    ## [[3]]
+    ## [1] 0.9381157
+    ## 
+    ## [[4]]
+    ## [1] 0.9201705 0.9656466
+    ## 
+    ## [[5]]
+    ## [1] NA
+    ## 
+    ## [[6]]
+    ## [1] NA
+    ## 
+    ## [[7]]
+    ## [1] NA
+    ## 
+    ## [[8]]
+    ## [1] NA
+    ## 
+    ## [[9]]
+    ## [1] 0.7515151
+    ## 
+    ## [[10]]
+    ## [1] NA
+
+And that took 3 seconds to calculate 10 jobs, of which 5 timed out at
+the specified time of 2 seconds. That demonstrates how the functionality
+of the `callr` package can be combined with R’s parallelisation routines
+to achieve the functionality, if not the elegance, of Python’s
+`multiprocessing` and `threading` libraries.
+
+<section id="Timeout-parameters-and-future-packages" data-magellan-target="Timeout-parameters-and-future-packages"><h3>Timeout parameters and ‘future’ packages</h></section>
+
+Processes triggered by the `callr` package do not generally play nicely
+with the core `future` package, which was likely one motivation for
+Henrik Bengtsson to develop [the `future.callr`
+package](https://future.callr.futureverse.org/) which explicitly uses
+`callr` to run each process. The processes are nevertheless triggered as
+`callr::r_bg()` processes which do not have a `timeout` parameter. While
+it is possible to directly implement a timeout parameter of `r_bg`
+processes by monitoring until timeout and then using the `kill` method,
+the `future.callr` package does not directly expose the `r_bg` processes
+necessary to enable this. There is therefore currently no safe way to
+implement a timeout parameter along the lines demonstrated here within
+any `futureverse` packages.
 <div style="text-align: right">
 Originally posted: 12 Jan 22
 </div>
