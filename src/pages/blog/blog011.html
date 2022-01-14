@@ -78,10 +78,8 @@ def _timed_run (self, func, args=()):
 ```
 
 That represents a succinct way to run a multi-threaded job in which each
-thread obeys a specified timeout parameter. There is no equivalent of
-this functionality within any of the parallelisation packages in R, and
-so this post describes one approach to implementing equivalent
-functionality.
+thread obeys a specified timeout parameter. This post describes two
+approaches to implementing equivalent functionality in R.
 
 <section id="Timeout-in-R-s-parallel-package" data-magellan-target="Timeout-in-R-s-parallel-package"><h2>Timeout in R’s ‘parallel’ package</h></section>
 
@@ -289,8 +287,8 @@ to the approach illustrated here:
 
 1.  The [documentation for the `mcparallel()` and `mccollect()`
     functions](https://stat.ethz.ch/R-manual/R-devel/library/parallel/html/mcparallel.html)
-    state at the very first line, “*These functions are based on forking
-    and so are not available on Windows.*” While that might not concern
+    state at the very first line, “These functions are based on forking
+    and so are not available on Windows.” While that might not concern
     those who develop packages on other systems, it will greatly reduce
     the use of any code implementing parallel timeouts in this way.
 
@@ -298,9 +296,9 @@ to the approach illustrated here:
     functionality, notably including the [“futureverse” family of
     packages](https://futureverse.org), the primary aim of which is to
     make parallelisation in R simpler, through enabling any calls to be
-    simply wrapped in parallelisation functions like `future()`\]. These
+    simply wrapped in parallelisation functions like `future()`. These
     packages offer no direct way of controlling the `timeout` parameter
-    of `mccollect()`.
+    of `mccollect()`, or any equivalent functionality.
 
 The next section explores a different approach that is operating-system
 independent.
@@ -449,13 +447,13 @@ offers one practical way to do so via those packages.
 
 <section id="Timeout-parameters-and-future-packages" data-magellan-target="Timeout-parameters-and-future-packages"><h3>Timeout parameters and ‘future’ packages</h></section>
 
-Processes triggered by the `callr` package do not generally play nicely
-with the core `future` package, which was likely one motivation for
-Henrik Bengtsson to develop [the `future.callr`
+Processes triggered by the `{callr}` package do not generally play
+nicely with the core `{future}` package, which was likely one motivation
+for Henrik Bengtsson to develop [the `{future.callr}`
 package](https://future.callr.futureverse.org/) which explicitly uses
-`callr` to run each process. The processes are nevertheless triggered as
-`callr::r_bg()` processes which do not have a `timeout` parameter. While
-it is possible to directly implement a timeout parameter of `r_bg`
+`{callr}` to run each process. The processes are nevertheless triggered
+as `callr::r_bg()` processes which do not have a `timeout` parameter.
+While it is possible to directly implement a timeout parameter of `r_bg`
 processes by monitoring until timeout and then using the `kill` method,
 the `future.callr` package does not directly expose the `r_bg` processes
 necessary to enable this. There is therefore currently no safe way to
