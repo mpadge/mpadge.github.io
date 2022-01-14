@@ -51,10 +51,10 @@ href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/atom-one-light
 <nav class="sticky-container" data-sticky-container>
 <div class="sticky" data-sticky data-anchor="how-i-make-this-site" data-sticky-on="large" data-margin-top="5">
 <ul class="vertical menu" data-magellan>
-<li><a href="#Timeout-on-parallel-threads-in-R" style="color:#111111">Timeout on parallel threads in R</a></li>
 <li><a href="#Timeout-on-parallel-jobs-in-R" style="color:#111111">Timeout on parallel jobs in R</a></li>
-<li><a href="#callr-s-timeout-parameter" style="color:#111111">callr’s timeout parameter</a></li>
-<li><a href="#Timeout-in-parallel-jobs-" style="color:#111111">Timeout in parallel jobs.</a></li>
+<li><a href="#Timeout-in-R-s-parallel-package" style="color:#111111">Timeout in R’s ‘parallel’ package</a></li>
+<li><a href="#Timeout-via-callr-" style="color:#111111">Timeout via ‘callr’</a></li>
+<li><a href="#Parallel-timeout-via-callr-" style="color:#111111">Parallel timeout via ‘callr’</a></li>
 <li><a href="#Timeout-parameters-and-future-packages" style="color:#111111">Timeout parameters and ‘future’ packages</a></li>
 </div>
 </nav>
@@ -62,7 +62,7 @@ href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/atom-one-light
 
 <div class="cell medium-10 large-10">
 <div class="sections">
-<section id="Timeout-on-parallel-threads-in-R" data-magellan-target="Timeout-on-parallel-threads-in-R"><h1>Timeout on parallel threads in R</h></section>
+<section id="Timeout-on-parallel-jobs-in-R" data-magellan-target="Timeout-on-parallel-jobs-in-R"><h1>Timeout on parallel jobs in R</h></section>
 
 <p>Python’s
 <a href="https://docs.python.org/3/library/multiprocessing.html"><code>multiprocessing</code></a>
@@ -121,85 +121,210 @@ thread obeys a specified timeout parameter. There is no equivalent of
 this functionality within any of the parallelisation packages in R, and
 so this post describes one approach to implementing equivalent
 functionality.</p>
-<section id="Timeout-on-parallel-jobs-in-R" data-magellan-target="Timeout-on-parallel-jobs-in-R"><h2>Timeout on parallel jobs in R</h></section>
+<section id="Timeout-in-R-s-parallel-package" data-magellan-target="Timeout-in-R-s-parallel-package"><h2>Timeout in R’s ‘parallel’ package</h></section>
 
-<p>R offers a wide variety of packages for parallel processing, from the
-<a href="https://stat.ethz.ch/R-manual/R-devel/library/parallel/doc/parallel.pdf"><code>parallel</code>
+<p>R’s <a href="https://stat.ethz.ch/R-manual/R-devel/library/parallel/doc/parallel.pdf"><code>{parallel}</code>
 package</a>
-that is part of R’s “recommended” software included with every
-distribution (the equivalent of Python’s standard library), to the
-one-stop shop of <a href="https://future.futureverse.org/">the <code>future</code>
-package</a>. Almost all contributed
-libraries like <code>future</code> nevertheless have two common attributes relevant
-in this context:</p>
-<ol>
-<li>They rely on the underlying functionality of the <code>parallel</code> package;
- and</li>
-<li> They offer no equivalent of Python’s <code>timeout</code> parameter.</li>
-</ol>
-<p>There is nevertheless one R package which does offer precisely this
-timeout functionality: <a href="https://callr.r-lib.org">the <code>callr</code> package by Gábor Csárdi and Winston
-Chang</a> for “calling R from R” - that is, for,</p>
-<blockquote>
-<p>performing computation in a separate R process, without affecting the
-current R process</p>
-</blockquote>
-<section id="callr-s-timeout-parameter" data-magellan-target="callr-s-timeout-parameter"><h3>callr’s timeout parameter</h></section>
-
-<p>The <code>callr</code> package offers two main modes of calling processes: <a href="https://callr.r-lib.org/reference/r.html">as
-blocking, foreground processes via
-<code>callr::r()</code></a>, or <a href="https://callr.r-lib.org/reference/r_bg.html">as
-non-blocking, background processes via
-<code>callr::r_bg()</code></a>. The
-foreground <code>r()</code> function has an explicit <code>timeout</code> parameter, which
-returns a <code>system_command_timeout_error</code> if the specified timeout (in
-seconds) is exceeded. The following code demonstrates this
-functionality, wrapping the main call in <code>tryCatch()</code> to process the
-timeout errors:</p>
-<div class="code-example"><pre><code class="r hljs">timeout_fn &lt;- <span class="hljs-keyword">function</span> (x = <span class="hljs-number">1L</span>, timeout = <span class="hljs-number">10</span>) {
-    <span class="hljs-keyword">tryCatch</span> (
-        callr::r (fn, args = list (x = x), timeout = timeout),
-        error = <span class="hljs-keyword">function</span> (e) <span class="hljs-literal">NA</span>
-        )
-}</code></pre></div><p>The following code then constructs an arbitrarily slow function and
-passes it to our timeout function:</p>
+offers one way to implement a <code>timeout</code> parameter, via <a href="https://stat.ethz.ch/R-manual/R-devel/library/parallel/html/mcparallel.html">the
+<code>mccollect()</code>
+function</a>,
+which is (almost) equivalent to Python’s <code>.join()</code> operator. This can be
+illustrated with this arbitrarily slow function:</p>
 <div class="code-example"><pre><code class="r hljs">fn &lt;- <span class="hljs-keyword">function</span> (x = <span class="hljs-number">10L</span>) {
     vapply (seq (x), <span class="hljs-keyword">function</span> (i) {
                 Sys.sleep (<span class="hljs-number">0.2</span>)
                 runif (<span class="hljs-number">1</span>)
         }, numeric (<span class="hljs-number">1</span>))
-}
+}</code></pre></div><p>Calculating this in parallel is straightforward with the <code>mcparallel()</code>
+and <code>mccollect()</code> functions. This code generates 10 random inputs to
+<code>fn()</code> which will take random durations up to 20 * 0.2 = 4 seconds
+each.</p>
+<div class="code-example"><pre><code class="r hljs">set.seed (<span class="hljs-number">1</span>)
+n &lt;- sample (<span class="hljs-number">1</span>:<span class="hljs-number">20</span>, size = <span class="hljs-number">10</span>, replace = <span class="hljs-literal">TRUE</span>)
+<span class="hljs-keyword">library</span> (parallel)
+jobs &lt;- lapply (n, <span class="hljs-keyword">function</span> (i) mcparallel (fn (i)))
 system.time (
-    x &lt;- timeout_fn (x = <span class="hljs-number">10</span>, timeout = <span class="hljs-number">2</span>)
-    )
-x</code></pre></div><br>
+    res &lt;- mccollect (jobs)
+)</code></pre></div><br>
 
 <div class="code-example"><pre><code class="html hljs">##    user  system elapsed 
-##   0.158   0.040   1.903
+##   0.006   0.000   3.615</code></pre></div><p>That took much less than the expected duration of,</p>
+<div class="code-example"><pre><code class="r hljs">sum (n) / <span class="hljs-number">5</span></code></pre></div><br>
 
-## [1] NA</code></pre></div><br>
+<div class="code-example"><pre><code class="html hljs">## [1] 17.4</code></pre></div><p>The <code>mccollect()</code> function has a <code>timeout</code> parameter “to check for job
+results”. Specifying that in the above function then gives the
+following, noting that the parameter <code>wait</code> also has to be passed with
+its non-default value of <code>FALSE</code> to activate <code>timeout</code>.</p>
+<div class="code-example"><pre><code class="r hljs">jobs &lt;- lapply (n, <span class="hljs-keyword">function</span> (i) mcparallel (fn (i)))
+system.time (
+    res &lt;- mccollect (jobs, wait = <span class="hljs-literal">FALSE</span>, timeout = <span class="hljs-number">2</span>)
+)</code></pre></div><br>
 
-<p>That function timed out as expected, because the requested <code>x = 10</code>
-values, each taking 0.2s, equals the specified timeout value. (The
-overhead associated with all the other code lines is enough to push the
-total calculation beyond that limit.) Compare what happens when the
-<code>timeout</code> is extended well beyond that limit:</p>
+<div class="code-example"><pre><code class="html hljs">##    user  system elapsed 
+##   0.000   0.000   0.003</code></pre></div><p>That seems much too quick! What does the result look like?</p>
+<div class="code-example"><pre><code class="r hljs">res</code></pre></div><br>
+
+<div class="code-example"><pre><code class="html hljs">## $`24053`
+## [1] 0.6096623</code></pre></div><p>It seems that <code>mccollect()</code> has only returned one result. The reason can
+be seen by tracing the implementation of the <code>timeout</code> parameter from
+<a href="https://github.com/wch/r-source/blob/5ab79ec84040684c74dc9c901fde944fff6e8375/src/library/parallel/R/unix/mcparallel.R#L48-L65">the <code>mccollect()</code>
+function</a>
+through to <a href="https://github.com/wch/r-source/blob/5ab79ec84040684c74dc9c901fde944fff6e8375/src/library/parallel/R/unix/mcfork.R#L55-L67">the <code>selectChildren()</code>
+function</a>
+into <a href="https://github.com/wch/r-source/blob/5ab79ec84040684c74dc9c901fde944fff6e8375/src/library/parallel/src/fork.c#L808">the C function,
+<code>select_children()</code></a>,
+and finally to the <a href="https://github.com/wch/r-source/blob/5ab79ec84040684c74dc9c901fde944fff6e8375/src/library/parallel/src/fork.c#L905-L922">lines which implement the waiting
+procedure</a>.
+These lines show that the function returns as soon as it collects a
+value from any of the “child” processes (via <a href="https://github.com/wch/r-source/blob/5ab79ec84040684c74dc9c901fde944fff6e8375/src/include/R_ext/eventloop.h#L86-L88">the <code>R_ext/R_SelectEx()</code>
+function</a>
+which is <a href="https://github.com/wch/r-source/blob/5ab79ec84040684c74dc9c901fde944fff6e8375/src/unix/sys-std.c#L115">implemented
+here</a>).
+So setting <code>timeout</code> in <code>mccollect()</code> will then return results as soon
+as the first result has been been generated. That of course means that
+the remaining jobs continue to be processed, and can be returned by
+subsequent calls to <code>mccollect()</code>. Two consecutive calls will then
+naturally return the first two results to be processed. To check this,
+we need to note that the <code>jobs</code> list contains process ID (<code>pid</code>) values,
+one of which is detached by the first call to <code>mccollect()</code>, and so has
+to be removed from the <code>jobs</code> list.</p>
+<div class="code-example"><pre><code class="r hljs">jobs &lt;- lapply (n, <span class="hljs-keyword">function</span> (i) mcparallel (fn (i)))
+pids &lt;- vapply (jobs, <span class="hljs-keyword">function</span> (i) i$pid, integer (<span class="hljs-number">1</span>))
+system.time (
+    res1 &lt;- mccollect (jobs, wait = <span class="hljs-literal">FALSE</span>, timeout = <span class="hljs-number">2</span>)
+)</code></pre></div><br>
+
+<div class="code-example"><pre><code class="html hljs">##    user  system elapsed 
+##   0.000   0.000   0.007</code></pre></div><br>
+
+<div class="code-example"><pre><code class="r hljs">jobs &lt;- jobs [which (!pids %<span class="hljs-keyword">in</span>% names (res1))]
+system.time (
+    res2 &lt;- mccollect (jobs, wait = <span class="hljs-literal">FALSE</span>, timeout = <span class="hljs-number">2</span>)
+)</code></pre></div><div class="code-example"><pre><code class="html hljs">##    user  system elapsed 
+##   0.000   0.000   0.003</code></pre></div><p>The two returned values are then,</p>
+<div class="code-example"><pre><code class="r hljs">res1; res2</code></pre></div><br>
+
+<div class="code-example"><pre><code class="html hljs">## $`26140`
+## [1] 0.05318079
+## 
+## $`26146`
+## [1] 0.7513229</code></pre></div><p>So R has a <code>timeout</code> parameter on parallel jobs, but it doesn’t work
+like the equivalent Python parameters, and arguably doesn’t work how one
+might expect. That code exploration is nevertheless sufficient to
+understand how a pythonic version could be implemented:</p>
+<div class="code-example"><pre><code class="r hljs">par_timeout &lt;- <span class="hljs-keyword">function</span> (f, n, timeout) {
+    jobs &lt;- lapply (n, <span class="hljs-keyword">function</span> (i) mcparallel (f (i)))
+    Sys.sleep (timeout)
+    mccollect (jobs, wait = <span class="hljs-literal">FALSE</span>)
+}
+par_timeout (fn, n, <span class="hljs-number">2</span>)</code></pre></div><br>
+
+<div class="code-example"><pre><code class="html hljs">## $`26913`
+## [1] 0.008293313
+## 
+## $`26908`
+## [1] 0.2473093 0.9442306
+## 
+## $`26907`
+## [1] 0.8032608
+## 
+## $`26906`
+## [1] 0.1900972 0.8134690 0.2745623 0.3148808 0.3954601 0.7415558 0.9394560
+## 
+## $`26905`
+## [1] 0.7566425 0.2494607 0.4848817 0.3469343</code></pre></div><p>And we get five out of the expected 10 results returning within our
+specified <code>timeout</code> of 2 seconds. We can estimate from the generated
+values of <code>n</code> which ones should have returned, given that <code>fn</code> takes
+0.2s per unit of the input, <code>x</code>, repeating the initial code used to
+generate those values.</p>
+<div class="code-example"><pre><code class="r hljs">set.seed (<span class="hljs-number">1</span>)
+n &lt;- sample (<span class="hljs-number">1</span>:<span class="hljs-number">20</span>, size = <span class="hljs-number">10</span>, replace = <span class="hljs-literal">TRUE</span>)
+timeout &lt;- <span class="hljs-number">2</span> <span class="hljs-comment"># in seconds</span>
+data.frame (n = n, should_work = n / <span class="hljs-number">5</span> &lt;= <span class="hljs-number">2</span>)</code></pre></div><br>
+
+<div class="code-example"><pre><code class="html hljs">##     n should_work
+## 1   4        TRUE
+## 2   7        TRUE
+## 3   1        TRUE
+## 4   2        TRUE
+## 5  11       FALSE
+## 6  14       FALSE
+## 7  18       FALSE
+## 8  19       FALSE
+## 9   1        TRUE
+## 10 10        TRUE</code></pre></div><p>And we might have expected 6 values to have returned, of which we
+actually got only 5, but perhaps the value of <code>n = 10</code> extended just
+beyond the timeout? We’ll nevertheless compare this result with an
+alternative approach below. But first, there are some notable drawbacks
+to the approach illustrated here:</p>
+<ol>
+<li><p>The <a href="https://stat.ethz.ch/R-manual/R-devel/library/parallel/html/mcparallel.html">documentation for the <code>mcparallel()</code> and <code>mccollect()</code>
+ functions</a>
+ state at the very first line, “*These functions are based on forking
+ and so are not available on Windows.*” While that might not concern
+ those who develop packages on other systems, it will greatly reduce
+ the use of any code implementing parallel timeouts in this way.</p>
+</li>
+<li><p>There are many “wrapper” packages around R’s core <code>{parallel}</code>
+ functionality, notably including the <a href="https://futureverse.org">“futureverse” family of
+ packages</a>, the primary aim of which is to
+ make parallelisation in R simpler, through enabling any calls to be
+ simply wrapped in parallelisation functions like <code>future()</code>]. These
+ packages offer no direct way of controlling the <code>timeout</code> parameter
+ of <code>mccollect()</code>.</p>
+</li>
+</ol>
+<p>The next section explores a different approach that is operating-system
+independent.</p>
+<section id="Timeout-via-callr-" data-magellan-target="Timeout-via-callr-"><h2>Timeout via ‘callr’</h></section>
+
+<p>The <a href="https://callr.r-lib.org">callr package by Gábor Csárdi and Winston
+Chang</a> is designed for ‘calling R from R’ –
+that is, for,</p>
+<blockquote>
+<p>performing computation in a separate R process, without affecting the
+current R process</p>
+</blockquote>
+<p>The package offers two main modes of calling processes: <a href="https://callr.r-lib.org/reference/r.html">as blocking,
+foreground processes via
+<code>callr::r()</code></a>, or <a href="https://callr.r-lib.org/reference/r_bg.html">as
+non-blocking, background processes via
+<code>callr::r_bg()</code></a>. The
+foreground <code>r()</code> function has an explicit <code>timeout</code> parameter, which
+returns a <code>system_command_timeout_error</code> if the specified timeout (in
+seconds) is exceeded. The following code calls the <code>fn()</code> function from
+above to demonstrate this functionality, wrapping the main call in
+<code>tryCatch()</code> to process the timeout errors:</p>
+<div class="code-example"><pre><code class="r hljs">timeout_fn &lt;- <span class="hljs-keyword">function</span> (x = <span class="hljs-number">1L</span>, timeout = <span class="hljs-number">2</span>) {
+    <span class="hljs-keyword">tryCatch</span> (
+        callr::r (fn, args = list (x = x), timeout = timeout),
+        error = <span class="hljs-keyword">function</span> (e) <span class="hljs-literal">NA</span>
+        )
+}</code></pre></div><p>Passing a value of <code>x</code> larger than around 5 should then timeout at 1
+second, as this code demonstrates:</p>
 <div class="code-example"><pre><code class="r hljs">system.time (
-    x &lt;- timeout_fn (x = <span class="hljs-number">10</span>, timeout = <span class="hljs-number">10</span>)
-    )
-x</code></pre></div><br>
+    x &lt;- timeout_fn (x = <span class="hljs-number">10</span>, timeout = <span class="hljs-number">1</span>)
+    )</code></pre></div><br>
 
 <div class="code-example"><pre><code class="html hljs">##    user  system elapsed 
-##   0.142   0.042   2.185
+##   0.152   0.035   0.959</code></pre></div><p>The returned value is then:</p>
+<div class="code-example"><pre><code class="r hljs">x</code></pre></div><br>
 
-##  [1] 0.2032365 0.6609313 0.6951730 0.3279127 0.2385309 0.8886383 0.2419106 0.2214722 0.1957082 0.5873230</code></pre></div><p>The <code>timeout</code> parameter of <code>callr::r()</code> can thus be used to directly
+<div class="code-example"><pre><code class="html hljs">## [1] NA</code></pre></div><p>That function timed out as expected. Compare what happens when the
+<code>timeout</code> is extended well beyond that limit:</p>
+<div class="code-example"><pre><code class="r hljs">timeout_fn (x = <span class="hljs-number">5</span>, timeout = <span class="hljs-number">10</span>)</code></pre></div><br>
+
+<div class="code-example"><pre><code class="html hljs">## [1] 0.7176185 0.9919061 0.3800352 0.7774452 0.9347052</code></pre></div><p>The <code>timeout</code> parameter of <code>callr::r()</code> can thus be used to directly
 implement a timeout parameter. The following sub-section demonstrates
 how to extend this to parallel jobs.</p>
-<section id="Timeout-in-parallel-jobs-" data-magellan-target="Timeout-in-parallel-jobs-"><h3>Timeout in parallel jobs.</h></section>
+<section id="Parallel-timeout-via-callr-" data-magellan-target="Parallel-timeout-via-callr-"><h2>Parallel timeout via ‘callr’</h></section>
 
-<p>The following code uses the <code>mclapply</code> function of the <code>parallel</code>
-package to call the <code>timeout_fn</code> a specified number of times, with
-different values of <code>x</code> each time.</p>
+<p>To illustrate a different approach than the previous <code>mcparallel()</code>
+function, the following code uses the <a href="https://stat.ethz.ch/R-manual/R-devel/library/parallel/html/mclapply.html"><code>mclapply</code> function of the
+<code>parallel</code>
+package</a>,
+which unfortunately also does not work on Windows, but suffices to
+demonstrate the principles.</p>
 <div class="code-example"><pre><code class="r hljs">set.seed (<span class="hljs-number">1</span>)
 n &lt;- sample (<span class="hljs-number">1</span>:<span class="hljs-number">20</span>, size = <span class="hljs-number">10</span>, replace = <span class="hljs-literal">TRUE</span>)
 nc &lt;- parallel::detectCores () - <span class="hljs-number">1L</span>
@@ -241,11 +366,17 @@ system.time (
 ## [1] 0.7515151
 ## 
 ## [[10]]
-## [1] NA</code></pre></div><p>And that took 3 seconds to calculate 10 jobs, of which 5 timed out at
-the specified time of 2 seconds. That demonstrates how the functionality
-of the <code>callr</code> package can be combined with R’s parallelisation routines
-to achieve the functionality, if not the elegance, of Python’s
-<code>multiprocessing</code> and <code>threading</code> libraries.</p>
+## [1] NA</code></pre></div><p>And that returned 5 out of the 10 jobs, as for the previous example
+using <code>mccollect()</code>. (The actual values differ due to random number
+generators being seeded differently in the two lots of jobs.) This
+approach, of using <code>callr</code> to control function <code>timeout</code> parameters,
+enables parallel jobs to be implemented on all operating systems through
+replacing the <code>mclapply()</code> or <code>mcparallel()</code> functions with, for
+example, <a href="https://cran.r-project.org/web/packages/snow/index.html">equivalent functions from the <code>{snow}</code>
+package</a>. These
+<code>{snow}</code> functions (such as the <code>parApply</code> family of functions) also do
+not implement a <code>timeout</code> parameter, and so this <code>{callr}</code> approach
+offers one practical way to do so via those packages.</p>
 <section id="Timeout-parameters-and-future-packages" data-magellan-target="Timeout-parameters-and-future-packages"><h3>Timeout parameters and ‘future’ packages</h></section>
 
 <p>Processes triggered by the <code>callr</code> package do not generally play nicely
@@ -261,7 +392,7 @@ necessary to enable this. There is therefore currently no safe way to
 implement a timeout parameter along the lines demonstrated here within
 any <code>futureverse</code> packages.</p>
 <div style="text-align: right">
-Originally posted: 12 Jan 22
+Originally posted: 14 Jan 22
 </div>
 </div>
 </div>
