@@ -117,10 +117,8 @@ following lines (with code for exception handling removed here):</p>
     it.start()
     it.join(self.timeout)
     <span class="hljs-keyword">return</span> it.result</code></pre></div><p>That represents a succinct way to run a multi-threaded job in which each
-thread obeys a specified timeout parameter. There is no equivalent of
-this functionality within any of the parallelisation packages in R, and
-so this post describes one approach to implementing equivalent
-functionality.</p>
+thread obeys a specified timeout parameter. This post describes two
+approaches to implementing equivalent functionality in R.</p>
 <section id="Timeout-in-R-s-parallel-package" data-magellan-target="Timeout-in-R-s-parallel-package"><h2>Timeout in R’s ‘parallel’ package</h></section>
 
 <p>R’s <a href="https://stat.ethz.ch/R-manual/R-devel/library/parallel/doc/parallel.pdf"><code>{parallel}</code>
@@ -260,8 +258,8 @@ to the approach illustrated here:</p>
 <ol>
 <li><p>The <a href="https://stat.ethz.ch/R-manual/R-devel/library/parallel/html/mcparallel.html">documentation for the <code>mcparallel()</code> and <code>mccollect()</code>
  functions</a>
- state at the very first line, “*These functions are based on forking
- and so are not available on Windows.*” While that might not concern
+ state at the very first line, “These functions are based on forking
+ and so are not available on Windows.” While that might not concern
  those who develop packages on other systems, it will greatly reduce
  the use of any code implementing parallel timeouts in this way.</p>
 </li>
@@ -269,9 +267,9 @@ to the approach illustrated here:</p>
  functionality, notably including the <a href="https://futureverse.org">“futureverse” family of
  packages</a>, the primary aim of which is to
  make parallelisation in R simpler, through enabling any calls to be
- simply wrapped in parallelisation functions like <code>future()</code>]. These
+ simply wrapped in parallelisation functions like <code>future()</code>. These
  packages offer no direct way of controlling the <code>timeout</code> parameter
- of <code>mccollect()</code>.</p>
+ of <code>mccollect()</code>, or any equivalent functionality.</p>
 </li>
 </ol>
 <p>The next section explores a different approach that is operating-system
@@ -379,13 +377,13 @@ not implement a <code>timeout</code> parameter, and so this <code>{callr}</code>
 offers one practical way to do so via those packages.</p>
 <section id="Timeout-parameters-and-future-packages" data-magellan-target="Timeout-parameters-and-future-packages"><h3>Timeout parameters and ‘future’ packages</h></section>
 
-<p>Processes triggered by the <code>callr</code> package do not generally play nicely
-with the core <code>future</code> package, which was likely one motivation for
-Henrik Bengtsson to develop <a href="https://future.callr.futureverse.org/">the <code>future.callr</code>
+<p>Processes triggered by the <code>{callr}</code> package do not generally play
+nicely with the core <code>{future}</code> package, which was likely one motivation
+for Henrik Bengtsson to develop <a href="https://future.callr.futureverse.org/">the <code>{future.callr}</code>
 package</a> which explicitly uses
-<code>callr</code> to run each process. The processes are nevertheless triggered as
-<code>callr::r_bg()</code> processes which do not have a <code>timeout</code> parameter. While
-it is possible to directly implement a timeout parameter of <code>r_bg</code>
+<code>{callr}</code> to run each process. The processes are nevertheless triggered
+as <code>callr::r_bg()</code> processes which do not have a <code>timeout</code> parameter.
+While it is possible to directly implement a timeout parameter of <code>r_bg</code>
 processes by monitoring until timeout and then using the <code>kill</code> method,
 the <code>future.callr</code> package does not directly expose the <code>r_bg</code> processes
 necessary to enable this. There is therefore currently no safe way to
