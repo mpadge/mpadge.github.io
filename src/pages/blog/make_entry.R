@@ -66,7 +66,7 @@ find_headers <- function (md)
     index1 <- grep ("^\\#+", md)
     hdrs <- gsub ("\\#+ ", "", md [index1])
     # also alternative syntax with underscore lines
-    index2 <- grep ("^=|-+$", md)
+    index2 <- grep ("^\\=+(\\s+?)$|^\\-+(\\s+?)$", md)
     if (length (index2) > 0) {
         index2 <- index2 - 1
         hdrs <- c (hdrs, md [index2]) [order (c (index1, index2))]
