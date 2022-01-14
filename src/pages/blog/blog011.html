@@ -24,10 +24,10 @@ Python’s
 and [`threading`](https://docs.python.org/3/library/threading.html)
 libraries both have a timeout parameter for re-joining threads after
 they’ve finished. This provides an easy way to launch multi-threaded
-jobs while ensuing that no single thread run for longer than a specified
-timeout. This is very useful in implementing a standard “timeout on a
-function call” operation, as detailed in [this Stack Overflow question
-of that
+jobs while ensuing that no single thread runs for longer than a
+specified timeout. This is very useful in implementing a standard
+“timeout on a function call” operation, as detailed in [this Stack
+Overflow question of that
 title](https://stackoverflow.com/questions/492519/timeout-on-a-function-call)
 which offers a bewildering variety of approaches to that problem. Among
 the easiest of those is [the recommendation to rely on the

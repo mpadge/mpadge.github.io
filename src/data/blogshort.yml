@@ -1,6 +1,6 @@
 -
     title: Timeout on parallel jobs in R
-    description: Python's `multiprocessing` and `threading` libraries both have a timeout parameter for re-joining threads after they've finished. This provides an easy way to launch multi-threaded jobs while ensuing that no single thread exceeds a specified timeout. This post describes one way to implement an equivalent functionality in R.
+    description: Python's `multiprocessing` and `threading` libraries both have a timeout parameter for re-joining threads after they've finished. This provides an easy way to launch multi-threaded jobs while ensuing that no single thread exceeds a specified timeout. This post describes two ways to implement equivalent functionality in R.
     created: 14 Jan 22
     link: blog/blog011.html
 -
