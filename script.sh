@@ -8,7 +8,7 @@ then
 fi
 
 foundation build
-git checkout master
+git checkout main
 
 echo -e "\033[0;32mDeleting old site...\033[0m"
 rm -r assets/ blog/
@@ -31,8 +31,8 @@ git add index.html blog.html privacy.html blog/* assets/*
 git add -u
 git st
 git commit -am "New Blog Build (`date`)"
-git push origin master
-#gitpush master
+git push origin main
+#gitpush main
 
 echo -e "\033[0;32mChange back to source branch...\033[0m"
 git checkout source
