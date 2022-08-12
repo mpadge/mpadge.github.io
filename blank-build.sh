@@ -3,7 +3,8 @@
 # IMPORTANT: First call foundation new to make new site called "blank"!
 
 cd ..
-#foundation new
+# follow instructions in "foundation.md" to create new site
+# foundation new
 # menu-driven stuff ...
 # name new site "blank"
 

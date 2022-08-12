@@ -4,11 +4,11 @@ PORT: 8000
 # UnCSS will use these settings
 UNCSS_OPTIONS:
   html:
-    # Search for used CSS classes in generated HTML files
     - "dist/**/*.html"
+  timeout: 1000
   ignore:
-    - !!js/regexp .foundation-mq
-    - !!js/regexp ^\.is-.*
+    - .foundation-mq
+    - !!js/regexp /\.is-\w+/
 
 # Gulp will reference these paths when it copies files
 PATHS:
