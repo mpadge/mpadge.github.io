@@ -83,8 +83,8 @@
     link: https://docs.ropensci.org/pkgstats/
     title: pkgstats
     cran: no
-    cranlink:
-    cranlogs:
+    cranlink: http://cran.r-project.org/package=pkgstats
+    cranlogs: http://cranlogs.r-pkg.org/badges/grand-total/pkgstats?color=orange
     ros: no
     roslink:
     rosstatus:
