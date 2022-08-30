@@ -1951,9 +1951,9 @@ camelcase@^5.0.0, camelcase@^5.3.1:
   integrity sha512-L28STB170nwWS63UjtlEOE3dldQApaJXZkOI1uMFfzf3rRuPegHaHesyee+YxQ+W6SvRDQV6UrdOdRiR153wJg==
 
 caniuse-lite@^1.0.30001272, caniuse-lite@^1.0.30001274:
-  version "1.0.30001375"
-  resolved "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001375.tgz"
-  integrity sha512-kWIMkNzLYxSvnjy0hL8w1NOaWNr2rn39RTAVyIwcw8juu60bZDWiF1/loOYANzjtJmy6qPgNmn38ro5Pygagdw==
+  version "1.0.30001385"
+  resolved "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001385.tgz"
+  integrity sha512-MpiCqJGhBkHgpyimE9GWmZTnyHyEEM35u115bD3QBrXpjvL/JgcP8cUhKJshfmg4OtEHFenifcK5sZayEw5tvQ==
 
 caseless@~0.12.0:
   version "0.12.0"
