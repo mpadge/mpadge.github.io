@@ -1,0 +1,184 @@
+{{> header}}
+{{> blog_entry_header}}
+
+<div class="cell medium-2 large-2 left">
+<nav class="sticky-container" data-sticky-container>
+<div class="sticky" data-sticky data-anchor="how-i-make-this-site" data-sticky-on="large" data-margin-top="5">
+<ul class="vertical menu" data-magellan>
+<li><a href="#debugging-in-R-with-a-single-command" style="color:#111111">debugging in R with a single command</a></li>
+<li><a href="#How-to-start-a-source-code-debugger-in-R" style="color:#111111">How to start a source-code debugger in R</a></li>
+<li><a href="#Re-compiling-source-code-to-include-debugging-symbols" style="color:#111111">Re-compiling source code to include debugging symbols</a></li>
+<li><a href="#Starting-an-R-session-in-debug-mode" style="color:#111111">Starting an R session in debug mode</a></li>
+<li><a href="#Putting-it-together-in-a-single-command" style="color:#111111">Putting it together in a single command</a></li>
+</div>
+</nav>
+</div>
+
+<div class="cell medium-10 large-10">
+<div class="sections">
+{{#markdown}}
+<section id="debugging-in-R-with-a-single-command" data-magellan-target="debugging-in-R-with-a-single-command"><h1>debugging in R with a single command</h></section>
+
+The art of debugging C++ code in R has been covered in many other
+places, notably including [this post by Davis
+Vaughan](https://blog.davisvaughan.com/posts/2019-04-05-debug-r-package-with-cpp),
+and [this helpful introduction](https://tdhock.github.io/blog/2019/gdb/)
+by Toby Hocking, which provides a little more detail on how to get a
+debugger started. The detail on starting a debugger is nevertheless
+brief, and only added as an aside to the main point of the post. The aim
+of this post is to provide a detailed reference on how to start a source
+code debugger in R.
+
+This blog post will not describe details of common debugging
+environments, even if only because [Davis Vaughan has already done such
+a great job of
+that](https://blog.davisvaughan.com/posts/2019-04-05-debug-r-package-with-cpp).
+As he describes there, the two most common debugging environments used
+on Linux systems are [“gdb” (the GNU Project
+Debugger)](https://www.sourceware.org/gdb/) and
+[“lldb”](https://lldb.llvm.org/).
+
+This whole post presumes code to be debugged is in an R package, and
+that all commands that follow are executed from within the root
+directory of that package. Debugging code from other packages requires
+modifying the following procedure to ensure that debug symbols are
+inserted within the source code of those other packages. But then it’ll
+generally be easier to do that from within the root directory of the
+package you want debugged anyway, so we’ll just presume that from here
+on anyway.
+
+<section id="How-to-start-a-source-code-debugger-in-R" data-magellan-target="How-to-start-a-source-code-debugger-in-R"><h2>How to start a source-code debugger in R</h></section>
+
+Starting an R session causes a computer console to enter a dedicated
+computational environment where R commands can be typed, and will be
+appropriately interpreted and executed. Similarly, starting a
+source-code debugger generally results in entering a dedicated debugging
+environment where debugging commands can be entered in order to debug
+source code which has been pre-loaded into that environment.
+
+Starting a debugger from within an R environment generally consists of
+the two steps of:
+
+1.  Re-compiling source code to include debugging symbols; and then
+2.  Starting an R session in “debug” mode.
+
+Although people experienced with debugging might see these steps as
+trivial, they can easily prevent insurmountable challenges to anybody
+who has never used a source code debugger before. This post will
+describe a simple setup for “automating away” these two steps, and
+reducing them to a single command.
+
+<section id="Re-compiling-source-code-to-include-debugging-symbols" data-magellan-target="Re-compiling-source-code-to-include-debugging-symbols"><h3>Re-compiling source code to include debugging symbols</h></section>
+
+While there are potentially a number of ways source code in an R package
+(or elsewhere) can be re-compiled with debugging symbols, perhaps the
+easiest is to insert the symbols within a `Makevars` file. These files
+are used to control compilation of source code. The following line in a
+`Makevars` file will insert debugging symbols when the code is
+re-compiled:
+
+    PKG_CPPFLAGS=UDEBUG -g
+
+The code can then be compiled with an R command like
+[`pkgbuild::compile_dll()`](https://r-lib.github.io/pkgbuild/reference/compile_dll.html),
+and will then include the debug symbols needed in the debugging
+environment.
+
+I have a function in my [personal R package of general purpose
+functions](https://github.com/mpadge/mpmisc), called
+[`debug()`](https://github.com/mpadge/mpmisc/blob/main/R/debug.R) which
+automatically creates a Makevars file to insert these symbols (or
+modifies an existing file to add the symbols on to any existing
+compilation symbols). The following section describes how this function
+is used to implement a one-line command to start debugging.
+
+<section id="Starting-an-R-session-in-debug-mode" data-magellan-target="Starting-an-R-session-in-debug-mode"><h3>Starting an R session in debug mode</h></section>
+
+As described above, R is effectively a self-contained computational
+environment within some other environment (such as a terminal
+environment, or RStudio). A debugger is also a self-contained
+computational environment. Unsurprisingly, this means that a debugging
+environment can not be started from within R, but must be started from
+the “host” environment from where you usually start R, such as a
+terminal, or a shell environment in RStudio.
+
+Debuggers also need to be started by evaluating some specified R
+expression, generally specified as an external R script. This means
+debugging some function, `f()`, requires creating a simple file, say
+“script.R”, which calls that function. The script must include any other
+lines necessary for R to know how to load the function, such as
+`library()` calls, or the full function definition. For example, if I
+wanted to debug a function within [my `mpmisc`
+package](https://github.com/mpadge/mpmisc) - which would be silly,
+because it contains no source code, but the principle applies
+regardless - then I would create a “script.R” file with the following
+lines:
+
+``` r
+library (mpmisc)
+check <- increment_dev_version () # or whatever function I want debugged.
+```
+
+The debugger can then be started from that location by running:
+
+``` bash
+R -d gdb -e 'source("script.R")'
+```
+
+This command calls R, and must be run within a shell environment, not
+from within R! The `-d` flag tells R to run in debug mode, and requires
+specifying which debugger to use, such as “gdb” as in that example, or
+“lldb”, or any other available debugger. The `-e` flag specifies a
+command for R to evaluate while debugging.
+
+<section id="Putting-it-together-in-a-single-command" data-magellan-target="Putting-it-together-in-a-single-command"><h3>Putting it together in a single command</h></section>
+
+My single-command solution is implemented via a shell alias, for which
+is use “debugr”, which just calls a shell script:
+
+``` bash
+alias debugr="bash /<path>/<to>/debug.bash"
+```
+
+The shell script is in [my `dotfiles`
+repo](https://github.com/mpadge/dotfiles/blob/main/system/debug.bash),
+and contains these lines:
+
+``` bash
+#!/usr/bin/bash
+
+echo "---------------------------------------------------"
+echo "         Debug an R script with gdb or lldb"
+echo "---------------------------------------------------"
+
+read -p "Enter name of script (empty = default 'script.R'): " SCRIPT
+
+Rscript -e "mpmisc::debug (); pkgbuild::compile_dll()"
+
+DEBUGGER=gdb
+
+if [ "$SCRIPT" == "" ]; then
+    R -d $DEBUGGER -e "source('script.R')"
+else
+    R -d $DEBUGGER -e "source('$SCRIPT')"
+fi
+```
+
+That script calls `mpmisc::debug()` to create or modify Makevars to
+include debug symbols, and then re-compiles the source object by calling
+[`pkgbuild::compile_dll()`](https://r-lib.github.io/pkgbuild/reference/compile_dll.html).
+It also includes an interactive prompt to specify the script to be used
+for debugging, with a default of “script.R”. I can then debug any
+package by creating a debug script, and then simply calling `debugr` to
+drop me straight into a debugging environment. As said at the outset,
+this post is only intended to describe how to get that far. See the
+links given at the stop for what to do once you’re there.
+<div style="text-align: right">
+Originally posted: 23 Aug 22
+Updated: 30 Aug 22
+</div>
+{{/markdown}}
+</div>
+</div>
+{{> blog_entry_footer}}
+{{> footer}}

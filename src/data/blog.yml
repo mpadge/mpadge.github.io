@@ -1,4 +1,9 @@
 -
+    title: Debugging C++ code in R with a single command
+    description: There are several great references for how to debug C or C++ code in R, but the descriptions of how to start a debugger are unclear. This post describes how to start a debugging session in R with a single command.
+    created: 23 Aug 22
+    link: blog/blog012.html
+-
     title: Timeout on parallel jobs in R
     description: Python's `multiprocessing` and `threading` libraries both have a timeout parameter for re-joining threads after they've finished. This provides an easy way to launch multi-threaded jobs while ensuing that no single thread exceeds a specified timeout. This post describes two ways to implement equivalent functionality in R.
     created: 14 Jan 22

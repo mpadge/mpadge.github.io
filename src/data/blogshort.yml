@@ -1,4 +1,9 @@
 -
+    title: Debugging C++ code in R with a single command
+    description: There are several great references for how to debug C or C++ code in R, but the descriptions of how to start a debugger are unclear. This post describes how to start a debugging session in R with a single command.
+    created: 23 Aug 22
+    link: blog/blog012.html
+-
     title: Timeout on parallel jobs in R
     description: Python's `multiprocessing` and `threading` libraries both have a timeout parameter for re-joining threads after they've finished. This provides an easy way to launch multi-threaded jobs while ensuing that no single thread exceeds a specified timeout. This post describes two ways to implement equivalent functionality in R.
     created: 14 Jan 22
@@ -23,8 +28,3 @@
     description: This article was recently published in the Rcpp Gallery, and demonstrates using the RcppParallel package to aggregate to an output vector. It extends directly from previous demonstrations of single-valued aggregation, through providing necessary details to enable aggregation to a vector, or by extension, to any arbitrary form.
     created: 07 Nov 19
     link: blog/blog007.html
--
-    title: Github 2FA, git push, and password entry
-    description: Activating github two-factor authentication (2FA) offers an indubitable security boost, with one notable side effect--https authentication requires entering a Personal Access Token instead of password. This entry explains how I reconfigured my git push commands with 2FA to be able to enter my password once again, instead of a random 32-character token.
-    created: 25 Oct 19
-    link: blog/blog006.html
