@@ -109,3 +109,13 @@
     roslink:
     rosstatus:
     description: Automatic testing of R packages
+-
+    link: https://mpadge.github.io/typetracer/
+    title: typetracer
+    cran: yes
+    cranlink: http://cran.r-project.org/package=typetracer
+    cranlogs: http://cranlogs.r-pkg.org/badges/grand-total/typetracer?color=orange
+    ros: no
+    roslink:
+    rosstatus:
+    description: Trace code to extract information on parameters passed to R functions.
