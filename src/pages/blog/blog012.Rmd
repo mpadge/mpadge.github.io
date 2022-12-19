@@ -63,7 +63,7 @@ compilation of source code. The following line in a `Makevars` file will insert
 debugging symbols when the code is re-compiled:
 
 ```
-PKG_CPPFLAGS=UDEBUG -g
+PKG_CPPFLAGS = -UDEBUG -g
 ```
 
 The code can then be compiled with an R command like
