@@ -116,7 +116,7 @@ easiest is to insert the symbols within a <code>Makevars</code> file. These file
 are used to control compilation of source code. The following line in a
 <code>Makevars</code> file will insert debugging symbols when the code is
 re-compiled:</p>
-<div class="code-example"><pre><code class="html hljs">PKG_CPPFLAGS=UDEBUG -g</code></pre></div><p>The code can then be compiled with an R command like
+<div class="code-example"><pre><code class="html hljs">PKG_CPPFLAGS = -UDEBUG -g</code></pre></div><p>The code can then be compiled with an R command like
 <a href="https://r-lib.github.io/pkgbuild/reference/compile_dll.html"><code>pkgbuild::compile_dll()</code></a>,
 and will then include the debug symbols needed in the debugging
 environment.</p>
