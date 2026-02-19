@@ -14,7 +14,7 @@ import autoprefixer  from 'autoprefixer';
 import imagemin      from 'gulp-imagemin';
 
 
-const sass = require('gulp-sass');
+const sass = require('gulp-sass')(require('sass'));
 const postcss = require('gulp-postcss');
 const uncss = require('postcss-uncss');
 
@@ -101,8 +101,10 @@ function sassBuild() {
     .pipe($.sourcemaps.init())
     .pipe(sass({
       includePaths: PATHS.sass
-    })
-    .on('error', $.sass.logError))
+    }).on('error', err => {
+      console.error(err.message);
+      process.exit(1);
+    }))
     .pipe(postcss(postCssPlugins))
     .pipe($.if(PRODUCTION, $.cleanCss({ compatibility: 'ie11' })))
     .pipe($.if(!PRODUCTION, $.sourcemaps.write()))
