@@ -1,0 +1,419 @@
+
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>mpadge</title>
+    <link rel="stylesheet" href="../assets/css/app.css" />
+    <link rel="stylesheet" href="../assets/foundation-icons/foundation-icons.css" />
+  </head>
+<body>
+<!--
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/gruvbox-dark.min.css">
+href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/atelier-dune-light.min.css">
+-->
+<link rel="stylesheet"
+href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/atom-one-light.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<div data-sticky-container>
+    <div class="top-bar" data-sticky data-options="marginTop:0;",style="width:100%;">
+        <div class="top-bar-left">
+            <ul class="dropdown menu" data-dropdown-menu>
+                <li class="menu-text"> mpadge </li>
+                <li><a href="..//#">home</a></li>
+                <li><a href="../blog.html">blog</a></li>
+                <li> <a href="..//#code">code</a> </li>
+                <li> <a href="../privacy.html">privacy</a> </li>
+            </ul>
+        </div>
+        <div class="top-bar-right">
+            <ul class="dropdown menu" data-dropdown-menu>
+                <li><a target="_blank" rel="noopener noreferrer"
+                                       href="https://github.com/mpadge">
+                        <i class="fi-social-github"></i></a></li>
+                <li><a target="_blank" rel="me noopener noreferrer"
+                                        href="https://nerdculture.de/@mpadge">
+                        <img class="fi-social-mastodon" src="../assets/foundation-icons/svgs/fi-social-mastodon.svg" alt="Mastodon"></a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="blogClass">
+<div class="grid-container">
+<div class="grid-x grid-padding-x">
+
+<div class="cell medium-2 large-2 left">
+<nav class="sticky-container" data-sticky-container>
+<div class="sticky" data-sticky data-anchor="how-i-make-this-site" data-sticky-on="large" data-margin-top="5">
+<ul class="vertical menu" data-magellan>
+<li><a href="#Timeout-on-parallel-jobs-in-R" style="color:#111111">Timeout on parallel jobs in R</a></li>
+<li><a href="#Timeout-in-R-s-parallel-package" style="color:#111111">Timeout in R’s ‘parallel’ package</a></li>
+<li><a href="#Timeout-via-callr-" style="color:#111111">Timeout via ‘callr’</a></li>
+<li><a href="#Parallel-timeout-via-callr-" style="color:#111111">Parallel timeout via ‘callr’</a></li>
+<li><a href="#Timeout-parameters-and-future-packages" style="color:#111111">Timeout parameters and ‘future’ packages</a></li>
+</div>
+</nav>
+</div>
+
+<div class="cell medium-10 large-10">
+<div class="sections">
+<section id="Timeout-on-parallel-jobs-in-R" data-magellan-target="Timeout-on-parallel-jobs-in-R"><h1>Timeout on parallel jobs in R</h></section>
+
+<p>Python’s
+<a href="https://docs.python.org/3/library/multiprocessing.html"><code>multiprocessing</code></a>
+and <a href="https://docs.python.org/3/library/threading.html"><code>threading</code></a>
+libraries both have a timeout parameter for re-joining threads after
+they’ve finished. This provides an easy way to launch multi-threaded
+jobs while ensuing that no single thread runs for longer than a
+specified timeout. This is very useful in implementing a standard
+“timeout on a function call” operation, as detailed in <a href="https://stackoverflow.com/questions/492519/timeout-on-a-function-call">this Stack
+Overflow question of that
+title</a>
+which offers a bewildering variety of approaches to that problem. Among
+the easiest of those is <a href="https://stackoverflow.com/a/14924210">the recommendation to rely on the
+<code>multiprocessing</code> libraries’s <code>join()</code>
+operation</a> which accepts a
+<code>timeout</code> parameter, <a href="https://docs.python.org/3/library/multiprocessing.html#multiprocessing.Process.join">as described in the library’s
+documentation</a>.
+There is also an equivalent parameter <a href="https://docs.python.org/3/library/threading.html#threading.Thread.join">for python’s other main
+parallelisation library,
+<code>threading</code></a>.</p>
+<p>A nice example of the usefulness of this <code>timeout</code> parameter in action
+is given in <a href="https://github.com/cokelaer/fitter">the <code>fitter</code> package</a>
+by <a href="https://github.com/cokelaer">@cokelaer</a> for fitting probability
+distributions to observed data. The main function fits a wide range of
+different distributions, and can even automagically select the best
+distribution according to specified criteria. This is done through
+fitting different distributions in parallel on different threads,
+generally greatly speeding up calculations. Distributional fitting is,
+however, often an iterative procedure, meaning the duration required to
+generate a fit within some specified tolerance can not be known in
+advance. Parallel threads by default must wait for all to terminate
+before individual results can be joined. To ensure distributional fits
+are generated within a reasonable duration, <a href="https://github.com/cokelaer/fitter/blob/cf222aab741492917bd3a2d1af821e0b5344907d/src/fitter/fitter.py#L429"><code>fitter</code> has a <code>_timed_run</code>
+function</a>
+to:</p>
+<blockquote>
+<p>spawn a thread and run the given function … and return the given
+default value if the timeout is exceeded.</p>
+</blockquote>
+<p>The bit of that function which controls the timeout consists of the
+following lines (with code for exception handling removed here):</p>
+<div class="code-example"><pre><code class="python hljs"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">_timed_run</span> <span class="hljs-params">(self, func, args=<span class="hljs-params">()</span>)</span>:</span>
+    <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">InterruptableThread</span><span class="hljs-params">(threading.Thread)</span>:</span>
+        <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">__init__</span><span class="hljs-params">(self)</span>:</span>
+            threading.Thread.__init__(self)
+            self.result = default
+
+        <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">run</span><span class="hljs-params">(self)</span>:</span>
+            self.result = func(args)
+
+    it = InterruptableThread()
+    it.start()
+    it.join(self.timeout)
+    <span class="hljs-keyword">return</span> it.result</code></pre></div><p>That represents a succinct way to run a multi-threaded job in which each
+thread obeys a specified timeout parameter. This post describes two
+approaches to implementing equivalent functionality in R.</p>
+<section id="Timeout-in-R-s-parallel-package" data-magellan-target="Timeout-in-R-s-parallel-package"><h2>Timeout in R’s ‘parallel’ package</h></section>
+
+<p>R’s <a href="https://stat.ethz.ch/R-manual/R-devel/library/parallel/doc/parallel.pdf"><code>{parallel}</code>
+package</a>
+offers one way to implement a <code>timeout</code> parameter, via <a href="https://stat.ethz.ch/R-manual/R-devel/library/parallel/html/mcparallel.html">the
+<code>mccollect()</code>
+function</a>,
+which is (almost) equivalent to Python’s <code>.join()</code> operator. This can be
+illustrated with this arbitrarily slow function:</p>
+<div class="code-example"><pre><code class="r hljs">fn &lt;- <span class="hljs-keyword">function</span> (x = <span class="hljs-number">10L</span>) {
+    vapply (seq (x), <span class="hljs-keyword">function</span> (i) {
+                Sys.sleep (<span class="hljs-number">0.2</span>)
+                runif (<span class="hljs-number">1</span>)
+        }, numeric (<span class="hljs-number">1</span>))
+}</code></pre></div><p>Calculating this in parallel is straightforward with the <code>mcparallel()</code>
+and <code>mccollect()</code> functions. This code generates 10 random inputs to
+<code>fn()</code> which will take random durations up to 20 * 0.2 = 4 seconds
+each.</p>
+<div class="code-example"><pre><code class="r hljs">set.seed (<span class="hljs-number">1</span>)
+n &lt;- sample (<span class="hljs-number">1</span>:<span class="hljs-number">20</span>, size = <span class="hljs-number">10</span>, replace = <span class="hljs-literal">TRUE</span>)
+<span class="hljs-keyword">library</span> (parallel)
+jobs &lt;- lapply (n, <span class="hljs-keyword">function</span> (i) mcparallel (fn (i)))
+system.time (
+    res &lt;- mccollect (jobs)
+)</code></pre></div><br>
+
+<div class="code-example"><pre><code class="html hljs">##    user  system elapsed 
+##   0.006   0.000   3.615</code></pre></div><p>That took much less than the expected duration of,</p>
+<div class="code-example"><pre><code class="r hljs">sum (n) / <span class="hljs-number">5</span></code></pre></div><br>
+
+<div class="code-example"><pre><code class="html hljs">## [1] 17.4</code></pre></div><p>The <code>mccollect()</code> function has a <code>timeout</code> parameter “to check for job
+results”. Specifying that in the above function then gives the
+following, noting that the parameter <code>wait</code> also has to be passed with
+its non-default value of <code>FALSE</code> to activate <code>timeout</code>.</p>
+<div class="code-example"><pre><code class="r hljs">jobs &lt;- lapply (n, <span class="hljs-keyword">function</span> (i) mcparallel (fn (i)))
+system.time (
+    res &lt;- mccollect (jobs, wait = <span class="hljs-literal">FALSE</span>, timeout = <span class="hljs-number">2</span>)
+)</code></pre></div><br>
+
+<div class="code-example"><pre><code class="html hljs">##    user  system elapsed 
+##   0.000   0.000   0.003</code></pre></div><p>That seems much too quick! What does the result look like?</p>
+<div class="code-example"><pre><code class="r hljs">res</code></pre></div><br>
+
+<div class="code-example"><pre><code class="html hljs">## $`24053`
+## [1] 0.6096623</code></pre></div><p>It seems that <code>mccollect()</code> has only returned one result. The reason can
+be seen by tracing the implementation of the <code>timeout</code> parameter from
+<a href="https://github.com/wch/r-source/blob/5ab79ec84040684c74dc9c901fde944fff6e8375/src/library/parallel/R/unix/mcparallel.R#L48-L65">the <code>mccollect()</code>
+function</a>
+through to <a href="https://github.com/wch/r-source/blob/5ab79ec84040684c74dc9c901fde944fff6e8375/src/library/parallel/R/unix/mcfork.R#L55-L67">the <code>selectChildren()</code>
+function</a>
+into <a href="https://github.com/wch/r-source/blob/5ab79ec84040684c74dc9c901fde944fff6e8375/src/library/parallel/src/fork.c#L808">the C function,
+<code>select_children()</code></a>,
+and finally to the <a href="https://github.com/wch/r-source/blob/5ab79ec84040684c74dc9c901fde944fff6e8375/src/library/parallel/src/fork.c#L905-L922">lines which implement the waiting
+procedure</a>.
+These lines show that the function returns as soon as it collects a
+value from any of the “child” processes (via <a href="https://github.com/wch/r-source/blob/5ab79ec84040684c74dc9c901fde944fff6e8375/src/include/R_ext/eventloop.h#L86-L88">the <code>R_ext/R_SelectEx()</code>
+function</a>
+which is <a href="https://github.com/wch/r-source/blob/5ab79ec84040684c74dc9c901fde944fff6e8375/src/unix/sys-std.c#L115">implemented
+here</a>).
+So setting <code>timeout</code> in <code>mccollect()</code> will then return results as soon
+as the first result has been been generated. That of course means that
+the remaining jobs continue to be processed, and can be returned by
+subsequent calls to <code>mccollect()</code>. Two consecutive calls will then
+naturally return the first two results to be processed. To check this,
+we need to note that the <code>jobs</code> list contains process ID (<code>pid</code>) values,
+one of which is detached by the first call to <code>mccollect()</code>, and so has
+to be removed from the <code>jobs</code> list.</p>
+<div class="code-example"><pre><code class="r hljs">jobs &lt;- lapply (n, <span class="hljs-keyword">function</span> (i) mcparallel (fn (i)))
+pids &lt;- vapply (jobs, <span class="hljs-keyword">function</span> (i) i$pid, integer (<span class="hljs-number">1</span>))
+system.time (
+    res1 &lt;- mccollect (jobs, wait = <span class="hljs-literal">FALSE</span>, timeout = <span class="hljs-number">2</span>)
+)</code></pre></div><br>
+
+<div class="code-example"><pre><code class="html hljs">##    user  system elapsed 
+##   0.000   0.000   0.007</code></pre></div><br>
+
+<div class="code-example"><pre><code class="r hljs">jobs &lt;- jobs [which (!pids %<span class="hljs-keyword">in</span>% names (res1))]
+system.time (
+    res2 &lt;- mccollect (jobs, wait = <span class="hljs-literal">FALSE</span>, timeout = <span class="hljs-number">2</span>)
+)</code></pre></div><div class="code-example"><pre><code class="html hljs">##    user  system elapsed 
+##   0.000   0.000   0.003</code></pre></div><p>The two returned values are then,</p>
+<div class="code-example"><pre><code class="r hljs">res1; res2</code></pre></div><br>
+
+<div class="code-example"><pre><code class="html hljs">## $`26140`
+## [1] 0.05318079
+## 
+## $`26146`
+## [1] 0.7513229</code></pre></div><p>So R has a <code>timeout</code> parameter on parallel jobs, but it doesn’t work
+like the equivalent Python parameters, and arguably doesn’t work how one
+might expect. That code exploration is nevertheless sufficient to
+understand how a pythonic version could be implemented:</p>
+<div class="code-example"><pre><code class="r hljs">par_timeout &lt;- <span class="hljs-keyword">function</span> (f, n, timeout) {
+    jobs &lt;- lapply (n, <span class="hljs-keyword">function</span> (i) mcparallel (f (i)))
+    Sys.sleep (timeout)
+    mccollect (jobs, wait = <span class="hljs-literal">FALSE</span>)
+}
+par_timeout (fn, n, <span class="hljs-number">2</span>)</code></pre></div><br>
+
+<div class="code-example"><pre><code class="html hljs">## $`26913`
+## [1] 0.008293313
+## 
+## $`26908`
+## [1] 0.2473093 0.9442306
+## 
+## $`26907`
+## [1] 0.8032608
+## 
+## $`26906`
+## [1] 0.1900972 0.8134690 0.2745623 0.3148808 0.3954601 0.7415558 0.9394560
+## 
+## $`26905`
+## [1] 0.7566425 0.2494607 0.4848817 0.3469343</code></pre></div><p>And we get five out of the expected 10 results returning within our
+specified <code>timeout</code> of 2 seconds. We can estimate from the generated
+values of <code>n</code> which ones should have returned, given that <code>fn</code> takes
+0.2s per unit of the input, <code>x</code>, repeating the initial code used to
+generate those values.</p>
+<div class="code-example"><pre><code class="r hljs">set.seed (<span class="hljs-number">1</span>)
+n &lt;- sample (<span class="hljs-number">1</span>:<span class="hljs-number">20</span>, size = <span class="hljs-number">10</span>, replace = <span class="hljs-literal">TRUE</span>)
+timeout &lt;- <span class="hljs-number">2</span> <span class="hljs-comment"># in seconds</span>
+data.frame (n = n, should_work = n / <span class="hljs-number">5</span> &lt;= <span class="hljs-number">2</span>)</code></pre></div><br>
+
+<div class="code-example"><pre><code class="html hljs">##     n should_work
+## 1   4        TRUE
+## 2   7        TRUE
+## 3   1        TRUE
+## 4   2        TRUE
+## 5  11       FALSE
+## 6  14       FALSE
+## 7  18       FALSE
+## 8  19       FALSE
+## 9   1        TRUE
+## 10 10        TRUE</code></pre></div><p>And we might have expected 6 values to have returned, of which we
+actually got only 5, but perhaps the value of <code>n = 10</code> extended just
+beyond the timeout? We’ll nevertheless compare this result with an
+alternative approach below. But first, there are some notable drawbacks
+to the approach illustrated here:</p>
+<ol>
+<li><p>The <a href="https://stat.ethz.ch/R-manual/R-devel/library/parallel/html/mcparallel.html">documentation for the <code>mcparallel()</code> and <code>mccollect()</code>
+ functions</a>
+ state at the very first line, “These functions are based on forking
+ and so are not available on Windows.” While that might not concern
+ those who develop packages on other systems, it will greatly reduce
+ the use of any code implementing parallel timeouts in this way.</p>
+</li>
+<li><p>There are many “wrapper” packages around R’s core <code>{parallel}</code>
+ functionality, notably including the <a href="https://futureverse.org">“futureverse” family of
+ packages</a>, the primary aim of which is to
+ make parallelisation in R simpler, through enabling any calls to be
+ simply wrapped in parallelisation functions like <code>future()</code>. These
+ packages offer no direct way of controlling the <code>timeout</code> parameter
+ of <code>mccollect()</code>, or any equivalent functionality.</p>
+</li>
+</ol>
+<p>The next section explores a different approach that is operating-system
+independent.</p>
+<section id="Timeout-via-callr-" data-magellan-target="Timeout-via-callr-"><h2>Timeout via ‘callr’</h></section>
+
+<p>The <a href="https://callr.r-lib.org">callr package by Gábor Csárdi and Winston
+Chang</a> is designed for ‘calling R from R’ –
+that is, for,</p>
+<blockquote>
+<p>performing computation in a separate R process, without affecting the
+current R process</p>
+</blockquote>
+<p>The package offers two main modes of calling processes: <a href="https://callr.r-lib.org/reference/r.html">as blocking,
+foreground processes via
+<code>callr::r()</code></a>, or <a href="https://callr.r-lib.org/reference/r_bg.html">as
+non-blocking, background processes via
+<code>callr::r_bg()</code></a>. The
+foreground <code>r()</code> function has an explicit <code>timeout</code> parameter, which
+returns a <code>system_command_timeout_error</code> if the specified timeout (in
+seconds) is exceeded. The following code calls the <code>fn()</code> function from
+above to demonstrate this functionality, wrapping the main call in
+<code>tryCatch()</code> to process the timeout errors:</p>
+<div class="code-example"><pre><code class="r hljs">timeout_fn &lt;- <span class="hljs-keyword">function</span> (x = <span class="hljs-number">1L</span>, timeout = <span class="hljs-number">2</span>) {
+    <span class="hljs-keyword">tryCatch</span> (
+        callr::r (fn, args = list (x = x), timeout = timeout),
+        error = <span class="hljs-keyword">function</span> (e) <span class="hljs-literal">NA</span>
+        )
+}</code></pre></div><p>Passing a value of <code>x</code> larger than around 5 should then timeout at 1
+second, as this code demonstrates:</p>
+<div class="code-example"><pre><code class="r hljs">system.time (
+    x &lt;- timeout_fn (x = <span class="hljs-number">10</span>, timeout = <span class="hljs-number">1</span>)
+    )</code></pre></div><br>
+
+<div class="code-example"><pre><code class="html hljs">##    user  system elapsed 
+##   0.152   0.035   0.959</code></pre></div><p>The returned value is then:</p>
+<div class="code-example"><pre><code class="r hljs">x</code></pre></div><br>
+
+<div class="code-example"><pre><code class="html hljs">## [1] NA</code></pre></div><p>That function timed out as expected. Compare what happens when the
+<code>timeout</code> is extended well beyond that limit:</p>
+<div class="code-example"><pre><code class="r hljs">timeout_fn (x = <span class="hljs-number">5</span>, timeout = <span class="hljs-number">10</span>)</code></pre></div><br>
+
+<div class="code-example"><pre><code class="html hljs">## [1] 0.7176185 0.9919061 0.3800352 0.7774452 0.9347052</code></pre></div><p>The <code>timeout</code> parameter of <code>callr::r()</code> can thus be used to directly
+implement a timeout parameter. The following sub-section demonstrates
+how to extend this to parallel jobs.</p>
+<section id="Parallel-timeout-via-callr-" data-magellan-target="Parallel-timeout-via-callr-"><h2>Parallel timeout via ‘callr’</h></section>
+
+<p>To illustrate a different approach than the previous <code>mcparallel()</code>
+function, the following code uses the <a href="https://stat.ethz.ch/R-manual/R-devel/library/parallel/html/mclapply.html"><code>mclapply</code> function of the
+<code>parallel</code>
+package</a>,
+which unfortunately also does not work on Windows, but suffices to
+demonstrate the principles.</p>
+<div class="code-example"><pre><code class="r hljs">set.seed (<span class="hljs-number">1</span>)
+n &lt;- sample (<span class="hljs-number">1</span>:<span class="hljs-number">20</span>, size = <span class="hljs-number">10</span>, replace = <span class="hljs-literal">TRUE</span>)
+nc &lt;- parallel::detectCores () - <span class="hljs-number">1L</span>
+system.time (
+    res &lt;- parallel::mclapply (mc.cores = nc, n, <span class="hljs-keyword">function</span> (i)
+                               timeout_fn (x = i, timeout = <span class="hljs-number">2</span>))
+    )</code></pre></div><br>
+
+<div class="code-example"><pre><code class="html hljs">##    user  system elapsed 
+##   1.754   0.544   3.008</code></pre></div><br>
+
+<div class="code-example"><pre><code class="r hljs">print (res)</code></pre></div><br>
+
+<div class="code-example"><pre><code class="html hljs">## [[1]]
+## [1] 0.20134728 0.09508085 0.75240848 0.30041337
+## 
+## [[2]]
+## [1] 0.5837042 0.6133771 0.3121486 0.2943205 0.4455983 0.5102744 0.8867751
+## 
+## [[3]]
+## [1] 0.9381157
+## 
+## [[4]]
+## [1] 0.9201705 0.9656466
+## 
+## [[5]]
+## [1] NA
+## 
+## [[6]]
+## [1] NA
+## 
+## [[7]]
+## [1] NA
+## 
+## [[8]]
+## [1] NA
+## 
+## [[9]]
+## [1] 0.7515151
+## 
+## [[10]]
+## [1] NA</code></pre></div><p>And that returned 5 out of the 10 jobs, as for the previous example
+using <code>mccollect()</code>. (The actual values differ due to random number
+generators being seeded differently in the two lots of jobs.) This
+approach, of using <code>callr</code> to control function <code>timeout</code> parameters,
+enables parallel jobs to be implemented on all operating systems through
+replacing the <code>mclapply()</code> or <code>mcparallel()</code> functions with, for
+example, <a href="https://cran.r-project.org/web/packages/snow/index.html">equivalent functions from the <code>{snow}</code>
+package</a>. These
+<code>{snow}</code> functions (such as the <code>parApply</code> family of functions) also do
+not implement a <code>timeout</code> parameter, and so this <code>{callr}</code> approach
+offers one practical way to do so via those packages.</p>
+<section id="Timeout-parameters-and-future-packages" data-magellan-target="Timeout-parameters-and-future-packages"><h3>Timeout parameters and ‘future’ packages</h></section>
+
+<p>Processes triggered by the <code>{callr}</code> package do not generally play
+nicely with the core <code>{future}</code> package, which was likely one motivation
+for Henrik Bengtsson to develop <a href="https://future.callr.futureverse.org/">the <code>{future.callr}</code>
+package</a> which explicitly uses
+<code>{callr}</code> to run each process. The processes are nevertheless triggered
+as <code>callr::r_bg()</code> processes which do not have a <code>timeout</code> parameter.
+While it is possible to directly implement a timeout parameter of <code>r_bg</code>
+processes by monitoring until timeout and then using the <code>kill</code> method,
+the <code>future.callr</code> package does not directly expose the <code>r_bg</code> processes
+necessary to enable this. There is therefore currently no safe way to
+implement a timeout parameter along the lines demonstrated here within
+any <code>futureverse</code> packages.</p>
+<div style="text-align: right">
+Originally posted: 14 Jan 22
+</div>
+</div>
+</div>
+
+<script src="https://utteranc.es/client.js"
+        repo="mpadge/mpadge.github.io"
+        issue-term="pathname"
+        label="blog_comments"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script>
+
+</div>
+</div>
+</div>
+<div class="large-12 cell" style="background-color:#ffffff00">
+    <div class="callout">
+        <p class="text-center" style="font-size:8pt">Copyright &#169; 2019--22 mark padgham</p>
+    </div>
+</div>
+
+
+<script src="../assets/js/app.js"></script>
+</body>
+</html>

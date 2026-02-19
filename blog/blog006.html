@@ -1,0 +1,263 @@
+
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>mpadge</title>
+    <link rel="stylesheet" href="../assets/css/app.css" />
+    <link rel="stylesheet" href="../assets/foundation-icons/foundation-icons.css" />
+  </head>
+<body>
+<!--
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/gruvbox-dark.min.css">
+href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/atelier-dune-light.min.css">
+-->
+<link rel="stylesheet"
+href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/atom-one-light.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<div data-sticky-container>
+    <div class="top-bar" data-sticky data-options="marginTop:0;",style="width:100%;">
+        <div class="top-bar-left">
+            <ul class="dropdown menu" data-dropdown-menu>
+                <li class="menu-text"> mpadge </li>
+                <li><a href="..//#">home</a></li>
+                <li><a href="../blog.html">blog</a></li>
+                <li> <a href="..//#code">code</a> </li>
+                <li> <a href="../privacy.html">privacy</a> </li>
+            </ul>
+        </div>
+        <div class="top-bar-right">
+            <ul class="dropdown menu" data-dropdown-menu>
+                <li><a target="_blank" rel="noopener noreferrer"
+                                       href="https://github.com/mpadge">
+                        <i class="fi-social-github"></i></a></li>
+                <li><a target="_blank" rel="me noopener noreferrer"
+                                        href="https://nerdculture.de/@mpadge">
+                        <img class="fi-social-mastodon" src="../assets/foundation-icons/svgs/fi-social-mastodon.svg" alt="Mastodon"></a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="blogClass">
+<div class="grid-container">
+<div class="grid-x grid-padding-x">
+
+<div class="cell medium-2 large-2 left">
+<nav class="sticky-container" data-sticky-container>
+<div class="sticky" data-sticky data-anchor="how-i-make-this-site" data-sticky-on="large" data-margin-top="5">
+<ul class="vertical menu" data-magellan>
+<li><a href="#Github-2FA-git-push-and-password-entry" style="color:#111111">Github 2FA, git push, and password entry</a></li>
+<li><a href="#Why-enter-a-password-each-time-" style="color:#111111">Why enter a password each time?</a></li>
+<li><a href="#OpenSSL-encryption" style="color:#111111">OpenSSL encryption</a></li>
+<li><a href="#github-2FA-via-https-with-password-entry-and-not-an-untypeable-token" style="color:#111111">github 2FA via https with password entry, and not an untypeable token</a></li>
+<li><a href="#Final-script" style="color:#111111">Final script</a></li>
+</div>
+</nav>
+</div>
+
+<div class="cell medium-10 large-10">
+<div class="sections">
+<section id="Github-2FA-git-push-and-password-entry" data-magellan-target="Github-2FA-git-push-and-password-entry"><h1>Github 2FA, git push, and password entry</h></section>
+
+<p>Activating github two-factor authentication (2FA) offers an indubitable
+security boost, with one notable side effect: <code>https</code> authentication
+requires entering a Personal Access Token instead of password, as very
+clearly explained in the official
+<a target="_blank" rel="noopener noreferrer" href="https://help.github.com/en/github/authenticating-to-github/accessing-github-using-two-factor-authentication#authenticating-on-the-command-line-using-https">
+github documentation </a>, which states:</p>
+<blockquote>
+<p>The command line prompt won’t specify that you should enter your
+personal access token when it asks for your password.</p>
+</blockquote>
+<p>So everything <em>looks</em> like it stays the same, except now I have to enter
+a random 32-character long Personal Access Token (PAT), instead of my
+former, sensibly memorable, and readily typeable password. But I liked
+things the old way! This blog entry describes the process I went
+through to effectively restore the previous behaviour of the git prompt
+prior to me switching on 2FA on github, enabling me to type a password
+for <code>git push</code>, instead of the un-typeable PAT.</p>
+<section id="Why-enter-a-password-each-time-" data-magellan-target="Why-enter-a-password-each-time-"><h2>Why enter a password each time?</h></section>
+
+<p>Many – maybe most? – people are likely content with SSH authentication,
+which avoids any of these issues, and simply allows your <code>git push</code>
+commands to be identified through connecting your local <code>ssh</code> agent with
+github to do the authentication. <code>git push</code> then just works. My problem
+with this is twofold:</p>
+<ol>
+<li><em>i like typing in both my github name, and my password</em>, especially
+ because i have long learnt to appreciate the brief cognitive
+ disconnect this gives me, one which not infrequently leads to me
+ realising that, no, i really do not want to push that commit. The
+ necessity of me manually entering my name and password for each push
+ provides an extra level of security against me inadvertently pushing
+ breaking or otherwise silly commits. I like that.</li>
+<li>The immediacy of SSH pushes disturbs me somewhat. Yes, my local
+ machine is absolutely authenticated, but this means that anybody who
+ happens to get their maws on my machine can push whatever they want
+ anytime. Although this is wildly unlikely to ever happen, the mere
+ notion that it could nevertheless disturbs me.</li>
+</ol>
+<p>I like having to type my name and password. It is impossible for me to
+type my name and PAT. For a brief moment after having switched on 2FA on
+github, i feared that i was going to have to constantly copy-paste my
+PAT for every commit. I didn’t wanna do that, so i did the following …
+but first a brief digression into my SSL habits.</p>
+<section id="OpenSSL-encryption" data-magellan-target="OpenSSL-encryption"><h2>OpenSSL encryption</h></section>
+
+<p>I use
+<a target="_blank" rel="noopener noreferrer" href="https://www.openssl.org/">
+OpenSSL </a> a lot. I encrypt any and all sensitive information, and use
+a host of local scripts and bash aliases to do so. I wasn’t going to
+leave my github PAT just lying around on my machine, so it naturally
+gets encrypted too, simply by storing it as a single line in a text
+file, and typing:</p>
+<div class="code-example"><pre><code class="bash hljs">openssl des3 -salt -md sha256 -pbkdf2 -in gitpat.txt -out gitpat</code></pre></div><p>That command prompts me to enter and repeat a password. See the
+<a target="_blank" rel="noopener noreferrer" href="https://www.openssl.org/">
+OpenSSL </a> manual for what all those flags mean; or just believe me
+that they ensure that it’s really encrypted. Delete <code>gitpat.txt</code> — and
+don’t forget any extra files like <code>.gitpat.txt.un~</code> on linux, or
+whatever traces might be left lying around on other operating systems —
+and your PAT is secure. Decrypting pretty much just reverses the above:</p>
+<div class="code-example"><pre><code class="bash hljs">openssl des3 -salt -md sha256 -pbkdf2 <span class="hljs-operator">-d</span> -in gitpat -out gitpat.txt</code></pre></div><p>Then i’ve got my token in <code>gitpat.txt</code>, which i can … copy-and-paste
+each time i need to <code>git push</code>? No way! And so … on to my solution.</p>
+<section id="github-2FA-via-https-with-password-entry-and-not-an-untypeable-token" data-magellan-target="github-2FA-via-https-with-password-entry-and-not-an-untypeable-token"><h2>github 2FA via https with password entry, and not an untypeable token</h></section>
+
+<p>My solution involved two main tricks:</p>
+<ol>
+<li>Replacing my pushes in the form <code>git push origin master</code>, where
+ <code>origin</code> can be identified via <code>git remote -v</code> as something like
+ <code>https://github.com/mpadge/&lt;repo&gt;</code>, and which necessitates entering
+ <code>&quot;mpadge&quot;</code> and my PAT, with <code>git push  https://mpadge:&lt;PAT&gt;@github.com/mpadge/&lt;repo&gt;</code>, where the PAT is
+ passed directly to github, circumventing the need to enter it
+ manually, so that the push is directly sent and accepted; and</li>
+<li>Writing a script requiring my (github or other) password, and using
+ that to automatically decrypt my PAT, convert it to an environmental
+ variable, and using that to convert <code>git push</code> into the form above
+ with my PAT embedded.</li>
+</ol>
+<p>The second of those steps looks, in the form of a <code>bash</code> script, like
+this:</p>
+<div class="code-example"><pre><code class="bash hljs"><span class="hljs-built_in">read</span> <span class="hljs-operator">-s</span> -p <span class="hljs-string">"Enter Password: "</span> PASS
+<span class="hljs-built_in">echo</span> <span class="hljs-string">""</span>
+
+openssl des3 -salt -md sha256 -pbkdf2 <span class="hljs-operator">-d</span> -in /&lt;my&gt;/&lt;secret&gt;/&lt;path&gt;/gitpat -out gitpat.txt -pass pass:<span class="hljs-variable">$PASS</span>
+PASS=<span class="hljs-string">""</span>
+PAT=$(&lt;aaagit.txt)
+rm aaagit.txt</code></pre></div><p>I then have a variable, <code>&quot;PAT&quot;</code>, containing my PAT, with no other traces
+of its value, or of my password, left on my machine. Note that the
+password required is whatever was entered for the initial encryption of
+<code>gitpat.txt</code> to <code>gitpat</code>.</p>
+<p>The first step then inserts this PAT, and my github user name, into a
+<code>git push</code> command via the following <code>bash</code> code, presuming here that my
+github user name is stored in a variable named <code>UNAME</code>:</p>
+<div class="code-example"><pre><code class="bash hljs">REMOTE=$(git remote -v | head -n <span class="hljs-number">1</span>)
+<span class="hljs-comment"># REMOTE="origin https://github.com/&lt;org&gt;/&lt;repo&gt; (fetch)" (or similar)</span>
+
+<span class="hljs-comment"># function to cut string by delimiter</span>
+<span class="hljs-function"><span class="hljs-title">cut</span></span> () {
+    <span class="hljs-built_in">local</span> s=<span class="hljs-variable">$REMOTE</span><span class="hljs-variable">$1</span>
+    <span class="hljs-keyword">while</span> [[ <span class="hljs-variable">$s</span> ]]; <span class="hljs-keyword">do</span>
+        array+=( <span class="hljs-string">"<span class="hljs-variable">${s%%"$1"*}</span>"</span> );
+        s=<span class="hljs-variable">${s#*"$1"}</span>;
+    <span class="hljs-keyword">done</span>;
+}
+<span class="hljs-comment"># cut terminal bit "(fetch)" from remote, returning first part as array[0]:</span>
+array=();
+cut <span class="hljs-string">" "</span>
+REMOTE=<span class="hljs-string">"<span class="hljs-variable">${array[0]}</span>"</span>
+
+<span class="hljs-comment"># cut remainder around "github.com", returning 2nd part as "/&lt;org&gt;/&lt;repo&gt;"</span>
+array=();
+cut <span class="hljs-string">"github.com"</span>
+
+<span class="hljs-comment"># convert REMOTE given above to</span>
+<span class="hljs-comment"># REMOTE="https://&lt;UNAME&gt;:&lt;PAT&gt;@github.com/&lt;org&gt;/&lt;repo&gt;" (or similar)</span>
+<span class="hljs-built_in">printf</span> -v REMOTE <span class="hljs-string">"https://%s:%s@github.com%s"</span> <span class="hljs-string">"<span class="hljs-variable">$UNAME</span>"</span> <span class="hljs-string">"<span class="hljs-variable">$PAT</span>"</span> <span class="hljs-string">"<span class="hljs-variable">${array[1]}</span>"</span>
+<span class="hljs-built_in">echo</span> <span class="hljs-variable">$REMOTE</span></code></pre></div><p>That script gives our desired output:</p>
+<div class="code-example"><pre><code class="html hljs">## [1] "https://mpadge:<span class="hljs-tag">&lt;<span class="hljs-title">mypat</span>&gt;</span>@github.com/<span class="hljs-tag">&lt;<span class="hljs-title">org</span>&gt;</span>/<span class="hljs-tag">&lt;<span class="hljs-title">repo</span>&gt;</span>"</code></pre></div><section id="Final-script" data-magellan-target="Final-script"><h2>Final script</h></section>
+
+<p>My solution then just involved combining those two tricks within a
+single script, designed to <em>almost</em> but not quite reflect the old <code>git push</code> prompt and behaviour i was trying to emulate, and including an
+additional option to call the script with an extra parameter specifying
+the branch to push to, or otherwise defaulting to the current branch:</p>
+<div class="code-example"><pre><code class="bash hljs"><span class="hljs-shebang">#!/bin/bash</span>
+<span class="hljs-built_in">read</span> -p <span class="hljs-string">"User name for 'https://github.com': "</span> UNAME
+<span class="hljs-built_in">read</span> <span class="hljs-operator">-s</span> -p <span class="hljs-string">"Password (NOT PAT) for 'https://<span class="hljs-variable">$UNAME</span>@github.com' "</span> PASS
+<span class="hljs-built_in">echo</span> <span class="hljs-string">""</span>
+
+openssl des3 -salt -md sha256 -pbkdf2 <span class="hljs-operator">-d</span> -in /&lt;my&gt;/&lt;secret&gt;/&lt;path&gt;/gitpat -out gitpat.txt -pass pass:<span class="hljs-variable">$PASS</span>
+PASS=<span class="hljs-string">""</span>
+PAT=$(&lt;aaagit.txt)
+rm aaagit.txt
+
+<span class="hljs-comment"># get git branch:</span>
+<span class="hljs-keyword">if</span> [ <span class="hljs-string">"<span class="hljs-variable">$1</span>"</span> == <span class="hljs-string">""</span> ]; <span class="hljs-keyword">then</span>
+    BRANCH=$(git branch --show-current)
+<span class="hljs-keyword">else</span>
+    BRANCH=<span class="hljs-variable">$1</span>
+<span class="hljs-keyword">fi</span>
+
+REMOTE=$(git remote -v | head -n <span class="hljs-number">1</span>)
+<span class="hljs-comment"># REMOTE="origin https://github.com/&lt;org&gt;/&lt;repo&gt; (fetch)" (or similar)</span>
+
+<span class="hljs-comment"># function to cut string by delimiter</span>
+<span class="hljs-function"><span class="hljs-title">cut</span></span> () {
+    <span class="hljs-built_in">local</span> s=<span class="hljs-variable">$REMOTE</span><span class="hljs-variable">$1</span>
+    <span class="hljs-keyword">while</span> [[ <span class="hljs-variable">$s</span> ]]; <span class="hljs-keyword">do</span>
+        array+=( <span class="hljs-string">"<span class="hljs-variable">${s%%"$1"*}</span>"</span> );
+        s=<span class="hljs-variable">${s#*"$1"}</span>;
+    <span class="hljs-keyword">done</span>;
+}
+<span class="hljs-comment"># cut terminal bit "(fetch)" from remote, returning first part as array[0]:</span>
+array=();
+cut <span class="hljs-string">" "</span>
+REMOTE=<span class="hljs-string">"<span class="hljs-variable">${array[0]}</span>"</span>
+
+<span class="hljs-comment"># cut remainder around "github.com", returning 2nd part as "/&lt;org&gt;/&lt;repo&gt;"</span>
+array=();
+cut <span class="hljs-string">"github.com"</span>
+
+<span class="hljs-comment"># convert REMOTE given above to</span>
+<span class="hljs-comment"># REMOTE="https://&lt;UNAME&gt;:&lt;PAT&gt;@github.com/&lt;org&gt;/&lt;repo&gt;" (or similar)</span>
+<span class="hljs-built_in">printf</span> -v REMOTE <span class="hljs-string">"https://%s:%s@github.com%s"</span> <span class="hljs-string">"<span class="hljs-variable">$UNAME</span>"</span> <span class="hljs-string">"<span class="hljs-variable">$PAT</span>"</span> <span class="hljs-string">"<span class="hljs-variable">${array[1]}</span>"</span>
+
+git push <span class="hljs-variable">$REMOTE</span> <span class="hljs-variable">$BRANCH</span>
+<span class="hljs-comment"># clear variables:</span>
+PAT=<span class="hljs-string">""</span>
+REMOTE=<span class="hljs-string">""</span></code></pre></div><p>I then only needed to set an alias to that script in <code>~/.bash_aliases</code>,
+along the lines of</p>
+<div class="code-example"><pre><code class="bash hljs"><span class="hljs-built_in">alias</span> gitpush=<span class="hljs-string">"bash /&lt;my&gt;/&lt;secret&gt;/&lt;path&gt;/gitpatscript.bash"</span></code></pre></div><p>and then replace my former <code>git push</code> with <code>gitpush</code>, to enable me to
+once again type in my password like i always liked to do.</p>
+<div style="text-align: right">
+Originally posted: 25 Oct 19
+</div>
+</div>
+</div>
+
+<script src="https://utteranc.es/client.js"
+        repo="mpadge/mpadge.github.io"
+        issue-term="pathname"
+        label="blog_comments"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script>
+
+</div>
+</div>
+</div>
+<div class="large-12 cell" style="background-color:#ffffff00">
+    <div class="callout">
+        <p class="text-center" style="font-size:8pt">Copyright &#169; 2019--22 mark padgham</p>
+    </div>
+</div>
+
+
+<script src="../assets/js/app.js"></script>
+</body>
+</html>
