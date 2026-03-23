@@ -13,6 +13,9 @@ start: serve
 serve: ## Start development server (same as 'start')
 	yarn start
 
+install: ## Install everything to run/build
+	yarn install
+
 build: ## Build the project
 	yarn build
 
