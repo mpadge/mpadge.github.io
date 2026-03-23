@@ -1,121 +1,247 @@
--
-    link: https://ropensci.github.io/osmdata
-    title: osmdata
-    cran: yes
-    cranlink: http://cran.r-project.org/package=osmdata
-    cranlogs: http://cranlogs.r-pkg.org/badges/grand-total/osmdata?color=orange
-    ros: yes
-    roslink: https://github.com/ropensci/onboarding/issues/103
-    rosstatus: https://badges.ropensci.org/103_status.svg
-    description: import Open Street Map data
-- 
-    link: https://atfutures.github.io/dodgr
-    title: dodgr
-    cran: yes
-    cranlink: http://cran.r-project.org/package=dodgr
-    cranlogs: http://cranlogs.r-pkg.org/badges/grand-total/dodgr?color=orange
-    ros: no
-    roslink:
-    rosstatus:
-    description: distances on directed graphs
--
-    link: https://ropensci.github.io/bikedata
-    title: bikedata
-    cran: yes
-    cranlink: http://cran.r-project.org/package=bikedata
-    cranlogs: http://cranlogs.r-pkg.org/badges/grand-total/bikedata?color=orange
-    ros: yes
-    roslink: https://github.com/ropensci/onboarding/issues/116
-    rosstatus: https://badges.ropensci.org/103_status.svg
-    description: historical trip data from all public bicycle hire systems which
-        provide it
-- 
-    link: https://atfutures.github.io/gtfs-router
-    title: gtfsrouter
-    cran: yes
-    cranlink: http://cran.r-project.org/package=gtfsrouter
-    cranlogs: http://cranlogs.r-pkg.org/badges/grand-total/gtfsrouter?color=orange
-    ros: no
-    roslink:
-    rosstatus:
-    description: routing with gtfs (general transit feed specification) data
--
-    link: https://ropensci.github.io/osmplotr
-    title: osmplotr
-    cran: yes
-    cranlink: http://cran.r-project.org/package=osmplotr
-    cranlogs: http://cranlogs.r-pkg.org/badges/grand-total/osmplotr?color=orange
-    ros: yes
-    roslink: https://github.com/ropensci/onboarding/issues/27
-    rosstatus: https://badges.ropensci.org/103_status.svg
-    description: bespoke plots with Open Street Map data
--
-    link: https://hypertidy.github.io/geodist
-    title: geodist
-    cran: yes
-    cranlink: http://cran.r-project.org/package=geodist
-    cranlogs: http://cranlogs.r-pkg.org/badges/grand-total/geodist?color=orange
-    ros: no
-    roslink:
-    rosstatus:
-    description: ultra-lightweight, ultra-fast calculation of geodesic distances
--
-    link: https://docs.ropensci.org/allcontributors/
-    title: allcontributors
-    cran: yes
-    cranlink: http://cran.r-project.org/package=allcontributors
-    cranlogs: http://cranlogs.r-pkg.org/badges/grand-total/allcontributors?color=orange
-    ros: no
-    roslink:
-    rosstatus:
-    description: all-contributions as an R package
--
-    link: https://docs.ropensci.org/mapscanner/
-    title: mapscanner
-    cran: yes
-    cranlink: http://cran.r-project.org/package=mapscanner
-    cranlogs: http://cranlogs.r-pkg.org/badges/grand-total/mapscanner?color=orange
-    ros: yes
-    roslink: https://github.com/ropensci/software-review/issues/330
-    rosstatus: https://badges.ropensci.org/103_status.svg
-    description: print maps, draw on them, scan them back in
--
-    link: https://docs.ropensci.org/pkgstats/
-    title: pkgstats
-    cran: no
-    cranlink: http://cran.r-project.org/package=pkgstats
-    cranlogs: http://cranlogs.r-pkg.org/badges/grand-total/pkgstats?color=orange
-    ros: no
-    roslink:
-    rosstatus:
-    description: Historical statistics of every R package ever
--
-    link: https://docs.ropensci.org/pkgcheck/
-    title: pkgcheck
-    cran: no
-    cranlink:
-    cranlogs:
-    ros: no
-    roslink:
-    rosstatus:
-    description: rOpenSci package checking software
--
-    link: https://docs.ropensci.org/autotest/
-    title: autotest
-    cran: no
-    cranlink:
-    cranlogs:
-    ros: no
-    roslink:
-    rosstatus:
-    description: Automatic testing of R packages
--
-    link: https://mpadge.github.io/typetracer/
-    title: typetracer
-    cran: yes
-    cranlink: http://cran.r-project.org/package=typetracer
-    cranlogs: http://cranlogs.r-pkg.org/badges/grand-total/typetracer?color=orange
-    ros: no
-    roslink:
-    rosstatus:
-    description: Trace code to extract information on parameters passed to R functions.
+- link: https://docs.ropensci.org/osmdata/
+  title: osmdata
+  cran: yes
+  cranlink: https://cran.r-project.org/package=osmdata
+  cranlogs: https://cranlogs.r-pkg.org/badges/grand-total/osmdata?color=orange
+  ros: 'yes'
+  roslink: https://github.com/ropensci/software-review/103
+  rosstatus: https://badges.ropensci.org/103_status.svg
+  description: |-
+    Import 'OpenStreetMap' Data as Simple Features or Spatial
+    Objects
+- link: https://hypertidy.github.io/geodist/
+  title: geodist
+  cran: yes
+  cranlink: https://cran.r-project.org/package=geodist
+  cranlogs: https://cranlogs.r-pkg.org/badges/grand-total/geodist?color=orange
+  ros: 'no'
+  roslink: ''
+  rosstatus: ''
+  description: Fast, Dependency-Free Geodesic Distance Calculations
+- link: https://UrbanAnalyst.github.io/dodgr/
+  title: dodgr
+  cran: yes
+  cranlink: https://cran.r-project.org/package=dodgr
+  cranlogs: https://cranlogs.r-pkg.org/badges/grand-total/dodgr?color=orange
+  ros: 'no'
+  roslink: ''
+  rosstatus: ''
+  description: Distances on Directed Graphs
+- link: https://docs.ropensci.org/allcontributors
+  title: allcontributors
+  cran: yes
+  cranlink: https://cran.r-project.org/package=allcontributors
+  cranlogs: https://cranlogs.r-pkg.org/badges/grand-total/allcontributors?color=orange
+  ros: 'no'
+  roslink: ''
+  rosstatus: ''
+  description: Acknowledge all Contributors to a Project
+- link: https://docs.ropensci.org/pkgstats/
+  title: pkgstats
+  cran: yes
+  cranlink: https://cran.r-project.org/package=pkgstats
+  cranlogs: https://cranlogs.r-pkg.org/badges/grand-total/pkgstats?color=orange
+  ros: 'no'
+  roslink: ''
+  rosstatus: ''
+  description: Metrics of R Packages
+- link: .na.character
+  title: gtfsrouter
+  cran: yes
+  cranlink: https://cran.r-project.org/package=gtfsrouter
+  cranlogs: https://cranlogs.r-pkg.org/badges/grand-total/gtfsrouter?color=orange
+  ros: 'no'
+  roslink: ''
+  rosstatus: ''
+  description: Routing with 'GTFS' (General Transit Feed Specification) Data
+- link: https://docs.ropensci.org/mapscanner
+  title: mapscanner
+  cran: yes
+  cranlink: https://cran.r-project.org/package=mapscanner
+  cranlogs: https://cranlogs.r-pkg.org/badges/grand-total/mapscanner?color=orange
+  ros: 'yes'
+  roslink: https://github.com/ropensci/software-review/330
+  rosstatus: https://badges.ropensci.org/330_status.svg
+  description: Print Maps, Draw on Them, Scan Them Back in
+- link: https://mpadge.github.io/typetracer/
+  title: typetracer
+  cran: yes
+  cranlink: https://cran.r-project.org/package=typetracer
+  cranlogs: https://cranlogs.r-pkg.org/badges/grand-total/typetracer?color=orange
+  ros: 'no'
+  roslink: ''
+  rosstatus: ''
+  description: Trace Function Parameter Types
+- link: https://docs.ropensci.org/bikedata/
+  title: bikedata
+  cran: yes
+  cranlink: https://cran.r-project.org/package=bikedata
+  cranlogs: https://cranlogs.r-pkg.org/badges/grand-total/bikedata?color=orange
+  ros: 'yes'
+  roslink: https://github.com/ropensci/software-review/116
+  rosstatus: https://badges.ropensci.org/116_status.svg
+  description: Download and Aggregate Data from Public Hire Bicycle Systems
+- link: https://docs.ropensci.org/osmplotr/
+  title: osmplotr
+  cran: yes
+  cranlink: https://cran.r-project.org/package=osmplotr
+  cranlogs: https://cranlogs.r-pkg.org/badges/grand-total/osmplotr?color=orange
+  ros: 'yes'
+  roslink: https://github.com/ropensci/software-review/27
+  rosstatus: https://badges.ropensci.org/27_status.svg
+  description: Bespoke Images of 'OpenStreetMap' Data
+- link: .na.character
+  title: dashboard
+  cran: yes
+  cranlink: https://cran.r-project.org/package=dashboard
+  cranlogs: https://cranlogs.r-pkg.org/badges/grand-total/dashboard?color=orange
+  ros: 'no'
+  roslink: ''
+  rosstatus: ''
+  description: What the Package Does (One Line, Title Case)
+- link: https://docs.ropensci.org/pkgmatch/
+  title: pkgmatch
+  cran: no
+  cranlink: ''
+  cranlogs: ''
+  ros: 'yes'
+  roslink: https://github.com/ropensci/software-review/671
+  rosstatus: https://badges.ropensci.org/671_status.svg
+  description: Find R Packages Matching Either Descriptions or Other R Packages
+- link: https://docs.ropensci.org/pkgcheck/
+  title: pkgcheck
+  cran: no
+  cranlink: ''
+  cranlogs: ''
+  ros: 'no'
+  roslink: ''
+  rosstatus: ''
+  description: rOpenSci Package Checks
+- link: https://docs.ropensci.org/roreviewapi
+  title: roreviewapi
+  cran: no
+  cranlink: ''
+  cranlogs: ''
+  ros: 'no'
+  roslink: ''
+  rosstatus: ''
+  description: Plumber API to report package structure and function
+- link: https://docs.ropensci.org/srr/
+  title: srr
+  cran: no
+  cranlink: ''
+  cranlogs: ''
+  ros: 'no'
+  roslink: ''
+  rosstatus: ''
+  description: '''rOpenSci'' Review Roclets'
+- link: https://docs.ropensci.org/orgmetrics/
+  title: orgmetrics
+  cran: no
+  cranlink: ''
+  cranlogs: ''
+  ros: 'no'
+  roslink: ''
+  rosstatus: ''
+  description: Metrics for Your GitHub Organization
+- link: https://docs.ropensci.org/repometrics/
+  title: repometrics
+  cran: no
+  cranlink: ''
+  cranlogs: ''
+  ros: 'no'
+  roslink: ''
+  rosstatus: ''
+  description: Metrics for Your Code Repository
+- link: .na.character
+  title: r2readthedocs
+  cran: no
+  cranlink: ''
+  cranlogs: ''
+  ros: 'no'
+  roslink: ''
+  rosstatus: ''
+  description: Convert R Package Documentation to a 'readthedocs' Website
+- link: https://docs.ropensci.org/autotest/
+  title: autotest
+  cran: no
+  cranlink: ''
+  cranlogs: ''
+  ros: 'no'
+  roslink: ''
+  rosstatus: ''
+  description: Automatic Package Testing
+- link: .na.character
+  title: spaceout
+  cran: no
+  cranlink: ''
+  cranlogs: ''
+  ros: 'no'
+  roslink: ''
+  rosstatus: ''
+  description: Holds A More Spacious Styleguide
+- link: .na.character
+  title: spatialcluster
+  cran: no
+  cranlink: ''
+  cranlogs: ''
+  ros: 'no'
+  roslink: ''
+  rosstatus: ''
+  description: R port of redcap
+- link: https://mpadge.github.io/gender-conscious-routing/
+  title: genderconsciousrouting
+  cran: no
+  cranlink: ''
+  cranlogs: ''
+  ros: 'no'
+  roslink: ''
+  rosstatus: ''
+  description: |-
+    Gender-Conscious Routing Along Streets Named After Women Rather
+    Than Men
+- link: .na.character
+  title: moveability
+  cran: no
+  cranlink: ''
+  cranlogs: ''
+  ros: 'no'
+  roslink: ''
+  rosstatus: ''
+  description: Moveability statistics for any specified city
+- link: .na.character
+  title: neighbourhoods
+  cran: no
+  cranlink: ''
+  cranlogs: ''
+  ros: 'no'
+  roslink: ''
+  rosstatus: ''
+  description: Efficient Identification of Neighbourhoods within Networks
+- link: .na.character
+  title: nyped
+  cran: no
+  cranlink: ''
+  cranlogs: ''
+  ros: 'no'
+  roslink: ''
+  rosstatus: ''
+  description: Model of pedestrian flows throughout New York City
+- link: .na.character
+  title: tnorm
+  cran: no
+  cranlink: ''
+  cranlogs: ''
+  ros: 'no'
+  roslink: ''
+  rosstatus: ''
+  description: Truncated Normal Distribution
+- link: .na.character
+  title: paretoconv
+  cran: no
+  cranlink: ''
+  cranlogs: ''
+  ros: 'no'
+  roslink: ''
+  rosstatus: ''
+  description: .na.character
