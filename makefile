@@ -16,6 +16,9 @@ serve: ## Start development server (same as 'start')
 install: ## Install everything to run/build
 	yarn install
 
+code: ## Update the 'code' section from current r-univ pkgs list
+	Rscript 'tools/code-update.R'
+
 build: ## Build the project
 	yarn build
 
