@@ -1,247 +1,402 @@
 - link: https://docs.ropensci.org/osmdata/
-  title: osmdata
+  package: osmdata
   cran: yes
   cranlink: https://cran.r-project.org/package=osmdata
   cranlogs: https://cranlogs.r-pkg.org/badges/grand-total/osmdata?color=orange
   ros: 'yes'
   roslink: https://github.com/ropensci/software-review/103
   rosstatus: https://badges.ropensci.org/103_status.svg
-  description: |-
+  title: |-
     Import 'OpenStreetMap' Data as Simple Features or Spatial
     Objects
+  description: |-
+    Download and import of 'OpenStreetMap' ('OSM') data as
+    'sf' or 'sp' objects.  'OSM' data are extracted from the
+    'Overpass' web server (<https://overpass-api.de/>) and
+    processed with very fast 'C++' routines for return to 'R'.
 - link: https://hypertidy.github.io/geodist/
-  title: geodist
+  package: geodist
   cran: yes
   cranlink: https://cran.r-project.org/package=geodist
   cranlogs: https://cranlogs.r-pkg.org/badges/grand-total/geodist?color=orange
   ros: 'no'
   roslink: ''
   rosstatus: ''
-  description: Fast, Dependency-Free Geodesic Distance Calculations
+  title: Fast, Dependency-Free Geodesic Distance Calculations
+  description: |-
+    Dependency-free, ultra fast calculation of geodesic
+    distances.  Includes the reference nanometre-accuracy geodesic
+    distances of Karney (2013) <doi:10.1007/s00190-012-0578-z>, as
+    used by the 'sf' package, as well as Haversine and Vincenty
+    distances. Default distance measure is the "Mapbox cheap ruler"
+    which is generally more accurate than Haversine or Vincenty for
+    distances out to a few hundred kilometres, and is considerably
+    faster. The main function accepts one or two inputs in almost
+    any generic rectangular form, and returns either matrices of
+    pairwise distances, or vectors of sequential distances.
+- link: https://docs.ropensci.org/goodpractice/
+  package: goodpractice
+  cran: yes
+  cranlink: https://cran.r-project.org/package=goodpractice
+  cranlogs: https://cranlogs.r-pkg.org/badges/grand-total/goodpractice?color=orange
+  ros: 'no'
+  roslink: ''
+  rosstatus: ''
+  title: Advice on R Package Building
+  description: |-
+    Give advice about good practices when building R packages.
+    Advice includes functions and syntax to avoid, package
+    structure, code complexity, code formatting, etc.
 - link: https://UrbanAnalyst.github.io/dodgr/
-  title: dodgr
+  package: dodgr
   cran: yes
   cranlink: https://cran.r-project.org/package=dodgr
   cranlogs: https://cranlogs.r-pkg.org/badges/grand-total/dodgr?color=orange
   ros: 'no'
   roslink: ''
   rosstatus: ''
-  description: Distances on Directed Graphs
+  title: Distances on Directed Graphs
+  description: |-
+    Distances on dual-weighted directed graphs using
+    priority-queue shortest paths (Padgham (2019)
+    <doi:10.32866/6945>). Weighted directed graphs have weights
+    from A to B which may differ from those from B to A.
+    Dual-weighted directed graphs have two sets of such weights. A
+    canonical example is a street network to be used for routing in
+    which routes are calculated by weighting distances according to
+    the type of way and mode of transport, yet lengths of routes
+    must be calculated from direct distances.
 - link: https://docs.ropensci.org/allcontributors
-  title: allcontributors
+  package: allcontributors
   cran: yes
   cranlink: https://cran.r-project.org/package=allcontributors
   cranlogs: https://cranlogs.r-pkg.org/badges/grand-total/allcontributors?color=orange
   ros: 'no'
   roslink: ''
   rosstatus: ''
-  description: Acknowledge all Contributors to a Project
+  title: Acknowledge all Contributors to a Project
+  description: |-
+    Acknowledge all contributors to a project via a single
+    function call. The function appends to a 'README' or other
+    specified file(s) a table with names of all individuals who
+    contributed via code or repository issues.  The package also
+    includes several additional functions to extract and quantify
+    contributions to any repository.
 - link: https://docs.ropensci.org/pkgstats/
-  title: pkgstats
+  package: pkgstats
   cran: yes
   cranlink: https://cran.r-project.org/package=pkgstats
   cranlogs: https://cranlogs.r-pkg.org/badges/grand-total/pkgstats?color=orange
   ros: 'no'
   roslink: ''
   rosstatus: ''
-  description: Metrics of R Packages
+  title: Metrics of R Packages
+  description: |-
+    Static code analyses for R packages using the external
+    code-tagging libraries 'ctags' and 'gtags'. Static analyses
+    enable packages to be analysed very quickly, generally a couple
+    of seconds at most. The package also provides access to a
+    database generating by applying the main function to the full
+    'CRAN' archive, enabling the statistical properties of any
+    package to be compared with all other 'CRAN' packages.
 - link: .na.character
-  title: gtfsrouter
+  package: gtfsrouter
   cran: yes
   cranlink: https://cran.r-project.org/package=gtfsrouter
   cranlogs: https://cranlogs.r-pkg.org/badges/grand-total/gtfsrouter?color=orange
   ros: 'no'
   roslink: ''
   rosstatus: ''
-  description: Routing with 'GTFS' (General Transit Feed Specification) Data
+  title: Routing with 'GTFS' (General Transit Feed Specification) Data
+  description: |-
+    Use 'GTFS' (General Transit Feed Specification) data for
+    routing from nominated start and end stations, for extracting
+    'isochrones', and travel times from any nominated start station
+    to all other stations.
 - link: https://docs.ropensci.org/mapscanner
-  title: mapscanner
+  package: mapscanner
   cran: yes
   cranlink: https://cran.r-project.org/package=mapscanner
   cranlogs: https://cranlogs.r-pkg.org/badges/grand-total/mapscanner?color=orange
   ros: 'yes'
   roslink: https://github.com/ropensci/software-review/330
   rosstatus: https://badges.ropensci.org/330_status.svg
-  description: Print Maps, Draw on Them, Scan Them Back in
+  title: Print Maps, Draw on Them, Scan Them Back in
+  description: |-
+    Enables preparation of maps to be printed and drawn on.
+    Modified maps can then be scanned back in, and hand-drawn marks
+    converted to spatial objects.
 - link: https://mpadge.github.io/typetracer/
-  title: typetracer
+  package: typetracer
   cran: yes
   cranlink: https://cran.r-project.org/package=typetracer
   cranlogs: https://cranlogs.r-pkg.org/badges/grand-total/typetracer?color=orange
   ros: 'no'
   roslink: ''
   rosstatus: ''
-  description: Trace Function Parameter Types
+  title: Trace Function Parameter Types
+  description: |-
+    The 'R' language includes a set of defined types, but the
+    language itself is "absurdly dynamic" (Turcotte & Vitek (2019)
+    <doi:10.1145/3340670.3342426>), and lacks any way to specify
+    which types are expected by any expression. The 'typetracer'
+    package enables code to be traced to extract detailed
+    information on the properties of parameters passed to 'R'
+    functions. 'typetracer' can trace individual functions or
+    entire packages.
 - link: https://docs.ropensci.org/bikedata/
-  title: bikedata
+  package: bikedata
   cran: yes
   cranlink: https://cran.r-project.org/package=bikedata
   cranlogs: https://cranlogs.r-pkg.org/badges/grand-total/bikedata?color=orange
   ros: 'yes'
   roslink: https://github.com/ropensci/software-review/116
   rosstatus: https://badges.ropensci.org/116_status.svg
-  description: Download and Aggregate Data from Public Hire Bicycle Systems
+  title: Download and Aggregate Data from Public Hire Bicycle Systems
+  description: |-
+    Download and aggregate data from all public hire bicycle
+    systems which provide open data, currently including
+    'Santander' Cycles in London, U.K.; from the U.S.A., 'Ford
+    GoBike' in San Francisco CA, 'citibike' in New York City NY,
+    'Divvy' in Chicago IL, 'Capital Bikeshare' in Washington DC,
+    'Hubway' in Boston MA, 'Metro' in Los Angeles LA, 'Indego' in
+    Philadelphia PA, and 'Nice Ride' in Minnesota; 'Bixi' from
+    Montreal, Canada; and 'mibici' from Guadalajara, Mexico.
 - link: https://docs.ropensci.org/osmplotr/
-  title: osmplotr
+  package: osmplotr
   cran: yes
   cranlink: https://cran.r-project.org/package=osmplotr
   cranlogs: https://cranlogs.r-pkg.org/badges/grand-total/osmplotr?color=orange
   ros: 'yes'
   roslink: https://github.com/ropensci/software-review/27
   rosstatus: https://badges.ropensci.org/27_status.svg
-  description: Bespoke Images of 'OpenStreetMap' Data
+  title: Bespoke Images of 'OpenStreetMap' Data
+  description: |-
+    Bespoke images of 'OpenStreetMap' ('OSM') data and data
+    visualisation using 'OSM' objects.
 - link: .na.character
-  title: dashboard
+  package: dashboard
   cran: yes
   cranlink: https://cran.r-project.org/package=dashboard
   cranlogs: https://cranlogs.r-pkg.org/badges/grand-total/dashboard?color=orange
   ros: 'no'
   roslink: ''
   rosstatus: ''
-  description: What the Package Does (One Line, Title Case)
+  title: What the Package Does (One Line, Title Case)
+  description: What the package does (one paragraph).
 - link: https://docs.ropensci.org/pkgmatch/
-  title: pkgmatch
+  package: pkgmatch
   cran: no
   cranlink: ''
   cranlogs: ''
   ros: 'yes'
   roslink: https://github.com/ropensci/software-review/671
   rosstatus: https://badges.ropensci.org/671_status.svg
-  description: Find R Packages Matching Either Descriptions or Other R Packages
-- link: https://docs.ropensci.org/pkgcheck/
-  title: pkgcheck
-  cran: no
-  cranlink: ''
-  cranlogs: ''
-  ros: 'no'
-  roslink: ''
-  rosstatus: ''
-  description: rOpenSci Package Checks
-- link: https://docs.ropensci.org/roreviewapi
-  title: roreviewapi
-  cran: no
-  cranlink: ''
-  cranlogs: ''
-  ros: 'no'
-  roslink: ''
-  rosstatus: ''
-  description: Plumber API to report package structure and function
-- link: https://docs.ropensci.org/srr/
-  title: srr
-  cran: no
-  cranlink: ''
-  cranlogs: ''
-  ros: 'no'
-  roslink: ''
-  rosstatus: ''
-  description: '''rOpenSci'' Review Roclets'
-- link: https://docs.ropensci.org/orgmetrics/
-  title: orgmetrics
-  cran: no
-  cranlink: ''
-  cranlogs: ''
-  ros: 'no'
-  roslink: ''
-  rosstatus: ''
-  description: Metrics for Your GitHub Organization
-- link: https://docs.ropensci.org/repometrics/
-  title: repometrics
-  cran: no
-  cranlink: ''
-  cranlogs: ''
-  ros: 'no'
-  roslink: ''
-  rosstatus: ''
-  description: Metrics for Your Code Repository
-- link: .na.character
-  title: r2readthedocs
-  cran: no
-  cranlink: ''
-  cranlogs: ''
-  ros: 'no'
-  roslink: ''
-  rosstatus: ''
-  description: Convert R Package Documentation to a 'readthedocs' Website
-- link: https://docs.ropensci.org/autotest/
-  title: autotest
-  cran: no
-  cranlink: ''
-  cranlogs: ''
-  ros: 'no'
-  roslink: ''
-  rosstatus: ''
-  description: Automatic Package Testing
-- link: .na.character
-  title: spaceout
-  cran: no
-  cranlink: ''
-  cranlogs: ''
-  ros: 'no'
-  roslink: ''
-  rosstatus: ''
-  description: Holds A More Spacious Styleguide
-- link: .na.character
-  title: spatialcluster
-  cran: no
-  cranlink: ''
-  cranlogs: ''
-  ros: 'no'
-  roslink: ''
-  rosstatus: ''
-  description: R port of redcap
-- link: https://mpadge.github.io/gender-conscious-routing/
-  title: genderconsciousrouting
-  cran: no
-  cranlink: ''
-  cranlogs: ''
-  ros: 'no'
-  roslink: ''
-  rosstatus: ''
+  title: Find R Packages Matching Either Descriptions or Other R Packages
   description: |-
+    Find R packages from 'CRAN', 'rOpenSci', or 'Bioconductor'
+    corpora. Packages can be matched to general text descriptions,
+    to names of installed packages, or to local paths to entire
+    source repositories. The package is used to list the most
+    similar packages for each new submission to the 'rOpenSci'
+    software peer-review program <doi:10.5281/zenodo.18885936>.
+- link: https://docs.ropensci.org/roreviewapi
+  package: roreviewapi
+  cran: no
+  cranlink: ''
+  cranlogs: ''
+  ros: 'no'
+  roslink: ''
+  rosstatus: ''
+  title: Plumber API to report package structure and function
+  description: Plumber API to report package structure and function.
+- link: .na.character
+  package: hotspotr
+  cran: no
+  cranlink: ''
+  cranlogs: ''
+  ros: 'no'
+  roslink: ''
+  rosstatus: ''
+  title: Compare Spatial Structure of Hotspots with Neutral Models
+  description: |-
+    Analyses whether the statistical properties of a spatial
+    pattern of hotspots may be reproduced with a simple neutral
+    model.
+- link: .na.character
+  package: paretoconv
+  cran: no
+  cranlink: ''
+  cranlogs: ''
+  ros: 'no'
+  roslink: ''
+  rosstatus: ''
+  title: Calculates the N-Fold Convolution of Two Pareto Distributions
+  description: |-
+    Calculates the n-fold convolution of two Pareto
+    distributions using the techniques devised by Colin Ramsay.
+- link: https://docs.ropensci.org/pkgcheck/
+  package: pkgcheck
+  cran: no
+  cranlink: ''
+  cranlogs: ''
+  ros: 'no'
+  roslink: ''
+  rosstatus: ''
+  title: rOpenSci Package Checks
+  description: |-
+    Check whether a package is ready for submission to
+    rOpenSci's peer review system.
+- link: https://docs.ropensci.org/srr/
+  package: srr
+  cran: no
+  cranlink: ''
+  cranlogs: ''
+  ros: 'no'
+  roslink: ''
+  rosstatus: ''
+  title: '''rOpenSci'' Review Roclets'
+  description: |-
+    Companion package to 'rOpenSci' statistical software
+    review project.
+- link: https://docs.ropensci.org/orgmetrics/
+  package: orgmetrics
+  cran: no
+  cranlink: ''
+  cranlogs: ''
+  ros: 'no'
+  roslink: ''
+  rosstatus: ''
+  title: Metrics for Your GitHub Organization
+  description: |-
+    Metrics for your GitHub organization. Call one function to
+    generate an interactive dashboard displaying the state of your
+    organization.
+- link: https://docs.ropensci.org/repometrics/
+  package: repometrics
+  cran: no
+  cranlink: ''
+  cranlogs: ''
+  ros: 'no'
+  roslink: ''
+  rosstatus: ''
+  title: Metrics for Your Code Repository
+  description: |-
+    Metrics for your code repository. Call one function to
+    generate an interactive dashboard displaying the state of your
+    code.
+- link: .na.character
+  package: r2readthedocs
+  cran: no
+  cranlink: ''
+  cranlogs: ''
+  ros: 'no'
+  roslink: ''
+  rosstatus: ''
+  title: Convert R Package Documentation to a 'readthedocs' Website
+  description: |-
+    Convert R package documentation to a 'readthedocs'
+    website.
+- link: https://docs.ropensci.org/autotest/
+  package: autotest
+  cran: no
+  cranlink: ''
+  cranlogs: ''
+  ros: 'no'
+  roslink: ''
+  rosstatus: ''
+  title: Automatic Package Testing
+  description: Automatic testing of R packages via a simple YAML schema.
+- link: .na.character
+  package: spaceout
+  cran: no
+  cranlink: ''
+  cranlogs: ''
+  ros: 'no'
+  roslink: ''
+  rosstatus: ''
+  title: Holds A More Spacious Styleguide
+  description: |-
+    Adds a space before parentheses & co, on top of more
+    common tidyverse-style guide conventions.
+- link: .na.character
+  package: spatialcluster
+  cran: no
+  cranlink: ''
+  cranlogs: ''
+  ros: 'no'
+  roslink: ''
+  rosstatus: ''
+  title: R port of redcap
+  description: |-
+    R port of redcap (Regionalization with dynamically
+    constrained agglomerative clustering and partitioning).
+- link: https://mpadge.github.io/gender-conscious-routing/
+  package: genderconsciousrouting
+  cran: no
+  cranlink: ''
+  cranlogs: ''
+  ros: 'no'
+  roslink: ''
+  rosstatus: ''
+  title: |-
     Gender-Conscious Routing Along Streets Named After Women Rather
     Than Men
+  description: |-
+    Gender-conscious routing along streets named after women
+    rather than men.
 - link: .na.character
-  title: moveability
+  package: moveability
   cran: no
   cranlink: ''
   cranlogs: ''
   ros: 'no'
   roslink: ''
   rosstatus: ''
-  description: Moveability statistics for any specified city
+  title: Moveability statistics for any specified city
+  description: Moveability statistics for any specified city.
 - link: .na.character
-  title: neighbourhoods
+  package: neighbourhoods
   cran: no
   cranlink: ''
   cranlogs: ''
   ros: 'no'
   roslink: ''
   rosstatus: ''
-  description: Efficient Identification of Neighbourhoods within Networks
+  title: Efficient Identification of Neighbourhoods within Networks
+  description: |-
+    Algorithm for efficient identification of neighbourhoods
+    within networks.
 - link: .na.character
-  title: nyped
+  package: libfuzzerr
   cran: no
   cranlink: ''
   cranlogs: ''
   ros: 'no'
   roslink: ''
   rosstatus: ''
-  description: Model of pedestrian flows throughout New York City
+  title: Expements in using 'libfuzzerr'
+  description: Expements in using 'libfuzzerr'.
 - link: .na.character
-  title: tnorm
+  package: nyped
   cran: no
   cranlink: ''
   cranlogs: ''
   ros: 'no'
   roslink: ''
   rosstatus: ''
-  description: Truncated Normal Distribution
+  title: Model of pedestrian flows throughout New York City
+  description: Model of pedestrian flows throughout New York City.
 - link: .na.character
-  title: paretoconv
+  package: tnorm
   cran: no
   cranlink: ''
   cranlogs: ''
   ros: 'no'
   roslink: ''
   rosstatus: ''
-  description: .na.character
+  title: Truncated Normal Distribution
+  description: |-
+    Truncated Normal Distributions can be generated by other
+    packages such as msm, but these are slow. tnorm is a faster C++
+    replacement.
