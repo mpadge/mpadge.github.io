@@ -56,11 +56,13 @@
             <img src="{{ cranlogs }}">
         </a>
         </option>
+        {{#if roslink}}
         <option "{{ ros }}"="yes">
         <a href="{{ roslink }}">
             <img src="{{ rosstatus }}"/>
         </a>
         </option>
+        {{/if}}
         </p>
         <div class="card-section" align="center">
             <p>{{ title }}</p>
