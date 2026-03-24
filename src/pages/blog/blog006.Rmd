@@ -7,7 +7,7 @@ description: Activating github two-factor authentication (2FA) offers an
     with 2FA to be able to enter my password once again, instead of a random
     32-character token.
 date: 25 Oct 2019
-link: blog/blog006.html
+link: blog006.html
 ---
 
 # Github 2FA, git push, and password entry

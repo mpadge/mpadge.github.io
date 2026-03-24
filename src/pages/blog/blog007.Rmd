@@ -6,7 +6,7 @@ description: This article was recently published in the Rcpp Gallery, and
     aggregation, through providing necessary details to enable aggregation to
     a vector, or by extension, to any arbitrary form.
 date: 7 Nov 2019
-link: blog/blog007.html
+link: blog007.html
 ---
 
 # Using RcppParallel to aggregate to a vector
