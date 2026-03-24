@@ -12,7 +12,7 @@ yarn build
 git checkout main
 
 echo -e "\033[0;32mDeleting old site...\033[0m"
-rm -r assets/ blog/
+rm -r assets/ blog/ code/
 
 echo -e "\033[0;32mTransferring new contents...\033[0m"
 mkdir assets blog code
