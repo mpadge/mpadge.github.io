@@ -5,7 +5,7 @@ description: There are several great references for how to debug C or C++ code
     informative. This post describes how to start a debugging session in R with
     a single command.
 date: 30/08/2022
-link: blog/blog012.html
+link: blog012.html
 ---
 
 # debugging in R with a single command

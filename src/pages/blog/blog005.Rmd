@@ -5,7 +5,7 @@ description: If everything in R is a vector, then what is a matrix? This entry
     matrices can in certain circumstances be considerably more efficient if
     they are treated as simple vectors.
 date: 31 July 2019
-link: blog/blog005.html
+link: blog005.html
 ---
 
 # What are matrices in R?
