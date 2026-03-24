@@ -25,4 +25,4 @@ build: ## Build the project
 deploy: publish
 
 publish: ## Deploy the project (same as 'deploy')
-	bash script.sh
+	bash tools/deploy-script.sh

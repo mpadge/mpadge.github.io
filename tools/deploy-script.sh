@@ -15,12 +15,12 @@ echo -e "\033[0;32mDeleting old site...\033[0m"
 rm -r assets/ blog/
 
 echo -e "\033[0;32mTransferring new contents...\033[0m"
-mkdir assets blog
+mkdir assets blog code
 mv dist/index.html .
-mv dist/blog.html .
 mv dist/privacy.html .
-mv dist/blog/*.html blog/.
-mv dist/assets/* assets/.
+mv dist/assets .
+mv dist/blog .
+mv dist/code .
 rm -r dist
 
 # first line of index.html is blank, which mucks up github pages, so must be
@@ -28,7 +28,7 @@ rm -r dist
 sed -i '1d' index.html
 
 echo -e "\033[0;32mUpdating git...\033[0m"
-git add index.html blog.html privacy.html blog/* assets/*
+git add index.html privacy.html assets/ blog/ code/
 git add -u
 git st
 git commit -am "New Blog Build (`date`)"
