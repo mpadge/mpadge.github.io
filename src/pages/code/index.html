@@ -2,8 +2,6 @@
 
 <div class = "backgroundClass">
 
-    {{> mpadge}}
-
     <a href="../index.html" style="color:#262626;">
         <div class="grid-y grid-margin y">
             <div class="cell"><h2 align="center">code</h2></div>
@@ -14,7 +12,7 @@
     <section id="code">
     {{> sections_header}}
     {{#each code}}
-    <div class="code-item medium-4 large-2 cell">
+    <div class="medium-6 large-4 cell">
     {{> code_header}}
     <a target="_blank" rel="noopener noreferrer"
                        href="{{ link }}", style="color:#262626;">
@@ -38,6 +36,7 @@
         </p>
         <div class="card-section" align="center">
             <p>{{ title }}</p>
+            <p>{{ description }}</p>
         </div>
     </a>
     {{> code_footer}}
