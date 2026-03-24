@@ -99,7 +99,7 @@
     database generating by applying the main function to the full
     'CRAN' archive, enabling the statistical properties of any
     package to be compared with all other 'CRAN' packages.
-- link: .na.character
+- link: https://github.com/urbananalyst/gtfsrouter
   package: gtfsrouter
   cran: yes
   cranlink: https://cran.r-project.org/package=gtfsrouter
@@ -174,7 +174,7 @@
   description: |-
     Bespoke images of 'OpenStreetMap' ('OSM') data and data
     visualisation using 'OSM' objects.
-- link: .na.character
+- link: https://github.com/ropensci-review-tools/dashboard
   package: dashboard
   cran: yes
   cranlink: https://cran.r-project.org/package=dashboard
@@ -210,7 +210,7 @@
   rosstatus: ''
   title: Plumber API to report package structure and function
   description: Plumber API to report package structure and function.
-- link: .na.character
+- link: https://github.com/mpadge/hotspotr
   package: hotspotr
   cran: no
   cranlink: ''
@@ -223,7 +223,7 @@
     Analyses whether the statistical properties of a spatial
     pattern of hotspots may be reproduced with a simple neutral
     model.
-- link: .na.character
+- link: https://github.com/mpadge/paretoconv
   package: paretoconv
   cran: no
   cranlink: ''
@@ -285,7 +285,7 @@
     Metrics for your code repository. Call one function to
     generate an interactive dashboard displaying the state of your
     code.
-- link: .na.character
+- link: https://github.com/ropenscilabs/r2readthedocs
   package: r2readthedocs
   cran: no
   cranlink: ''
@@ -307,7 +307,7 @@
   rosstatus: ''
   title: Automatic Package Testing
   description: Automatic testing of R packages via a simple YAML schema.
-- link: .na.character
+- link: https://github.com/ropensci-review-tools/spaceout
   package: spaceout
   cran: no
   cranlink: ''
@@ -319,7 +319,7 @@
   description: |-
     Adds a space before parentheses & co, on top of more
     common tidyverse-style guide conventions.
-- link: .na.character
+- link: https://github.com/mpadge/spatialcluster
   package: spatialcluster
   cran: no
   cranlink: ''
@@ -345,7 +345,7 @@
   description: |-
     Gender-conscious routing along streets named after women
     rather than men.
-- link: .na.character
+- link: https://github.com/moveability/moveability
   package: moveability
   cran: no
   cranlink: ''
@@ -355,7 +355,7 @@
   rosstatus: ''
   title: Moveability statistics for any specified city
   description: Moveability statistics for any specified city.
-- link: .na.character
+- link: https://github.com/atfutures-labs/neighbourhoods
   package: neighbourhoods
   cran: no
   cranlink: ''
@@ -367,7 +367,7 @@
   description: |-
     Algorithm for efficient identification of neighbourhoods
     within networks.
-- link: .na.character
+- link: https://github.com/mpadge/libfuzzerr
   package: libfuzzerr
   cran: no
   cranlink: ''
@@ -377,7 +377,7 @@
   rosstatus: ''
   title: Expements in using 'libfuzzerr'
   description: Expements in using 'libfuzzerr'.
-- link: .na.character
+- link: https://github.com/atfutures/nyped
   package: nyped
   cran: no
   cranlink: ''
@@ -387,7 +387,7 @@
   rosstatus: ''
   title: Model of pedestrian flows throughout New York City
   description: Model of pedestrian flows throughout New York City.
-- link: .na.character
+- link: https://github.com/mpadge/hotspotr
   package: tnorm
   cran: no
   cranlink: ''

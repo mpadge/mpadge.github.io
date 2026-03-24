@@ -26,9 +26,12 @@ pkgs$roslink [index] <-
 pkgs$rosstatus [index] <-
     paste0 ("https://badges.ropensci.org/", revs$iss_no, "_status.svg")
 
+links <- pkgs$`_pkgdown`
+index <- which (is.na (links))
+links [index] <- pkgs$`_devurl` [index]
 
 out <- data.frame (
-    link = pkgs$`_pkgdown`,
+    link = links,
     package = pkgs$Package,
     cran = pkgs$on_cran,
     cranlink = ifelse (
