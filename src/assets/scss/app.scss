@@ -95,3 +95,8 @@
     height: 30px;
 }
 
+// Show only the first 6 code items
+#code .code-item:nth-child(n+7) {
+    display: none;
+}
+
