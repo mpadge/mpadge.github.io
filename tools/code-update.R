@@ -3,6 +3,7 @@ pkgs <- jsonlite::read_json (u, simplifyVector = TRUE)
 cols <- c (
     "Package",
     "Title",
+    "Description",
     "Version",
     "_downloads",
     "_devurl",
@@ -28,7 +29,7 @@ pkgs$rosstatus [index] <-
 
 out <- data.frame (
     link = pkgs$`_pkgdown`,
-    title = pkgs$Package,
+    package = pkgs$Package,
     cran = pkgs$on_cran,
     cranlink = ifelse (
         !pkgs$on_cran,
@@ -43,7 +44,8 @@ out <- data.frame (
     ros = ifelse (pkgs$ros, "yes", "no"),
     roslink = pkgs$roslink,
     rosstatus = pkgs$rosstatus,
-    description = pkgs$Title
+    title = pkgs$Title,
+    description = pkgs$Description
 )
 index <- which (nzchar (out$cranlogs))
 out$cranlogs [index] <- paste0 (gsub (
@@ -62,3 +64,5 @@ out <- out [which (!out$title %in% exclude), ]
 path <- "src/data/code.yml"
 yaml::write_yaml (out, path, column.major = FALSE)
 cli::cli_alert_success ("{path} updated")
+
+# Then create "codeshort.yaml"
