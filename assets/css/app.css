@@ -7777,4 +7777,8 @@ html.is-reveal-open body {
   width: 30px;
   height: 30px;
 }
+
+#code .code-item:nth-child(n+7) {
+  display: none;
+}
 /*# sourceMappingURL=app.css.map */
