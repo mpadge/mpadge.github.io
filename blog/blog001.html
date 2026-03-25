@@ -21,7 +21,7 @@ href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/atom-one-light
 <script>hljs.initHighlightingOnLoad();</script>
 
 <div data-sticky-container>
-    <div class="top-bar" data-sticky data-options="marginTop:0;",style="width:100%;">
+    <div class="top-bar" data-sticky data-options="marginTop:0;" style="width:100%;">
         <div class="top-bar-left">
             <ul class="dropdown menu" data-dropdown-menu>
                 <li class="menu-text"> mpadge </li>
@@ -35,7 +35,7 @@ href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/atom-one-light
             <ul class="dropdown menu" data-dropdown-menu>
                 <li><a target="_blank" rel="noopener noreferrer"
                                        href="https://github.com/mpadge">
-                        <i class="fi-social-github"></i></a></li>
+                        <i class="fi-social-github" aria-hidden="true">&nbsp;</i></a></li>
                 <li><a target="_blank" rel="me noopener noreferrer"
                                         href="https://nerdculture.de/@mpadge">
                         <img class="fi-social-mastodon" src="../assets/foundation-icons/svgs/fi-social-mastodon.svg" alt="Mastodon"></a></li>
@@ -58,13 +58,14 @@ href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/atom-one-light
 <li><a href="#images" style="color:#111111">images</a></li>
 <li><a href="#meta-data-yaml-data-and-the-front-page" style="color:#111111">meta-data, yaml data, and the front page</a></li>
 <li><a href="#conclusion" style="color:#111111">conclusion</a></li>
+</ul>
 </div>
 </nav>
 </div>
 
 <div class="cell medium-10 large-10">
 <div class="sections">
-<section id="how-i-made-this-site-from-scratch-" data-magellan-target="how-i-made-this-site-from-scratch-"><h1>how i made this site (from scratch)</h></section>
+<section id="how-i-made-this-site-from-scratch-" data-magellan-target="how-i-made-this-site-from-scratch-"><h1>how i made this site (from scratch)</h1></section>
 
 <p>New blog, new website, so here we go. I’ll start by describing how i
 built the website. From scratch. The site is built with
@@ -85,7 +86,7 @@ this entry is about that process. Note that i consider myself a
 technically-oriented, back-end programmer more focussed on getting stuff
 in and processing it than on getting stuff out. So when i say ‘’starting
 from scratch,’’ i mean that most sincerely.</p>
-<section id="visual-style" data-magellan-target="visual-style"><h2>visual style</h></section>
+<section id="visual-style" data-magellan-target="visual-style"><h2>visual style</h2></section>
 
 <p>This is largely <code>html</code>-related ramblings, so if you’re interested in the
 code stuff, you might like to skip straight ahead to the <a href="#the-content">next
@@ -132,8 +133,7 @@ files, which made auto-generation of my main web page particularly easy.
 The files themselves live in the <code>src/data</code> directory, with the blog
 entries, for example, read straight from a <code>src/data/blog.yaml</code> file
 that looks like this:</p>
-<div class="code-example"><pre><code class="markdown hljs"><span class="hljs-bullet">-
-    </span>title: how i made this site
+<div class="code-example"><pre><code class="markdown hljs"><span class="hljs-code">    title: how i made this site</span>
 <span class="hljs-code">    description: &lt; blah blah blah &gt;</span>
 <span class="hljs-code">    created: 06 May 19</span>
 <span class="hljs-code">    modified: 06 May 19</span>
@@ -147,9 +147,9 @@ that looks like this:</p>
 pretend it’s a static file. This has two entries, each of which has a
 variety of components (such as <code>title</code>, <code>description</code>, and <code>link</code>). The
 ‘’blog’’ section on the main page is generated directly from these
-<code>yaml</code> meta-data, using the &#123;&#123;#each blog&#125;&#125; command to automatically
-loop over each of the above entries in the <code>data/blog.yml</code> file, using
-the same double-curly-bracket syntax from zurb’s
+<code>yaml</code> meta-data, using the &#123;&#123;&#35;each blog&#125;&#125; command to automatically loop
+over each of the above entries in the <code>data/blog.yml</code> file, using the
+same double-curly-bracket syntax from zurb’s
 <a target="_blank" rel="noopener noreferrer"
                    href="https://foundation.zurb.com/sites/docs/panini.html">
 panini </a> to insert variables into the <code>html</code> code:</p>
@@ -212,7 +212,7 @@ does. It’s simple, but it was fairly easy, and most important to me was
 that i didn’t have to borrow somebody else’s arbitrary and
 way-more-difficult-to-modify-than-i-thought template for whatever other
 site/blog-generating system i may otherwise have chosen.</p>
-<section id="the-content" data-magellan-target="the-content"><h2>the content</h></section>
+<section id="the-content" data-magellan-target="the-content"><h2>the content</h2></section>
 
 <p>The steps roughly described above yielded a static site largely as you
 see here. The only remaining step was automating the procedure of
@@ -291,7 +291,7 @@ foundation’s panini</a> interpreter, which are replaced by corresponding
 <code>html</code> encodings; or the <strong>R</strong>markdown code chunk delimiter, ```{r},
 from which the curly brackets must be removed to replace it with, ```
 r.</p>
-<section id="images" data-magellan-target="images"><h3>images</h></section>
+<section id="images" data-magellan-target="images"><h3>images</h3></section>
 
 <p>While it is possible to specify an image directory in the <code>yaml</code>
 front-matter of an <code>.Rmd</code>document, it was just as easy, and more
@@ -310,7 +310,7 @@ unlink (paste0 (fname, <span class="hljs-string">"_files"</span>), recursive = <
 latter path. A final parameter called <code>center_images</code>, when <code>TRUE</code>,
 inserts simple <code>&lt;center&gt;</code> and <code>&lt;/center&gt;</code> lines before and after the
 standard markdown image insertion command (<code>![](&lt;path&gt;/&lt;to&gt;/&lt;image&gt;)</code>).</p>
-<section id="meta-data-yaml-data-and-the-front-page" data-magellan-target="meta-data-yaml-data-and-the-front-page"><h2>meta-data, yaml data, and the front page</h></section>
+<section id="meta-data-yaml-data-and-the-front-page" data-magellan-target="meta-data-yaml-data-and-the-front-page"><h2>meta-data, yaml data, and the front page</h2></section>
 
 <p>The <code>blog_render()</code> function then worked, but I still needed to
 automatically update the front page to link directly to the latest
@@ -321,14 +321,11 @@ essentially just strips the <code>yaml</code> header data out of each <code>.Rmd
 entry, and re-formats it slightly as the <code>data/blog.yml</code> file. This in
 turn relies on one main function, <code>get_one_blog_dat()</code> which, for
 example, converts the metadata for this entry of:</p>
-<div class="code-example"><pre><code class="markdown hljs"><span class="hljs-horizontal_rule">---</span>
-title: how i made this site
+<div class="code-example"><pre><code class="markdown hljs">title: how i made this site
 description: <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-title">blah</span> <span class="hljs-attribute">blah</span> <span class="hljs-attribute">blah</span>&gt;</span></span>
 date: 06/05/2019
-<span class="hljs-header">link: blog/blog001.html
----</span></code></pre></div><p>into the only slightly-modified version in <code>data/blog.yml</code> of</p>
-<div class="code-example"><pre><code class="markdown hljs"><span class="hljs-bullet">-
-    </span>title: how i made this site
+link: blog/blog001.html</code></pre></div><p>into the only slightly-modified version in <code>data/blog.yml</code> of</p>
+<div class="code-example"><pre><code class="markdown hljs"><span class="hljs-code">    title: how i made this site</span>
 <span class="hljs-code">    description: &lt;blah blah blah&gt;</span>
 <span class="hljs-code">    created: 06 May 19</span>
 <span class="hljs-code">    modified: 06 May 19</span>
@@ -336,7 +333,7 @@ date: 06/05/2019
 metadata, while the “modified” date is the actual date of file
 modification. These two dates enable blog entries to be sorted by dates
 of either creation or modification with a simple binary parameter.</p>
-<section id="conclusion" data-magellan-target="conclusion"><h1>conclusion</h></section>
+<section id="conclusion" data-magellan-target="conclusion"><h1>conclusion</h1></section>
 
 <p>That’s it. It took me a little while to construct this site, but most of
 the time was me learning how
@@ -368,7 +365,7 @@ commit to update the site. That’s it.</p>
 <li>no blogdown</li>
 <li>full control over everything<div style="text-align: right">
 Originally posted: 06 May 19
-Updated: 07 May 19
+<br>Updated: 25 Mar 26
 </div></li>
 </ul>
 </div>

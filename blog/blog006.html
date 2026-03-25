@@ -21,7 +21,7 @@ href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/atom-one-light
 <script>hljs.initHighlightingOnLoad();</script>
 
 <div data-sticky-container>
-    <div class="top-bar" data-sticky data-options="marginTop:0;",style="width:100%;">
+    <div class="top-bar" data-sticky data-options="marginTop:0;" style="width:100%;">
         <div class="top-bar-left">
             <ul class="dropdown menu" data-dropdown-menu>
                 <li class="menu-text"> mpadge </li>
@@ -35,7 +35,7 @@ href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/atom-one-light
             <ul class="dropdown menu" data-dropdown-menu>
                 <li><a target="_blank" rel="noopener noreferrer"
                                        href="https://github.com/mpadge">
-                        <i class="fi-social-github"></i></a></li>
+                        <i class="fi-social-github" aria-hidden="true">&nbsp;</i></a></li>
                 <li><a target="_blank" rel="me noopener noreferrer"
                                         href="https://nerdculture.de/@mpadge">
                         <img class="fi-social-mastodon" src="../assets/foundation-icons/svgs/fi-social-mastodon.svg" alt="Mastodon"></a></li>
@@ -57,13 +57,14 @@ href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/atom-one-light
 <li><a href="#OpenSSL-encryption" style="color:#111111">OpenSSL encryption</a></li>
 <li><a href="#github-2FA-via-https-with-password-entry-and-not-an-untypeable-token" style="color:#111111">github 2FA via https with password entry, and not an untypeable token</a></li>
 <li><a href="#Final-script" style="color:#111111">Final script</a></li>
+</ul>
 </div>
 </nav>
 </div>
 
 <div class="cell medium-10 large-10">
 <div class="sections">
-<section id="Github-2FA-git-push-and-password-entry" data-magellan-target="Github-2FA-git-push-and-password-entry"><h1>Github 2FA, git push, and password entry</h></section>
+<section id="Github-2FA-git-push-and-password-entry" data-magellan-target="Github-2FA-git-push-and-password-entry"><h1>Github 2FA, git push, and password entry</h1></section>
 
 <p>Activating github two-factor authentication (2FA) offers an indubitable
 security boost, with one notable side effect: <code>https</code> authentication
@@ -78,11 +79,11 @@ personal access token when it asks for your password.</p>
 <p>So everything <em>looks</em> like it stays the same, except now I have to enter
 a random 32-character long Personal Access Token (PAT), instead of my
 former, sensibly memorable, and readily typeable password. But I liked
-things the old way! This blog entry describes the process I went
-through to effectively restore the previous behaviour of the git prompt
-prior to me switching on 2FA on github, enabling me to type a password
-for <code>git push</code>, instead of the un-typeable PAT.</p>
-<section id="Why-enter-a-password-each-time-" data-magellan-target="Why-enter-a-password-each-time-"><h2>Why enter a password each time?</h></section>
+things the old way! This blog entry describes the process I went through
+to effectively restore the previous behaviour of the git prompt prior to
+me switching on 2FA on github, enabling me to type a password for
+<code>git push</code>, instead of the un-typeable PAT.</p>
+<section id="Why-enter-a-password-each-time-" data-magellan-target="Why-enter-a-password-each-time-"><h2>Why enter a password each time?</h2></section>
 
 <p>Many – maybe most? – people are likely content with SSH authentication,
 which avoids any of these issues, and simply allows your <code>git push</code>
@@ -108,7 +109,7 @@ type my name and PAT. For a brief moment after having switched on 2FA on
 github, i feared that i was going to have to constantly copy-paste my
 PAT for every commit. I didn’t wanna do that, so i did the following …
 but first a brief digression into my SSL habits.</p>
-<section id="OpenSSL-encryption" data-magellan-target="OpenSSL-encryption"><h2>OpenSSL encryption</h></section>
+<section id="OpenSSL-encryption" data-magellan-target="OpenSSL-encryption"><h2>OpenSSL encryption</h2></section>
 
 <p>I use
 <a target="_blank" rel="noopener noreferrer" href="https://www.openssl.org/">
@@ -126,16 +127,18 @@ whatever traces might be left lying around on other operating systems —
 and your PAT is secure. Decrypting pretty much just reverses the above:</p>
 <div class="code-example"><pre><code class="bash hljs">openssl des3 -salt -md sha256 -pbkdf2 <span class="hljs-operator">-d</span> -in gitpat -out gitpat.txt</code></pre></div><p>Then i’ve got my token in <code>gitpat.txt</code>, which i can … copy-and-paste
 each time i need to <code>git push</code>? No way! And so … on to my solution.</p>
-<section id="github-2FA-via-https-with-password-entry-and-not-an-untypeable-token" data-magellan-target="github-2FA-via-https-with-password-entry-and-not-an-untypeable-token"><h2>github 2FA via https with password entry, and not an untypeable token</h></section>
+<section id="github-2FA-via-https-with-password-entry-and-not-an-untypeable-token" data-magellan-target="github-2FA-via-https-with-password-entry-and-not-an-untypeable-token"><h2>github 2FA via https with password entry, and not an untypeable token</h2></section>
 
 <p>My solution involved two main tricks:</p>
 <ol>
 <li>Replacing my pushes in the form <code>git push origin master</code>, where
  <code>origin</code> can be identified via <code>git remote -v</code> as something like
  <code>https://github.com/mpadge/&lt;repo&gt;</code>, and which necessitates entering
- <code>&quot;mpadge&quot;</code> and my PAT, with <code>git push  https://mpadge:&lt;PAT&gt;@github.com/mpadge/&lt;repo&gt;</code>, where the PAT is
- passed directly to github, circumventing the need to enter it
- manually, so that the push is directly sent and accepted; and</li>
+ <code>&quot;mpadge&quot;</code> and my PAT, with
+ <code>git push    https://mpadge:&lt;PAT&gt;@github.com/mpadge/&lt;repo&gt;</code>, where
+ the PAT is passed directly to github, circumventing the need to
+ enter it manually, so that the push is directly sent and accepted;
+ and</li>
 <li>Writing a script requiring my (github or other) password, and using
  that to automatically decrypt my PAT, convert it to an environmental
  variable, and using that to convert <code>git push</code> into the form above
@@ -180,12 +183,14 @@ cut <span class="hljs-string">"github.com"</span>
 <span class="hljs-comment"># REMOTE="https://&lt;UNAME&gt;:&lt;PAT&gt;@github.com/&lt;org&gt;/&lt;repo&gt;" (or similar)</span>
 <span class="hljs-built_in">printf</span> -v REMOTE <span class="hljs-string">"https://%s:%s@github.com%s"</span> <span class="hljs-string">"<span class="hljs-variable">$UNAME</span>"</span> <span class="hljs-string">"<span class="hljs-variable">$PAT</span>"</span> <span class="hljs-string">"<span class="hljs-variable">${array[1]}</span>"</span>
 <span class="hljs-built_in">echo</span> <span class="hljs-variable">$REMOTE</span></code></pre></div><p>That script gives our desired output:</p>
-<div class="code-example"><pre><code class="html hljs">## [1] "https://mpadge:<span class="hljs-tag">&lt;<span class="hljs-title">mypat</span>&gt;</span>@github.com/<span class="hljs-tag">&lt;<span class="hljs-title">org</span>&gt;</span>/<span class="hljs-tag">&lt;<span class="hljs-title">repo</span>&gt;</span>"</code></pre></div><section id="Final-script" data-magellan-target="Final-script"><h2>Final script</h></section>
+<div class="code-example"><pre><code class="html hljs">## [1] "https://mpadge:<span class="hljs-tag">&lt;<span class="hljs-title">mypat</span>&gt;</span>@github.com/<span class="hljs-tag">&lt;<span class="hljs-title">org</span>&gt;</span>/<span class="hljs-tag">&lt;<span class="hljs-title">repo</span>&gt;</span>"</code></pre></div><section id="Final-script" data-magellan-target="Final-script"><h2>Final script</h2></section>
 
 <p>My solution then just involved combining those two tricks within a
-single script, designed to <em>almost</em> but not quite reflect the old <code>git push</code> prompt and behaviour i was trying to emulate, and including an
-additional option to call the script with an extra parameter specifying
-the branch to push to, or otherwise defaulting to the current branch:</p>
+single script, designed to <em>almost</em> but not quite reflect the old
+<code>git push</code> prompt and behaviour i was trying to emulate, and including
+an additional option to call the script with an extra parameter
+specifying the branch to push to, or otherwise defaulting to the current
+branch:</p>
 <div class="code-example"><pre><code class="bash hljs"><span class="hljs-shebang">#!/bin/bash</span>
 <span class="hljs-built_in">read</span> -p <span class="hljs-string">"User name for 'https://github.com': "</span> UNAME
 <span class="hljs-built_in">read</span> <span class="hljs-operator">-s</span> -p <span class="hljs-string">"Password (NOT PAT) for 'https://<span class="hljs-variable">$UNAME</span>@github.com' "</span> PASS

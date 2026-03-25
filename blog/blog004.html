@@ -21,7 +21,7 @@ href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/atom-one-light
 <script>hljs.initHighlightingOnLoad();</script>
 
 <div data-sticky-container>
-    <div class="top-bar" data-sticky data-options="marginTop:0;",style="width:100%;">
+    <div class="top-bar" data-sticky data-options="marginTop:0;" style="width:100%;">
         <div class="top-bar-left">
             <ul class="dropdown menu" data-dropdown-menu>
                 <li class="menu-text"> mpadge </li>
@@ -35,7 +35,7 @@ href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/atom-one-light
             <ul class="dropdown menu" data-dropdown-menu>
                 <li><a target="_blank" rel="noopener noreferrer"
                                        href="https://github.com/mpadge">
-                        <i class="fi-social-github"></i></a></li>
+                        <i class="fi-social-github" aria-hidden="true">&nbsp;</i></a></li>
                 <li><a target="_blank" rel="me noopener noreferrer"
                                         href="https://nerdculture.de/@mpadge">
                         <img class="fi-social-mastodon" src="../assets/foundation-icons/svgs/fi-social-mastodon.svg" alt="Mastodon"></a></li>
@@ -53,13 +53,14 @@ href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/atom-one-light
 <div class="sticky" data-sticky data-anchor="how-i-make-this-site" data-sticky-on="large" data-margin-top="5">
 <ul class="vertical menu" data-magellan>
 <li><a href="#Calling-external-files-from-C-in-R" style="color:#111111">Calling external files from C in R</a></li>
+</ul>
 </div>
 </nav>
 </div>
 
 <div class="cell medium-10 large-10">
 <div class="sections">
-<section id="Calling-external-files-from-C-in-R" data-magellan-target="Calling-external-files-from-C-in-R"><h1>Calling external files from C in R</h></section>
+<section id="Calling-external-files-from-C-in-R" data-magellan-target="Calling-external-files-from-C-in-R"><h1>Calling external files from C in R</h1></section>
 
 <p>I recently encountered a problem while bundling an old C library into a
 new R package. The library itself depends on, and includes, an external
@@ -75,8 +76,7 @@ occupied a couple of days of my time, hence this documentation for the
 sake of posterity. As with many “external” files within R packages, the
 recommended locations is within the <code>inst</code> directory, or some
 sub-directory thereof. Any files within this directory will be copied
-“recursively to the installation directory” (from Writing R
-Extensions).</p>
+“recursively to the installation directory” (from Writing R Extensions).</p>
 <p>Such files can nevertheless <em>not</em> be called directly from any <code>src</code>
 code, because there is no way for a compiled source object to find them
 – relative paths can not be used, because they will be implemented
@@ -120,6 +120,7 @@ the <a href="https://stat.ethz.ch/pipermail/r-package-devel/2019q2/004113.html">
 list</a>.</p>
 <div style="text-align: right">
 Originally posted: 04 Jul 19
+<br>Updated: 25 Mar 26
 </div>
 </div>
 </div>

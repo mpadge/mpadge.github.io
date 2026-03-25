@@ -21,7 +21,7 @@ href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/atom-one-light
 <script>hljs.initHighlightingOnLoad();</script>
 
 <div data-sticky-container>
-    <div class="top-bar" data-sticky data-options="marginTop:0;",style="width:100%;">
+    <div class="top-bar" data-sticky data-options="marginTop:0;" style="width:100%;">
         <div class="top-bar-left">
             <ul class="dropdown menu" data-dropdown-menu>
                 <li class="menu-text"> mpadge </li>
@@ -35,7 +35,7 @@ href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/atom-one-light
             <ul class="dropdown menu" data-dropdown-menu>
                 <li><a target="_blank" rel="noopener noreferrer"
                                        href="https://github.com/mpadge">
-                        <i class="fi-social-github"></i></a></li>
+                        <i class="fi-social-github" aria-hidden="true">&nbsp;</i></a></li>
                 <li><a target="_blank" rel="me noopener noreferrer"
                                         href="https://nerdculture.de/@mpadge">
                         <img class="fi-social-mastodon" src="../assets/foundation-icons/svgs/fi-social-mastodon.svg" alt="Mastodon"></a></li>
@@ -57,13 +57,14 @@ href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/atom-one-light
 <li><a href="#Timeout-via-callr-" style="color:#111111">Timeout via ‘callr’</a></li>
 <li><a href="#Parallel-timeout-via-callr-" style="color:#111111">Parallel timeout via ‘callr’</a></li>
 <li><a href="#Timeout-parameters-and-future-packages" style="color:#111111">Timeout parameters and ‘future’ packages</a></li>
+</ul>
 </div>
 </nav>
 </div>
 
 <div class="cell medium-10 large-10">
 <div class="sections">
-<section id="Timeout-on-parallel-jobs-in-R" data-magellan-target="Timeout-on-parallel-jobs-in-R"><h1>Timeout on parallel jobs in R</h></section>
+<section id="Timeout-on-parallel-jobs-in-R" data-magellan-target="Timeout-on-parallel-jobs-in-R"><h1>Timeout on parallel jobs in R</h1></section>
 
 <p>Python’s
 <a href="https://docs.python.org/3/library/multiprocessing.html"><code>multiprocessing</code></a>
@@ -120,7 +121,7 @@ following lines (with code for exception handling removed here):</p>
     <span class="hljs-keyword">return</span> it.result</code></pre></div><p>That represents a succinct way to run a multi-threaded job in which each
 thread obeys a specified timeout parameter. This post describes two
 approaches to implementing equivalent functionality in R.</p>
-<section id="Timeout-in-R-s-parallel-package" data-magellan-target="Timeout-in-R-s-parallel-package"><h2>Timeout in R’s ‘parallel’ package</h></section>
+<section id="Timeout-in-R-s-parallel-package" data-magellan-target="Timeout-in-R-s-parallel-package"><h2>Timeout in R’s ‘parallel’ package</h2></section>
 
 <p>R’s <a href="https://stat.ethz.ch/R-manual/R-devel/library/parallel/doc/parallel.pdf"><code>{parallel}</code>
 package</a>
@@ -275,7 +276,7 @@ to the approach illustrated here:</p>
 </ol>
 <p>The next section explores a different approach that is operating-system
 independent.</p>
-<section id="Timeout-via-callr-" data-magellan-target="Timeout-via-callr-"><h2>Timeout via ‘callr’</h></section>
+<section id="Timeout-via-callr-" data-magellan-target="Timeout-via-callr-"><h2>Timeout via ‘callr’</h2></section>
 
 <p>The <a href="https://callr.r-lib.org">callr package by Gábor Csárdi and Winston
 Chang</a> is designed for ‘calling R from R’ –
@@ -316,7 +317,7 @@ second, as this code demonstrates:</p>
 <div class="code-example"><pre><code class="html hljs">## [1] 0.7176185 0.9919061 0.3800352 0.7774452 0.9347052</code></pre></div><p>The <code>timeout</code> parameter of <code>callr::r()</code> can thus be used to directly
 implement a timeout parameter. The following sub-section demonstrates
 how to extend this to parallel jobs.</p>
-<section id="Parallel-timeout-via-callr-" data-magellan-target="Parallel-timeout-via-callr-"><h2>Parallel timeout via ‘callr’</h></section>
+<section id="Parallel-timeout-via-callr-" data-magellan-target="Parallel-timeout-via-callr-"><h2>Parallel timeout via ‘callr’</h2></section>
 
 <p>To illustrate a different approach than the previous <code>mcparallel()</code>
 function, the following code uses the <a href="https://stat.ethz.ch/R-manual/R-devel/library/parallel/html/mclapply.html"><code>mclapply</code> function of the
@@ -376,7 +377,7 @@ package</a>. These
 <code>{snow}</code> functions (such as the <code>parApply</code> family of functions) also do
 not implement a <code>timeout</code> parameter, and so this <code>{callr}</code> approach
 offers one practical way to do so via those packages.</p>
-<section id="Timeout-parameters-and-future-packages" data-magellan-target="Timeout-parameters-and-future-packages"><h3>Timeout parameters and ‘future’ packages</h></section>
+<section id="Timeout-parameters-and-future-packages" data-magellan-target="Timeout-parameters-and-future-packages"><h3>Timeout parameters and ‘future’ packages</h3></section>
 
 <p>Processes triggered by the <code>{callr}</code> package do not generally play
 nicely with the core <code>{future}</code> package, which was likely one motivation

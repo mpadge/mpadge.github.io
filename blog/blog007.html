@@ -21,7 +21,7 @@ href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/atom-one-light
 <script>hljs.initHighlightingOnLoad();</script>
 
 <div data-sticky-container>
-    <div class="top-bar" data-sticky data-options="marginTop:0;",style="width:100%;">
+    <div class="top-bar" data-sticky data-options="marginTop:0;" style="width:100%;">
         <div class="top-bar-left">
             <ul class="dropdown menu" data-dropdown-menu>
                 <li class="menu-text"> mpadge </li>
@@ -35,7 +35,7 @@ href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/atom-one-light
             <ul class="dropdown menu" data-dropdown-menu>
                 <li><a target="_blank" rel="noopener noreferrer"
                                        href="https://github.com/mpadge">
-                        <i class="fi-social-github"></i></a></li>
+                        <i class="fi-social-github" aria-hidden="true">&nbsp;</i></a></li>
                 <li><a target="_blank" rel="me noopener noreferrer"
                                         href="https://nerdculture.de/@mpadge">
                         <img class="fi-social-mastodon" src="../assets/foundation-icons/svgs/fi-social-mastodon.svg" alt="Mastodon"></a></li>
@@ -56,13 +56,14 @@ href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/atom-one-light
 <li><a href="#The-General-Problem" style="color:#111111">The General Problem</a></li>
 <li><a href="#The-parallelReduce-Worker" style="color:#111111">The parallelReduce Worker</a></li>
 <li><a href="#Demonstration" style="color:#111111">Demonstration</a></li>
+</ul>
 </div>
 </nav>
 </div>
 
 <div class="cell medium-10 large-10">
 <div class="sections">
-<section id="Using-RcppParallel-to-aggregate-to-a-vector" data-magellan-target="Using-RcppParallel-to-aggregate-to-a-vector"><h1>Using RcppParallel to aggregate to a vector</h></section>
+<section id="Using-RcppParallel-to-aggregate-to-a-vector" data-magellan-target="Using-RcppParallel-to-aggregate-to-a-vector"><h1>Using RcppParallel to aggregate to a vector</h1></section>
 
 <p>This article was <a href="https://gallery.rcpp.org/articles/parallel-aggregate-to-vector/">recently published in the Rcpp
 Gallery</a>,
@@ -73,7 +74,7 @@ demonstrations of <a href="https://gallery.rcpp.org/articles/parallel-vector-sum
 aggregation</a>,
 through providing necessary details to enable aggregation to a vector,
 or by extension, to any arbitrary form.</p>
-<section id="The-General-Problem" data-magellan-target="The-General-Problem"><h3>The General Problem</h></section>
+<section id="The-General-Problem" data-magellan-target="The-General-Problem"><h3>The General Problem</h3></section>
 
 <p>Many tasks require aggregation to a vector result, and many such tasks
 can be made more efficient by performing such aggregation in parallel.
@@ -93,7 +94,7 @@ code demonstrates aggregation to a vector result that holds the row sums
 of a matrix, noting at the output that is not intended to represent
 efficient code, rather it is written to explicitly emphasise the
 principles of using <code>RcppParallel</code> to aggregate over a vector result.</p>
-<section id="The-parallelReduce-Worker" data-magellan-target="The-parallelReduce-Worker"><h3>The parallelReduce Worker</h></section>
+<section id="The-parallelReduce-Worker" data-magellan-target="The-parallelReduce-Worker"><h3>The parallelReduce Worker</h3></section>
 
 <p>The following code defines our parallel worker, in which the input is
 presumed for demonstration purposes to be a matrix stored as a single
@@ -127,8 +128,6 @@ includes a few notable features:</p>
  simple <code>Rcpp::wrap</code> call.)</p>
 </li>
 </ol>
-<!-- end list -->
-
 <div class="code-example"><pre><code class="cpp hljs"><span class="hljs-preprocessor">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;Rcpp.h&gt;</span></span>
 <span class="hljs-comment">// [[Rcpp::depends(RcppParallel)]]</span>
 <span class="hljs-preprocessor">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;RcppParallel.h&gt;</span></span>
@@ -202,7 +201,7 @@ through a simple call to <code>Rcpp::wrap</code>.</p>
     <span class="hljs-function">OneJob <span class="hljs-title">oneJob</span> <span class="hljs-params">(index, x, nrow, ncol)</span></span>;
     parallelReduce (<span class="hljs-number">0</span>, nrow, oneJob);
     <span class="hljs-keyword">return</span> wrap (oneJob.output);
-}</code></pre></div><section id="Demonstration" data-magellan-target="Demonstration"><h3>Demonstration</h></section>
+}</code></pre></div><section id="Demonstration" data-magellan-target="Demonstration"><h3>Demonstration</h3></section>
 
 <p>Finally, the following code demonstrates that this parallel worker
 correctly returns the row sums of the input matrix.</p>
@@ -218,6 +217,7 @@ identical(res, rowSums(xmat))</code></pre></div><div class="code-example"><pre><
 <a href="https://rcppcore.github.com/RcppParallel">https://rcppcore.github.com/RcppParallel</a>.</p>
 <div style="text-align: right">
 Originally posted: 07 Nov 19
+<br>Updated: 25 Mar 26
 </div>
 </div>
 </div>

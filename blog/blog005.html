@@ -21,7 +21,7 @@ href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/atom-one-light
 <script>hljs.initHighlightingOnLoad();</script>
 
 <div data-sticky-container>
-    <div class="top-bar" data-sticky data-options="marginTop:0;",style="width:100%;">
+    <div class="top-bar" data-sticky data-options="marginTop:0;" style="width:100%;">
         <div class="top-bar-left">
             <ul class="dropdown menu" data-dropdown-menu>
                 <li class="menu-text"> mpadge </li>
@@ -35,7 +35,7 @@ href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/atom-one-light
             <ul class="dropdown menu" data-dropdown-menu>
                 <li><a target="_blank" rel="noopener noreferrer"
                                        href="https://github.com/mpadge">
-                        <i class="fi-social-github"></i></a></li>
+                        <i class="fi-social-github" aria-hidden="true">&nbsp;</i></a></li>
                 <li><a target="_blank" rel="me noopener noreferrer"
                                         href="https://nerdculture.de/@mpadge">
                         <img class="fi-social-mastodon" src="../assets/foundation-icons/svgs/fi-social-mastodon.svg" alt="Mastodon"></a></li>
@@ -56,13 +56,14 @@ href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/atom-one-light
 <li><a href="#An-initial-illustration" style="color:#111111">An initial illustration</a></li>
 <li><a href="#How-are-matrices-stored-" style="color:#111111">How are matrices stored?</a></li>
 <li><a href="#Conclusion" style="color:#111111">Conclusion</a></li>
+</ul>
 </div>
 </nav>
 </div>
 
 <div class="cell medium-10 large-10">
 <div class="sections">
-<section id="What-are-matrices-in-R-" data-magellan-target="What-are-matrices-in-R-"><h1>What are matrices in R?</h></section>
+<section id="What-are-matrices-in-R-" data-magellan-target="What-are-matrices-in-R-"><h1>What are matrices in R?</h1></section>
 
 <p>“R is a shockingly dreadful language for an exceptionally useful data
 analysis environment” (
@@ -87,7 +88,7 @@ single dimension. They may print similarly, but will behave differently.
 The differences aren’t too important.” This blog entry will attempt to
 illustrate the kind of circumstances under which differences between
 vectors and matrices actually become quite important indeed.</p>
-<section id="An-initial-illustration" data-magellan-target="An-initial-illustration"><h2>An initial illustration</h></section>
+<section id="An-initial-illustration" data-magellan-target="An-initial-illustration"><h2>An initial illustration</h2></section>
 
 <p>Vectors do differ from matrices, as the following code clearly
 illustrates:</p>
@@ -102,25 +103,28 @@ rbenchmark::benchmark (
                        order = <span class="hljs-literal">NULL</span>) [, <span class="hljs-number">1</span>:<span class="hljs-number">4</span>]</code></pre></div><table>
 <thead>
 <tr>
-<th align="left">test</th>
-<th align="right">replications</th>
-<th align="right">elapsed</th>
-<th align="right">relative</th>
+<th style="text-align: left;">test</th>
+<th style="text-align: right;">replications</th>
+<th style="text-align: right;">elapsed</th>
+<th style="text-align: right;">relative</th>
 </tr>
 </thead>
-<tbody><tr>
-<td align="left">res &lt;- x + y</td>
-<td align="right">100</td>
-<td align="right">0.245</td>
-<td align="right">1.000</td>
+<tbody>
+<tr>
+<td style="text-align: left;">res \<- x + y</td>
+<td style="text-align: right;">100</td>
+<td style="text-align: right;">0.331</td>
+<td style="text-align: right;">1.000</td>
 </tr>
 <tr>
-<td align="left">res &lt;- rowSums(xy)</td>
-<td align="right">100</td>
-<td align="right">0.912</td>
-<td align="right">3.722</td>
+<td style="text-align: left;">res \<- rowSums(xy)</td>
+<td style="text-align: right;">100</td>
+<td style="text-align: right;">1.182</td>
+<td style="text-align: right;">3.571</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
+
 <p>Adding the two rows of a matrix takes 3-4 times longer than adding two
 otherwise equivalent vectors. And okay, that’s very likely something to
 do with the <code>rowSums</code> function rather than the matrix itself, but why
@@ -138,8 +142,8 @@ written here in a form able to be directly parsed in R via the
 inline package </a>.</p>
 <div class="code-example"><pre><code class="r hljs"><span class="hljs-keyword">library</span> (inline)
 add &lt;- cfunction(c(a = <span class="hljs-string">"numeric"</span>, b = <span class="hljs-string">"numeric"</span>), <span class="hljs-string">"
-                 int n = length (a);
-                 SEXP result = PROTECT (allocVector (REALSXP, n));
+                 int n = LENGTH (a);
+                 SEXP result = PROTECT (Rf_allocVector (REALSXP, n));
                  double *ra, *rb, *rout;
                  ra = REAL (a);
                  rb = REAL (b);
@@ -161,31 +165,34 @@ equivalent functions.</p>
                        order = <span class="hljs-literal">NULL</span>) [, <span class="hljs-number">1</span>:<span class="hljs-number">4</span>]</code></pre></div><table>
 <thead>
 <tr>
-<th align="left">test</th>
-<th align="right">replications</th>
-<th align="right">elapsed</th>
-<th align="right">relative</th>
+<th style="text-align: left;">test</th>
+<th style="text-align: right;">replications</th>
+<th style="text-align: right;">elapsed</th>
+<th style="text-align: right;">relative</th>
 </tr>
 </thead>
-<tbody><tr>
-<td align="left">res &lt;- x + y</td>
-<td align="right">100</td>
-<td align="right">0.203</td>
-<td align="right">1.000</td>
+<tbody>
+<tr>
+<td style="text-align: left;">res \<- x + y</td>
+<td style="text-align: right;">100</td>
+<td style="text-align: right;">0.277</td>
+<td style="text-align: right;">1.199</td>
 </tr>
 <tr>
-<td align="left">res &lt;- add(x, y)</td>
-<td align="right">100</td>
-<td align="right">0.217</td>
-<td align="right">1.069</td>
+<td style="text-align: left;">res \<- add(x, y)</td>
+<td style="text-align: right;">100</td>
+<td style="text-align: right;">0.231</td>
+<td style="text-align: right;">1.000</td>
 </tr>
 <tr>
-<td align="left">res &lt;- rowSums(xy)</td>
-<td align="right">100</td>
-<td align="right">0.931</td>
-<td align="right">4.586</td>
+<td style="text-align: left;">res \<- rowSums(xy)</td>
+<td style="text-align: right;">100</td>
+<td style="text-align: right;">1.085</td>
+<td style="text-align: right;">4.697</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
+
 <p>So our <code>add</code> function is broadly equivalent to R’s underlying code for
 vector addition, and correspondingly, considerably more efficient than
 <code>rowSums</code> applied to an equivalent matrix. This naturally fosters the
@@ -202,42 +209,45 @@ initial answer to that quesiton.</p>
                        order = <span class="hljs-literal">NULL</span>) [, <span class="hljs-number">1</span>:<span class="hljs-number">4</span>]</code></pre></div><table>
 <thead>
 <tr>
-<th align="left">test</th>
-<th align="right">replications</th>
-<th align="right">elapsed</th>
-<th align="right">relative</th>
+<th style="text-align: left;">test</th>
+<th style="text-align: right;">replications</th>
+<th style="text-align: right;">elapsed</th>
+<th style="text-align: right;">relative</th>
 </tr>
 </thead>
-<tbody><tr>
-<td align="left">res &lt;- x + y</td>
-<td align="right">100</td>
-<td align="right">0.208</td>
-<td align="right">1.000</td>
+<tbody>
+<tr>
+<td style="text-align: left;">res \<- x + y</td>
+<td style="text-align: right;">100</td>
+<td style="text-align: right;">0.204</td>
+<td style="text-align: right;">1.000</td>
 </tr>
 <tr>
-<td align="left">res &lt;- add(x, y)</td>
-<td align="right">100</td>
-<td align="right">0.250</td>
-<td align="right">1.202</td>
+<td style="text-align: left;">res \<- add(x, y)</td>
+<td style="text-align: right;">100</td>
+<td style="text-align: right;">0.252</td>
+<td style="text-align: right;">1.235</td>
 </tr>
 <tr>
-<td align="left">res &lt;- rowSums(xy)</td>
-<td align="right">100</td>
-<td align="right">0.840</td>
-<td align="right">4.038</td>
+<td style="text-align: left;">res \<- rowSums(xy)</td>
+<td style="text-align: right;">100</td>
+<td style="text-align: right;">1.163</td>
+<td style="text-align: right;">5.701</td>
 </tr>
 <tr>
-<td align="left">res &lt;- xy[, 1] + xy[, 2]</td>
-<td align="right">100</td>
-<td align="right">0.742</td>
-<td align="right">3.567</td>
+<td style="text-align: left;">res \<- xy\[, 1\] + xy\[, 2\]</td>
+<td style="text-align: right;">100</td>
+<td style="text-align: right;">1.353</td>
+<td style="text-align: right;">6.632</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
+
 <p>And direct addition of two columns of a matrix, through indexing into
 those columns, is roughly as <em>inefficient</em> as <code>rowSums</code> itself, while
 direct addition of the equivalent vectors remains 3-4 times more
 efficient.</p>
-<section id="How-are-matrices-stored-" data-magellan-target="How-are-matrices-stored-"><h3>How are matrices stored?</h></section>
+<section id="How-are-matrices-stored-" data-magellan-target="How-are-matrices-stored-"><h3>How are matrices stored?</h3></section>
 
 <p>So the reason for the relative inefficiency of <code>rowSums</code> is likely to
 extend directly from the column selection operation, <code>xy[, i]</code>. The
@@ -259,8 +269,8 @@ addition to instead accept a matrix object, noting that the indices <code>i</cod
 and <code>n + i</code> respectively refer to the first and second columns of the
 matrix.</p>
 <div class="code-example"><pre><code class="r hljs">matadd &lt;- cfunction(c(a = <span class="hljs-string">"numeric"</span>), <span class="hljs-string">"
-                 int n = floor (length (a) / 2);
-                 SEXP result = PROTECT (allocVector (REALSXP, n));
+                 int n = floor (LENGTH (a) / 2.0);
+                 SEXP result = PROTECT (Rf_allocVector (REALSXP, n));
                  double *ra, *rout;
                  ra = REAL (a);
                  rout = REAL (result);
@@ -283,49 +293,52 @@ results.</p>
                        order = <span class="hljs-literal">NULL</span>) [, <span class="hljs-number">1</span>:<span class="hljs-number">4</span>]</code></pre></div><table>
 <thead>
 <tr>
-<th align="left">test</th>
-<th align="right">replications</th>
-<th align="right">elapsed</th>
-<th align="right">relative</th>
+<th style="text-align: left;">test</th>
+<th style="text-align: right;">replications</th>
+<th style="text-align: right;">elapsed</th>
+<th style="text-align: right;">relative</th>
 </tr>
 </thead>
-<tbody><tr>
-<td align="left">res &lt;- x + y</td>
-<td align="right">100</td>
-<td align="right">0.214</td>
-<td align="right">1.000</td>
+<tbody>
+<tr>
+<td style="text-align: left;">res \<- x + y</td>
+<td style="text-align: right;">100</td>
+<td style="text-align: right;">0.279</td>
+<td style="text-align: right;">1.395</td>
 </tr>
 <tr>
-<td align="left">res &lt;- add(x, y)</td>
-<td align="right">100</td>
-<td align="right">0.215</td>
-<td align="right">1.005</td>
+<td style="text-align: left;">res \<- add(x, y)</td>
+<td style="text-align: right;">100</td>
+<td style="text-align: right;">0.201</td>
+<td style="text-align: right;">1.005</td>
 </tr>
 <tr>
-<td align="left">res &lt;- rowSums(xy)</td>
-<td align="right">100</td>
-<td align="right">0.824</td>
-<td align="right">3.850</td>
+<td style="text-align: left;">res \<- rowSums(xy)</td>
+<td style="text-align: right;">100</td>
+<td style="text-align: right;">1.138</td>
+<td style="text-align: right;">5.690</td>
 </tr>
 <tr>
-<td align="left">res &lt;- xy[, 1] + xy[, 2]</td>
-<td align="right">100</td>
-<td align="right">0.767</td>
-<td align="right">3.584</td>
+<td style="text-align: left;">res \<- xy\[, 1\] + xy\[, 2\]</td>
+<td style="text-align: right;">100</td>
+<td style="text-align: right;">1.242</td>
+<td style="text-align: right;">6.210</td>
 </tr>
 <tr>
-<td align="left">res &lt;- matadd(xy)</td>
-<td align="right">100</td>
-<td align="right">0.219</td>
-<td align="right">1.023</td>
+<td style="text-align: left;">res \<- matadd(xy)</td>
+<td style="text-align: right;">100</td>
+<td style="text-align: right;">0.200</td>
+<td style="text-align: right;">1.000</td>
 </tr>
 <tr>
-<td align="left">res &lt;- xy + xy</td>
-<td align="right">100</td>
-<td align="right">0.407</td>
-<td align="right">1.902</td>
+<td style="text-align: left;">res \<- xy + xy</td>
+<td style="text-align: right;">100</td>
+<td style="text-align: right;">0.495</td>
+<td style="text-align: right;">2.475</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
+
 <p>That benchmark demonstrates that operations on matrix columns are only
 as efficient as equivalent operations on vectors when the matrices are
 treated as singular vector objects. Direct addition of entire matrices
@@ -335,7 +348,7 @@ Inefficiencies arise in handling matrices only when extracting
 individual rows or columns – the <code>xy[, i]</code> operations, presumably
 because these operations involve creating an additional copy of the
 entire row or column.</p>
-<section id="Conclusion" data-magellan-target="Conclusion"><h2>Conclusion</h></section>
+<section id="Conclusion" data-magellan-target="Conclusion"><h2>Conclusion</h2></section>
 
 <p>What the above code was intended to demonstrate was that matrices should
 only be considered to be <strong>like</strong> vectors in the sense of operations on

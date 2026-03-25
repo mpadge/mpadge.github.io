@@ -21,7 +21,7 @@ href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/atom-one-light
 <script>hljs.initHighlightingOnLoad();</script>
 
 <div data-sticky-container>
-    <div class="top-bar" data-sticky data-options="marginTop:0;",style="width:100%;">
+    <div class="top-bar" data-sticky data-options="marginTop:0;" style="width:100%;">
         <div class="top-bar-left">
             <ul class="dropdown menu" data-dropdown-menu>
                 <li class="menu-text"> mpadge </li>
@@ -35,7 +35,7 @@ href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/atom-one-light
             <ul class="dropdown menu" data-dropdown-menu>
                 <li><a target="_blank" rel="noopener noreferrer"
                                        href="https://github.com/mpadge">
-                        <i class="fi-social-github"></i></a></li>
+                        <i class="fi-social-github" aria-hidden="true">&nbsp;</i></a></li>
                 <li><a target="_blank" rel="me noopener noreferrer"
                                         href="https://nerdculture.de/@mpadge">
                         <img class="fi-social-mastodon" src="../assets/foundation-icons/svgs/fi-social-mastodon.svg" alt="Mastodon"></a></li>
@@ -49,8 +49,8 @@ href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/atom-one-light
 
     <a href="../index.html" style="color:#262626;">
         <div class="grid-y grid-margin y">
-            <div class="cell"><h2 align="center">code</h2></div>
-            <div class="cell"><h4 align="center">all R packages</h4></div>
+            <div class="cell"><h2 style="text-align: center;">code</h2></div>
+            <div class="cell"><h4 style="text-align: center;">all R packages</h4></div>
         </div>
     </a>
 
@@ -62,25 +62,21 @@ href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/atom-one-light
     <div class="medium-6 large-4 cell">
     <div class="large-2 medium-3 cell" style="background-color:#ffffffaa">
         <div class="callout">
-    <a target="_blank" rel="noopener noreferrer"
-                       href="https://docs.ropensci.org/osmdata/", style="color:#262626;">
-        <div align="center">
-            <h3>osmdata</h3>
-        </div>
-        <p align="center">
-        <option "yes"="yes">
-        <a href="https://cran.r-project.org/package&#x3D;osmdata">
-            <!--<img src="https://cranlogs.r-pkg.org/badges/grand-total/osmdata?color&#x3D;orange" alt="CRAN Downloads"/>-->
-            <img src="https://cranlogs.r-pkg.org/badges/grand-total/osmdata?color&#x3D;orange">
+    <div style="cursor: pointer;" onclick="window.open('https://docs.ropensci.org/osmdata/', '_blank')">
+        <a target="_blank" rel="noopener noreferrer" href="https://docs.ropensci.org/osmdata/" style="color:#262626; text-decoration: none;">
+            <div style="text-align: center;">
+                <h3>osmdata</h3>
+            </div>
         </a>
-        </option>
-        <option "yes"="yes">
-        <a href="https://github.com/ropensci/software-review/103">
-            <img src="https://badges.ropensci.org/103_status.svg"/>
+        <p style="text-align: center;">
+        <a href="https://cran.r-project.org/package&#x3D;osmdata" target="_blank" rel="noopener noreferrer">
+            <img src="https://cranlogs.r-pkg.org/badges/grand-total/osmdata?color&#x3D;orange" alt="CRAN Downloads">
         </a>
-        </option>
+        <a href="https://github.com/ropensci/software-review/103" target="_blank" rel="noopener noreferrer">
+            <img src="https://badges.ropensci.org/103_status.svg" alt="rOpenSci package status"/>
+        </a>
         </p>
-        <div class="card-section" align="center">
+        <div class="card-section" style="text-align: center;">
             <p>Import &#x27;OpenStreetMap&#x27; Data as Simple Features or Spatial
 Objects</p>
             <p>Download and import of &#x27;OpenStreetMap&#x27; (&#x27;OSM&#x27;) data as
@@ -88,27 +84,25 @@ Objects</p>
 &#x27;Overpass&#x27; web server (&lt;https://overpass-api.de/&gt;) and
 processed with very fast &#x27;C++&#x27; routines for return to &#x27;R&#x27;.</p>
         </div>
-    </a>
+    </div>
         </div>
     </div>
     </div>
     <div class="medium-6 large-4 cell">
     <div class="large-2 medium-3 cell" style="background-color:#ffffffaa">
         <div class="callout">
-    <a target="_blank" rel="noopener noreferrer"
-                       href="https://hypertidy.github.io/geodist/", style="color:#262626;">
-        <div align="center">
-            <h3>geodist</h3>
-        </div>
-        <p align="center">
-        <option "yes"="yes">
-        <a href="https://cran.r-project.org/package&#x3D;geodist">
-            <!--<img src="https://cranlogs.r-pkg.org/badges/grand-total/geodist?color&#x3D;orange" alt="CRAN Downloads"/>-->
-            <img src="https://cranlogs.r-pkg.org/badges/grand-total/geodist?color&#x3D;orange">
+    <div style="cursor: pointer;" onclick="window.open('https://hypertidy.github.io/geodist/', '_blank')">
+        <a target="_blank" rel="noopener noreferrer" href="https://hypertidy.github.io/geodist/" style="color:#262626; text-decoration: none;">
+            <div style="text-align: center;">
+                <h3>geodist</h3>
+            </div>
         </a>
-        </option>
+        <p style="text-align: center;">
+        <a href="https://cran.r-project.org/package&#x3D;geodist" target="_blank" rel="noopener noreferrer">
+            <img src="https://cranlogs.r-pkg.org/badges/grand-total/geodist?color&#x3D;orange" alt="CRAN Downloads">
+        </a>
         </p>
-        <div class="card-section" align="center">
+        <div class="card-section" style="text-align: center;">
             <p>Fast, Dependency-Free Geodesic Distance Calculations</p>
             <p>Dependency-free, ultra fast calculation of geodesic
 distances.  Includes the reference nanometre-accuracy geodesic
@@ -121,53 +115,49 @@ faster. The main function accepts one or two inputs in almost
 any generic rectangular form, and returns either matrices of
 pairwise distances, or vectors of sequential distances.</p>
         </div>
-    </a>
+    </div>
         </div>
     </div>
     </div>
     <div class="medium-6 large-4 cell">
     <div class="large-2 medium-3 cell" style="background-color:#ffffffaa">
         <div class="callout">
-    <a target="_blank" rel="noopener noreferrer"
-                       href="https://docs.ropensci.org/goodpractice/", style="color:#262626;">
-        <div align="center">
-            <h3>goodpractice</h3>
-        </div>
-        <p align="center">
-        <option "yes"="yes">
-        <a href="https://cran.r-project.org/package&#x3D;goodpractice">
-            <!--<img src="https://cranlogs.r-pkg.org/badges/grand-total/goodpractice?color&#x3D;orange" alt="CRAN Downloads"/>-->
-            <img src="https://cranlogs.r-pkg.org/badges/grand-total/goodpractice?color&#x3D;orange">
+    <div style="cursor: pointer;" onclick="window.open('https://docs.ropensci.org/goodpractice/', '_blank')">
+        <a target="_blank" rel="noopener noreferrer" href="https://docs.ropensci.org/goodpractice/" style="color:#262626; text-decoration: none;">
+            <div style="text-align: center;">
+                <h3>goodpractice</h3>
+            </div>
         </a>
-        </option>
+        <p style="text-align: center;">
+        <a href="https://cran.r-project.org/package&#x3D;goodpractice" target="_blank" rel="noopener noreferrer">
+            <img src="https://cranlogs.r-pkg.org/badges/grand-total/goodpractice?color&#x3D;orange" alt="CRAN Downloads">
+        </a>
         </p>
-        <div class="card-section" align="center">
+        <div class="card-section" style="text-align: center;">
             <p>Advice on R Package Building</p>
             <p>Give advice about good practices when building R packages.
 Advice includes functions and syntax to avoid, package
 structure, code complexity, code formatting, etc.</p>
         </div>
-    </a>
+    </div>
         </div>
     </div>
     </div>
     <div class="medium-6 large-4 cell">
     <div class="large-2 medium-3 cell" style="background-color:#ffffffaa">
         <div class="callout">
-    <a target="_blank" rel="noopener noreferrer"
-                       href="https://UrbanAnalyst.github.io/dodgr/", style="color:#262626;">
-        <div align="center">
-            <h3>dodgr</h3>
-        </div>
-        <p align="center">
-        <option "yes"="yes">
-        <a href="https://cran.r-project.org/package&#x3D;dodgr">
-            <!--<img src="https://cranlogs.r-pkg.org/badges/grand-total/dodgr?color&#x3D;orange" alt="CRAN Downloads"/>-->
-            <img src="https://cranlogs.r-pkg.org/badges/grand-total/dodgr?color&#x3D;orange">
+    <div style="cursor: pointer;" onclick="window.open('https://UrbanAnalyst.github.io/dodgr/', '_blank')">
+        <a target="_blank" rel="noopener noreferrer" href="https://UrbanAnalyst.github.io/dodgr/" style="color:#262626; text-decoration: none;">
+            <div style="text-align: center;">
+                <h3>dodgr</h3>
+            </div>
         </a>
-        </option>
+        <p style="text-align: center;">
+        <a href="https://cran.r-project.org/package&#x3D;dodgr" target="_blank" rel="noopener noreferrer">
+            <img src="https://cranlogs.r-pkg.org/badges/grand-total/dodgr?color&#x3D;orange" alt="CRAN Downloads">
+        </a>
         </p>
-        <div class="card-section" align="center">
+        <div class="card-section" style="text-align: center;">
             <p>Distances on Directed Graphs</p>
             <p>Distances on dual-weighted directed graphs using
 priority-queue shortest paths (Padgham (2019)
@@ -179,27 +169,25 @@ which routes are calculated by weighting distances according to
 the type of way and mode of transport, yet lengths of routes
 must be calculated from direct distances.</p>
         </div>
-    </a>
+    </div>
         </div>
     </div>
     </div>
     <div class="medium-6 large-4 cell">
     <div class="large-2 medium-3 cell" style="background-color:#ffffffaa">
         <div class="callout">
-    <a target="_blank" rel="noopener noreferrer"
-                       href="https://docs.ropensci.org/allcontributors", style="color:#262626;">
-        <div align="center">
-            <h3>allcontributors</h3>
-        </div>
-        <p align="center">
-        <option "yes"="yes">
-        <a href="https://cran.r-project.org/package&#x3D;allcontributors">
-            <!--<img src="https://cranlogs.r-pkg.org/badges/grand-total/allcontributors?color&#x3D;orange" alt="CRAN Downloads"/>-->
-            <img src="https://cranlogs.r-pkg.org/badges/grand-total/allcontributors?color&#x3D;orange">
+    <div style="cursor: pointer;" onclick="window.open('https://docs.ropensci.org/allcontributors', '_blank')">
+        <a target="_blank" rel="noopener noreferrer" href="https://docs.ropensci.org/allcontributors" style="color:#262626; text-decoration: none;">
+            <div style="text-align: center;">
+                <h3>allcontributors</h3>
+            </div>
         </a>
-        </option>
+        <p style="text-align: center;">
+        <a href="https://cran.r-project.org/package&#x3D;allcontributors" target="_blank" rel="noopener noreferrer">
+            <img src="https://cranlogs.r-pkg.org/badges/grand-total/allcontributors?color&#x3D;orange" alt="CRAN Downloads">
+        </a>
         </p>
-        <div class="card-section" align="center">
+        <div class="card-section" style="text-align: center;">
             <p>Acknowledge all Contributors to a Project</p>
             <p>Acknowledge all contributors to a project via a single
 function call. The function appends to a &#x27;README&#x27; or other
@@ -208,27 +196,25 @@ contributed via code or repository issues.  The package also
 includes several additional functions to extract and quantify
 contributions to any repository.</p>
         </div>
-    </a>
+    </div>
         </div>
     </div>
     </div>
     <div class="medium-6 large-4 cell">
     <div class="large-2 medium-3 cell" style="background-color:#ffffffaa">
         <div class="callout">
-    <a target="_blank" rel="noopener noreferrer"
-                       href="https://docs.ropensci.org/pkgstats/", style="color:#262626;">
-        <div align="center">
-            <h3>pkgstats</h3>
-        </div>
-        <p align="center">
-        <option "yes"="yes">
-        <a href="https://cran.r-project.org/package&#x3D;pkgstats">
-            <!--<img src="https://cranlogs.r-pkg.org/badges/grand-total/pkgstats?color&#x3D;orange" alt="CRAN Downloads"/>-->
-            <img src="https://cranlogs.r-pkg.org/badges/grand-total/pkgstats?color&#x3D;orange">
+    <div style="cursor: pointer;" onclick="window.open('https://docs.ropensci.org/pkgstats/', '_blank')">
+        <a target="_blank" rel="noopener noreferrer" href="https://docs.ropensci.org/pkgstats/" style="color:#262626; text-decoration: none;">
+            <div style="text-align: center;">
+                <h3>pkgstats</h3>
+            </div>
         </a>
-        </option>
+        <p style="text-align: center;">
+        <a href="https://cran.r-project.org/package&#x3D;pkgstats" target="_blank" rel="noopener noreferrer">
+            <img src="https://cranlogs.r-pkg.org/badges/grand-total/pkgstats?color&#x3D;orange" alt="CRAN Downloads">
+        </a>
         </p>
-        <div class="card-section" align="center">
+        <div class="card-section" style="text-align: center;">
             <p>Metrics of R Packages</p>
             <p>Static code analyses for R packages using the external
 code-tagging libraries &#x27;ctags&#x27; and &#x27;gtags&#x27;. Static analyses
@@ -238,85 +224,77 @@ database generating by applying the main function to the full
 &#x27;CRAN&#x27; archive, enabling the statistical properties of any
 package to be compared with all other &#x27;CRAN&#x27; packages.</p>
         </div>
-    </a>
+    </div>
         </div>
     </div>
     </div>
     <div class="medium-6 large-4 cell">
     <div class="large-2 medium-3 cell" style="background-color:#ffffffaa">
         <div class="callout">
-    <a target="_blank" rel="noopener noreferrer"
-                       href="https://github.com/urbananalyst/gtfsrouter", style="color:#262626;">
-        <div align="center">
-            <h3>gtfsrouter</h3>
-        </div>
-        <p align="center">
-        <option "yes"="yes">
-        <a href="https://cran.r-project.org/package&#x3D;gtfsrouter">
-            <!--<img src="https://cranlogs.r-pkg.org/badges/grand-total/gtfsrouter?color&#x3D;orange" alt="CRAN Downloads"/>-->
-            <img src="https://cranlogs.r-pkg.org/badges/grand-total/gtfsrouter?color&#x3D;orange">
+    <div style="cursor: pointer;" onclick="window.open('https://github.com/urbananalyst/gtfsrouter', '_blank')">
+        <a target="_blank" rel="noopener noreferrer" href="https://github.com/urbananalyst/gtfsrouter" style="color:#262626; text-decoration: none;">
+            <div style="text-align: center;">
+                <h3>gtfsrouter</h3>
+            </div>
         </a>
-        </option>
+        <p style="text-align: center;">
+        <a href="https://cran.r-project.org/package&#x3D;gtfsrouter" target="_blank" rel="noopener noreferrer">
+            <img src="https://cranlogs.r-pkg.org/badges/grand-total/gtfsrouter?color&#x3D;orange" alt="CRAN Downloads">
+        </a>
         </p>
-        <div class="card-section" align="center">
+        <div class="card-section" style="text-align: center;">
             <p>Routing with &#x27;GTFS&#x27; (General Transit Feed Specification) Data</p>
             <p>Use &#x27;GTFS&#x27; (General Transit Feed Specification) data for
 routing from nominated start and end stations, for extracting
 &#x27;isochrones&#x27;, and travel times from any nominated start station
 to all other stations.</p>
         </div>
-    </a>
+    </div>
         </div>
     </div>
     </div>
     <div class="medium-6 large-4 cell">
     <div class="large-2 medium-3 cell" style="background-color:#ffffffaa">
         <div class="callout">
-    <a target="_blank" rel="noopener noreferrer"
-                       href="https://docs.ropensci.org/mapscanner", style="color:#262626;">
-        <div align="center">
-            <h3>mapscanner</h3>
-        </div>
-        <p align="center">
-        <option "yes"="yes">
-        <a href="https://cran.r-project.org/package&#x3D;mapscanner">
-            <!--<img src="https://cranlogs.r-pkg.org/badges/grand-total/mapscanner?color&#x3D;orange" alt="CRAN Downloads"/>-->
-            <img src="https://cranlogs.r-pkg.org/badges/grand-total/mapscanner?color&#x3D;orange">
+    <div style="cursor: pointer;" onclick="window.open('https://docs.ropensci.org/mapscanner', '_blank')">
+        <a target="_blank" rel="noopener noreferrer" href="https://docs.ropensci.org/mapscanner" style="color:#262626; text-decoration: none;">
+            <div style="text-align: center;">
+                <h3>mapscanner</h3>
+            </div>
         </a>
-        </option>
-        <option "yes"="yes">
-        <a href="https://github.com/ropensci/software-review/330">
-            <img src="https://badges.ropensci.org/330_status.svg"/>
+        <p style="text-align: center;">
+        <a href="https://cran.r-project.org/package&#x3D;mapscanner" target="_blank" rel="noopener noreferrer">
+            <img src="https://cranlogs.r-pkg.org/badges/grand-total/mapscanner?color&#x3D;orange" alt="CRAN Downloads">
         </a>
-        </option>
+        <a href="https://github.com/ropensci/software-review/330" target="_blank" rel="noopener noreferrer">
+            <img src="https://badges.ropensci.org/330_status.svg" alt="rOpenSci package status"/>
+        </a>
         </p>
-        <div class="card-section" align="center">
+        <div class="card-section" style="text-align: center;">
             <p>Print Maps, Draw on Them, Scan Them Back in</p>
             <p>Enables preparation of maps to be printed and drawn on.
 Modified maps can then be scanned back in, and hand-drawn marks
 converted to spatial objects.</p>
         </div>
-    </a>
+    </div>
         </div>
     </div>
     </div>
     <div class="medium-6 large-4 cell">
     <div class="large-2 medium-3 cell" style="background-color:#ffffffaa">
         <div class="callout">
-    <a target="_blank" rel="noopener noreferrer"
-                       href="https://mpadge.github.io/typetracer/", style="color:#262626;">
-        <div align="center">
-            <h3>typetracer</h3>
-        </div>
-        <p align="center">
-        <option "yes"="yes">
-        <a href="https://cran.r-project.org/package&#x3D;typetracer">
-            <!--<img src="https://cranlogs.r-pkg.org/badges/grand-total/typetracer?color&#x3D;orange" alt="CRAN Downloads"/>-->
-            <img src="https://cranlogs.r-pkg.org/badges/grand-total/typetracer?color&#x3D;orange">
+    <div style="cursor: pointer;" onclick="window.open('https://mpadge.github.io/typetracer/', '_blank')">
+        <a target="_blank" rel="noopener noreferrer" href="https://mpadge.github.io/typetracer/" style="color:#262626; text-decoration: none;">
+            <div style="text-align: center;">
+                <h3>typetracer</h3>
+            </div>
         </a>
-        </option>
+        <p style="text-align: center;">
+        <a href="https://cran.r-project.org/package&#x3D;typetracer" target="_blank" rel="noopener noreferrer">
+            <img src="https://cranlogs.r-pkg.org/badges/grand-total/typetracer?color&#x3D;orange" alt="CRAN Downloads">
+        </a>
         </p>
-        <div class="card-section" align="center">
+        <div class="card-section" style="text-align: center;">
             <p>Trace Function Parameter Types</p>
             <p>The &#x27;R&#x27; language includes a set of defined types, but the
 language itself is &quot;absurdly dynamic&quot; (Turcotte &amp; Vitek (2019)
@@ -327,32 +305,28 @@ information on the properties of parameters passed to &#x27;R&#x27;
 functions. &#x27;typetracer&#x27; can trace individual functions or
 entire packages.</p>
         </div>
-    </a>
+    </div>
         </div>
     </div>
     </div>
     <div class="medium-6 large-4 cell">
     <div class="large-2 medium-3 cell" style="background-color:#ffffffaa">
         <div class="callout">
-    <a target="_blank" rel="noopener noreferrer"
-                       href="https://docs.ropensci.org/bikedata/", style="color:#262626;">
-        <div align="center">
-            <h3>bikedata</h3>
-        </div>
-        <p align="center">
-        <option "yes"="yes">
-        <a href="https://cran.r-project.org/package&#x3D;bikedata">
-            <!--<img src="https://cranlogs.r-pkg.org/badges/grand-total/bikedata?color&#x3D;orange" alt="CRAN Downloads"/>-->
-            <img src="https://cranlogs.r-pkg.org/badges/grand-total/bikedata?color&#x3D;orange">
+    <div style="cursor: pointer;" onclick="window.open('https://docs.ropensci.org/bikedata/', '_blank')">
+        <a target="_blank" rel="noopener noreferrer" href="https://docs.ropensci.org/bikedata/" style="color:#262626; text-decoration: none;">
+            <div style="text-align: center;">
+                <h3>bikedata</h3>
+            </div>
         </a>
-        </option>
-        <option "yes"="yes">
-        <a href="https://github.com/ropensci/software-review/116">
-            <img src="https://badges.ropensci.org/116_status.svg"/>
+        <p style="text-align: center;">
+        <a href="https://cran.r-project.org/package&#x3D;bikedata" target="_blank" rel="noopener noreferrer">
+            <img src="https://cranlogs.r-pkg.org/badges/grand-total/bikedata?color&#x3D;orange" alt="CRAN Downloads">
         </a>
-        </option>
+        <a href="https://github.com/ropensci/software-review/116" target="_blank" rel="noopener noreferrer">
+            <img src="https://badges.ropensci.org/116_status.svg" alt="rOpenSci package status"/>
+        </a>
         </p>
-        <div class="card-section" align="center">
+        <div class="card-section" style="text-align: center;">
             <p>Download and Aggregate Data from Public Hire Bicycle Systems</p>
             <p>Download and aggregate data from all public hire bicycle
 systems which provide open data, currently including
@@ -363,86 +337,73 @@ GoBike&#x27; in San Francisco CA, &#x27;citibike&#x27; in New York City NY,
 Philadelphia PA, and &#x27;Nice Ride&#x27; in Minnesota; &#x27;Bixi&#x27; from
 Montreal, Canada; and &#x27;mibici&#x27; from Guadalajara, Mexico.</p>
         </div>
-    </a>
+    </div>
         </div>
     </div>
     </div>
     <div class="medium-6 large-4 cell">
     <div class="large-2 medium-3 cell" style="background-color:#ffffffaa">
         <div class="callout">
-    <a target="_blank" rel="noopener noreferrer"
-                       href="https://docs.ropensci.org/osmplotr/", style="color:#262626;">
-        <div align="center">
-            <h3>osmplotr</h3>
-        </div>
-        <p align="center">
-        <option "yes"="yes">
-        <a href="https://cran.r-project.org/package&#x3D;osmplotr">
-            <!--<img src="https://cranlogs.r-pkg.org/badges/grand-total/osmplotr?color&#x3D;orange" alt="CRAN Downloads"/>-->
-            <img src="https://cranlogs.r-pkg.org/badges/grand-total/osmplotr?color&#x3D;orange">
+    <div style="cursor: pointer;" onclick="window.open('https://docs.ropensci.org/osmplotr/', '_blank')">
+        <a target="_blank" rel="noopener noreferrer" href="https://docs.ropensci.org/osmplotr/" style="color:#262626; text-decoration: none;">
+            <div style="text-align: center;">
+                <h3>osmplotr</h3>
+            </div>
         </a>
-        </option>
-        <option "yes"="yes">
-        <a href="https://github.com/ropensci/software-review/27">
-            <img src="https://badges.ropensci.org/27_status.svg"/>
+        <p style="text-align: center;">
+        <a href="https://cran.r-project.org/package&#x3D;osmplotr" target="_blank" rel="noopener noreferrer">
+            <img src="https://cranlogs.r-pkg.org/badges/grand-total/osmplotr?color&#x3D;orange" alt="CRAN Downloads">
         </a>
-        </option>
+        <a href="https://github.com/ropensci/software-review/27" target="_blank" rel="noopener noreferrer">
+            <img src="https://badges.ropensci.org/27_status.svg" alt="rOpenSci package status"/>
+        </a>
         </p>
-        <div class="card-section" align="center">
+        <div class="card-section" style="text-align: center;">
             <p>Bespoke Images of &#x27;OpenStreetMap&#x27; Data</p>
             <p>Bespoke images of &#x27;OpenStreetMap&#x27; (&#x27;OSM&#x27;) data and data
 visualisation using &#x27;OSM&#x27; objects.</p>
         </div>
-    </a>
+    </div>
         </div>
     </div>
     </div>
     <div class="medium-6 large-4 cell">
     <div class="large-2 medium-3 cell" style="background-color:#ffffffaa">
         <div class="callout">
-    <a target="_blank" rel="noopener noreferrer"
-                       href="https://github.com/ropensci-review-tools/dashboard", style="color:#262626;">
-        <div align="center">
-            <h3>dashboard</h3>
-        </div>
-        <p align="center">
-        <option "yes"="yes">
-        <a href="https://cran.r-project.org/package&#x3D;dashboard">
-            <!--<img src="https://cranlogs.r-pkg.org/badges/grand-total/dashboard?color&#x3D;orange" alt="CRAN Downloads"/>-->
-            <img src="https://cranlogs.r-pkg.org/badges/grand-total/dashboard?color&#x3D;orange">
+    <div style="cursor: pointer;" onclick="window.open('https://github.com/ropensci-review-tools/dashboard', '_blank')">
+        <a target="_blank" rel="noopener noreferrer" href="https://github.com/ropensci-review-tools/dashboard" style="color:#262626; text-decoration: none;">
+            <div style="text-align: center;">
+                <h3>dashboard</h3>
+            </div>
         </a>
-        </option>
+        <p style="text-align: center;">
+        <a href="https://cran.r-project.org/package&#x3D;dashboard" target="_blank" rel="noopener noreferrer">
+            <img src="https://cranlogs.r-pkg.org/badges/grand-total/dashboard?color&#x3D;orange" alt="CRAN Downloads">
+        </a>
         </p>
-        <div class="card-section" align="center">
+        <div class="card-section" style="text-align: center;">
             <p>What the Package Does (One Line, Title Case)</p>
             <p>What the package does (one paragraph).</p>
         </div>
-    </a>
+    </div>
         </div>
     </div>
     </div>
     <div class="medium-6 large-4 cell">
     <div class="large-2 medium-3 cell" style="background-color:#ffffffaa">
         <div class="callout">
-    <a target="_blank" rel="noopener noreferrer"
-                       href="https://docs.ropensci.org/pkgmatch/", style="color:#262626;">
-        <div align="center">
-            <h3>pkgmatch</h3>
-        </div>
-        <p align="center">
-        <option "no"="yes">
-        <a href="">
-            <!--<img src="" alt="CRAN Downloads"/>-->
-            <img src="">
+    <div style="cursor: pointer;" onclick="window.open('https://docs.ropensci.org/pkgmatch/', '_blank')">
+        <a target="_blank" rel="noopener noreferrer" href="https://docs.ropensci.org/pkgmatch/" style="color:#262626; text-decoration: none;">
+            <div style="text-align: center;">
+                <h3>pkgmatch</h3>
+            </div>
         </a>
-        </option>
-        <option "yes"="yes">
-        <a href="https://github.com/ropensci/software-review/671">
-            <img src="https://badges.ropensci.org/671_status.svg"/>
+        <p style="text-align: center;">
+        <a href="https://github.com/ropensci/software-review/671" target="_blank" rel="noopener noreferrer">
+            <img src="https://badges.ropensci.org/671_status.svg" alt="rOpenSci package status"/>
         </a>
-        </option>
         </p>
-        <div class="card-section" align="center">
+        <div class="card-section" style="text-align: center;">
             <p>Find R Packages Matching Either Descriptions or Other R Packages</p>
             <p>Find R packages from &#x27;CRAN&#x27;, &#x27;rOpenSci&#x27;, or &#x27;Bioconductor&#x27;
 corpora. Packages can be matched to general text descriptions,
@@ -451,432 +412,347 @@ source repositories. The package is used to list the most
 similar packages for each new submission to the &#x27;rOpenSci&#x27;
 software peer-review program &lt;doi:10.5281/zenodo.18885936&gt;.</p>
         </div>
-    </a>
+    </div>
         </div>
     </div>
     </div>
     <div class="medium-6 large-4 cell">
     <div class="large-2 medium-3 cell" style="background-color:#ffffffaa">
         <div class="callout">
-    <a target="_blank" rel="noopener noreferrer"
-                       href="https://docs.ropensci.org/roreviewapi", style="color:#262626;">
-        <div align="center">
-            <h3>roreviewapi</h3>
-        </div>
-        <p align="center">
-        <option "no"="yes">
-        <a href="">
-            <!--<img src="" alt="CRAN Downloads"/>-->
-            <img src="">
+    <div style="cursor: pointer;" onclick="window.open('https://docs.ropensci.org/roreviewapi', '_blank')">
+        <a target="_blank" rel="noopener noreferrer" href="https://docs.ropensci.org/roreviewapi" style="color:#262626; text-decoration: none;">
+            <div style="text-align: center;">
+                <h3>roreviewapi</h3>
+            </div>
         </a>
-        </option>
+        <p style="text-align: center;">
         </p>
-        <div class="card-section" align="center">
+        <div class="card-section" style="text-align: center;">
             <p>Plumber API to report package structure and function</p>
             <p>Plumber API to report package structure and function.</p>
         </div>
-    </a>
+    </div>
         </div>
     </div>
     </div>
     <div class="medium-6 large-4 cell">
     <div class="large-2 medium-3 cell" style="background-color:#ffffffaa">
         <div class="callout">
-    <a target="_blank" rel="noopener noreferrer"
-                       href="https://github.com/mpadge/hotspotr", style="color:#262626;">
-        <div align="center">
-            <h3>hotspotr</h3>
-        </div>
-        <p align="center">
-        <option "no"="yes">
-        <a href="">
-            <!--<img src="" alt="CRAN Downloads"/>-->
-            <img src="">
+    <div style="cursor: pointer;" onclick="window.open('https://github.com/mpadge/hotspotr', '_blank')">
+        <a target="_blank" rel="noopener noreferrer" href="https://github.com/mpadge/hotspotr" style="color:#262626; text-decoration: none;">
+            <div style="text-align: center;">
+                <h3>hotspotr</h3>
+            </div>
         </a>
-        </option>
+        <p style="text-align: center;">
         </p>
-        <div class="card-section" align="center">
+        <div class="card-section" style="text-align: center;">
             <p>Compare Spatial Structure of Hotspots with Neutral Models</p>
             <p>Analyses whether the statistical properties of a spatial
 pattern of hotspots may be reproduced with a simple neutral
 model.</p>
         </div>
-    </a>
+    </div>
         </div>
     </div>
     </div>
     <div class="medium-6 large-4 cell">
     <div class="large-2 medium-3 cell" style="background-color:#ffffffaa">
         <div class="callout">
-    <a target="_blank" rel="noopener noreferrer"
-                       href="https://github.com/mpadge/paretoconv", style="color:#262626;">
-        <div align="center">
-            <h3>paretoconv</h3>
-        </div>
-        <p align="center">
-        <option "no"="yes">
-        <a href="">
-            <!--<img src="" alt="CRAN Downloads"/>-->
-            <img src="">
+    <div style="cursor: pointer;" onclick="window.open('https://github.com/mpadge/paretoconv', '_blank')">
+        <a target="_blank" rel="noopener noreferrer" href="https://github.com/mpadge/paretoconv" style="color:#262626; text-decoration: none;">
+            <div style="text-align: center;">
+                <h3>paretoconv</h3>
+            </div>
         </a>
-        </option>
+        <p style="text-align: center;">
         </p>
-        <div class="card-section" align="center">
+        <div class="card-section" style="text-align: center;">
             <p>Calculates the N-Fold Convolution of Two Pareto Distributions</p>
             <p>Calculates the n-fold convolution of two Pareto
 distributions using the techniques devised by Colin Ramsay.</p>
         </div>
-    </a>
+    </div>
         </div>
     </div>
     </div>
     <div class="medium-6 large-4 cell">
     <div class="large-2 medium-3 cell" style="background-color:#ffffffaa">
         <div class="callout">
-    <a target="_blank" rel="noopener noreferrer"
-                       href="https://docs.ropensci.org/pkgcheck/", style="color:#262626;">
-        <div align="center">
-            <h3>pkgcheck</h3>
-        </div>
-        <p align="center">
-        <option "no"="yes">
-        <a href="">
-            <!--<img src="" alt="CRAN Downloads"/>-->
-            <img src="">
+    <div style="cursor: pointer;" onclick="window.open('https://docs.ropensci.org/pkgcheck/', '_blank')">
+        <a target="_blank" rel="noopener noreferrer" href="https://docs.ropensci.org/pkgcheck/" style="color:#262626; text-decoration: none;">
+            <div style="text-align: center;">
+                <h3>pkgcheck</h3>
+            </div>
         </a>
-        </option>
+        <p style="text-align: center;">
         </p>
-        <div class="card-section" align="center">
+        <div class="card-section" style="text-align: center;">
             <p>rOpenSci Package Checks</p>
             <p>Check whether a package is ready for submission to
 rOpenSci&#x27;s peer review system.</p>
         </div>
-    </a>
+    </div>
         </div>
     </div>
     </div>
     <div class="medium-6 large-4 cell">
     <div class="large-2 medium-3 cell" style="background-color:#ffffffaa">
         <div class="callout">
-    <a target="_blank" rel="noopener noreferrer"
-                       href="https://docs.ropensci.org/srr/", style="color:#262626;">
-        <div align="center">
-            <h3>srr</h3>
-        </div>
-        <p align="center">
-        <option "no"="yes">
-        <a href="">
-            <!--<img src="" alt="CRAN Downloads"/>-->
-            <img src="">
+    <div style="cursor: pointer;" onclick="window.open('https://docs.ropensci.org/srr/', '_blank')">
+        <a target="_blank" rel="noopener noreferrer" href="https://docs.ropensci.org/srr/" style="color:#262626; text-decoration: none;">
+            <div style="text-align: center;">
+                <h3>srr</h3>
+            </div>
         </a>
-        </option>
+        <p style="text-align: center;">
         </p>
-        <div class="card-section" align="center">
+        <div class="card-section" style="text-align: center;">
             <p>&#x27;rOpenSci&#x27; Review Roclets</p>
             <p>Companion package to &#x27;rOpenSci&#x27; statistical software
 review project.</p>
         </div>
-    </a>
+    </div>
         </div>
     </div>
     </div>
     <div class="medium-6 large-4 cell">
     <div class="large-2 medium-3 cell" style="background-color:#ffffffaa">
         <div class="callout">
-    <a target="_blank" rel="noopener noreferrer"
-                       href="https://docs.ropensci.org/orgmetrics/", style="color:#262626;">
-        <div align="center">
-            <h3>orgmetrics</h3>
-        </div>
-        <p align="center">
-        <option "no"="yes">
-        <a href="">
-            <!--<img src="" alt="CRAN Downloads"/>-->
-            <img src="">
+    <div style="cursor: pointer;" onclick="window.open('https://docs.ropensci.org/orgmetrics/', '_blank')">
+        <a target="_blank" rel="noopener noreferrer" href="https://docs.ropensci.org/orgmetrics/" style="color:#262626; text-decoration: none;">
+            <div style="text-align: center;">
+                <h3>orgmetrics</h3>
+            </div>
         </a>
-        </option>
+        <p style="text-align: center;">
         </p>
-        <div class="card-section" align="center">
+        <div class="card-section" style="text-align: center;">
             <p>Metrics for Your GitHub Organization</p>
             <p>Metrics for your GitHub organization. Call one function to
 generate an interactive dashboard displaying the state of your
 organization.</p>
         </div>
-    </a>
+    </div>
         </div>
     </div>
     </div>
     <div class="medium-6 large-4 cell">
     <div class="large-2 medium-3 cell" style="background-color:#ffffffaa">
         <div class="callout">
-    <a target="_blank" rel="noopener noreferrer"
-                       href="https://docs.ropensci.org/repometrics/", style="color:#262626;">
-        <div align="center">
-            <h3>repometrics</h3>
-        </div>
-        <p align="center">
-        <option "no"="yes">
-        <a href="">
-            <!--<img src="" alt="CRAN Downloads"/>-->
-            <img src="">
+    <div style="cursor: pointer;" onclick="window.open('https://docs.ropensci.org/repometrics/', '_blank')">
+        <a target="_blank" rel="noopener noreferrer" href="https://docs.ropensci.org/repometrics/" style="color:#262626; text-decoration: none;">
+            <div style="text-align: center;">
+                <h3>repometrics</h3>
+            </div>
         </a>
-        </option>
+        <p style="text-align: center;">
         </p>
-        <div class="card-section" align="center">
+        <div class="card-section" style="text-align: center;">
             <p>Metrics for Your Code Repository</p>
             <p>Metrics for your code repository. Call one function to
 generate an interactive dashboard displaying the state of your
 code.</p>
         </div>
-    </a>
+    </div>
         </div>
     </div>
     </div>
     <div class="medium-6 large-4 cell">
     <div class="large-2 medium-3 cell" style="background-color:#ffffffaa">
         <div class="callout">
-    <a target="_blank" rel="noopener noreferrer"
-                       href="https://github.com/ropenscilabs/r2readthedocs", style="color:#262626;">
-        <div align="center">
-            <h3>r2readthedocs</h3>
-        </div>
-        <p align="center">
-        <option "no"="yes">
-        <a href="">
-            <!--<img src="" alt="CRAN Downloads"/>-->
-            <img src="">
+    <div style="cursor: pointer;" onclick="window.open('https://github.com/ropenscilabs/r2readthedocs', '_blank')">
+        <a target="_blank" rel="noopener noreferrer" href="https://github.com/ropenscilabs/r2readthedocs" style="color:#262626; text-decoration: none;">
+            <div style="text-align: center;">
+                <h3>r2readthedocs</h3>
+            </div>
         </a>
-        </option>
+        <p style="text-align: center;">
         </p>
-        <div class="card-section" align="center">
+        <div class="card-section" style="text-align: center;">
             <p>Convert R Package Documentation to a &#x27;readthedocs&#x27; Website</p>
             <p>Convert R package documentation to a &#x27;readthedocs&#x27;
 website.</p>
         </div>
-    </a>
+    </div>
         </div>
     </div>
     </div>
     <div class="medium-6 large-4 cell">
     <div class="large-2 medium-3 cell" style="background-color:#ffffffaa">
         <div class="callout">
-    <a target="_blank" rel="noopener noreferrer"
-                       href="https://docs.ropensci.org/autotest/", style="color:#262626;">
-        <div align="center">
-            <h3>autotest</h3>
-        </div>
-        <p align="center">
-        <option "no"="yes">
-        <a href="">
-            <!--<img src="" alt="CRAN Downloads"/>-->
-            <img src="">
+    <div style="cursor: pointer;" onclick="window.open('https://docs.ropensci.org/autotest/', '_blank')">
+        <a target="_blank" rel="noopener noreferrer" href="https://docs.ropensci.org/autotest/" style="color:#262626; text-decoration: none;">
+            <div style="text-align: center;">
+                <h3>autotest</h3>
+            </div>
         </a>
-        </option>
+        <p style="text-align: center;">
         </p>
-        <div class="card-section" align="center">
+        <div class="card-section" style="text-align: center;">
             <p>Automatic Package Testing</p>
             <p>Automatic testing of R packages via a simple YAML schema.</p>
         </div>
-    </a>
+    </div>
         </div>
     </div>
     </div>
     <div class="medium-6 large-4 cell">
     <div class="large-2 medium-3 cell" style="background-color:#ffffffaa">
         <div class="callout">
-    <a target="_blank" rel="noopener noreferrer"
-                       href="https://github.com/ropensci-review-tools/spaceout", style="color:#262626;">
-        <div align="center">
-            <h3>spaceout</h3>
-        </div>
-        <p align="center">
-        <option "no"="yes">
-        <a href="">
-            <!--<img src="" alt="CRAN Downloads"/>-->
-            <img src="">
+    <div style="cursor: pointer;" onclick="window.open('https://github.com/ropensci-review-tools/spaceout', '_blank')">
+        <a target="_blank" rel="noopener noreferrer" href="https://github.com/ropensci-review-tools/spaceout" style="color:#262626; text-decoration: none;">
+            <div style="text-align: center;">
+                <h3>spaceout</h3>
+            </div>
         </a>
-        </option>
+        <p style="text-align: center;">
         </p>
-        <div class="card-section" align="center">
+        <div class="card-section" style="text-align: center;">
             <p>Holds A More Spacious Styleguide</p>
             <p>Adds a space before parentheses &amp; co, on top of more
 common tidyverse-style guide conventions.</p>
         </div>
-    </a>
+    </div>
         </div>
     </div>
     </div>
     <div class="medium-6 large-4 cell">
     <div class="large-2 medium-3 cell" style="background-color:#ffffffaa">
         <div class="callout">
-    <a target="_blank" rel="noopener noreferrer"
-                       href="https://github.com/mpadge/spatialcluster", style="color:#262626;">
-        <div align="center">
-            <h3>spatialcluster</h3>
-        </div>
-        <p align="center">
-        <option "no"="yes">
-        <a href="">
-            <!--<img src="" alt="CRAN Downloads"/>-->
-            <img src="">
+    <div style="cursor: pointer;" onclick="window.open('https://github.com/mpadge/spatialcluster', '_blank')">
+        <a target="_blank" rel="noopener noreferrer" href="https://github.com/mpadge/spatialcluster" style="color:#262626; text-decoration: none;">
+            <div style="text-align: center;">
+                <h3>spatialcluster</h3>
+            </div>
         </a>
-        </option>
+        <p style="text-align: center;">
         </p>
-        <div class="card-section" align="center">
+        <div class="card-section" style="text-align: center;">
             <p>R port of redcap</p>
             <p>R port of redcap (Regionalization with dynamically
 constrained agglomerative clustering and partitioning).</p>
         </div>
-    </a>
+    </div>
         </div>
     </div>
     </div>
     <div class="medium-6 large-4 cell">
     <div class="large-2 medium-3 cell" style="background-color:#ffffffaa">
         <div class="callout">
-    <a target="_blank" rel="noopener noreferrer"
-                       href="https://mpadge.github.io/gender-conscious-routing/", style="color:#262626;">
-        <div align="center">
-            <h3>genderconsciousrouting</h3>
-        </div>
-        <p align="center">
-        <option "no"="yes">
-        <a href="">
-            <!--<img src="" alt="CRAN Downloads"/>-->
-            <img src="">
+    <div style="cursor: pointer;" onclick="window.open('https://mpadge.github.io/gender-conscious-routing/', '_blank')">
+        <a target="_blank" rel="noopener noreferrer" href="https://mpadge.github.io/gender-conscious-routing/" style="color:#262626; text-decoration: none;">
+            <div style="text-align: center;">
+                <h3>genderconsciousrouting</h3>
+            </div>
         </a>
-        </option>
+        <p style="text-align: center;">
         </p>
-        <div class="card-section" align="center">
+        <div class="card-section" style="text-align: center;">
             <p>Gender-Conscious Routing Along Streets Named After Women Rather
 Than Men</p>
             <p>Gender-conscious routing along streets named after women
 rather than men.</p>
         </div>
-    </a>
+    </div>
         </div>
     </div>
     </div>
     <div class="medium-6 large-4 cell">
     <div class="large-2 medium-3 cell" style="background-color:#ffffffaa">
         <div class="callout">
-    <a target="_blank" rel="noopener noreferrer"
-                       href="https://github.com/moveability/moveability", style="color:#262626;">
-        <div align="center">
-            <h3>moveability</h3>
-        </div>
-        <p align="center">
-        <option "no"="yes">
-        <a href="">
-            <!--<img src="" alt="CRAN Downloads"/>-->
-            <img src="">
+    <div style="cursor: pointer;" onclick="window.open('https://github.com/moveability/moveability', '_blank')">
+        <a target="_blank" rel="noopener noreferrer" href="https://github.com/moveability/moveability" style="color:#262626; text-decoration: none;">
+            <div style="text-align: center;">
+                <h3>moveability</h3>
+            </div>
         </a>
-        </option>
+        <p style="text-align: center;">
         </p>
-        <div class="card-section" align="center">
+        <div class="card-section" style="text-align: center;">
             <p>Moveability statistics for any specified city</p>
             <p>Moveability statistics for any specified city.</p>
         </div>
-    </a>
+    </div>
         </div>
     </div>
     </div>
     <div class="medium-6 large-4 cell">
     <div class="large-2 medium-3 cell" style="background-color:#ffffffaa">
         <div class="callout">
-    <a target="_blank" rel="noopener noreferrer"
-                       href="https://github.com/atfutures-labs/neighbourhoods", style="color:#262626;">
-        <div align="center">
-            <h3>neighbourhoods</h3>
-        </div>
-        <p align="center">
-        <option "no"="yes">
-        <a href="">
-            <!--<img src="" alt="CRAN Downloads"/>-->
-            <img src="">
+    <div style="cursor: pointer;" onclick="window.open('https://github.com/atfutures-labs/neighbourhoods', '_blank')">
+        <a target="_blank" rel="noopener noreferrer" href="https://github.com/atfutures-labs/neighbourhoods" style="color:#262626; text-decoration: none;">
+            <div style="text-align: center;">
+                <h3>neighbourhoods</h3>
+            </div>
         </a>
-        </option>
+        <p style="text-align: center;">
         </p>
-        <div class="card-section" align="center">
+        <div class="card-section" style="text-align: center;">
             <p>Efficient Identification of Neighbourhoods within Networks</p>
             <p>Algorithm for efficient identification of neighbourhoods
 within networks.</p>
         </div>
-    </a>
+    </div>
         </div>
     </div>
     </div>
     <div class="medium-6 large-4 cell">
     <div class="large-2 medium-3 cell" style="background-color:#ffffffaa">
         <div class="callout">
-    <a target="_blank" rel="noopener noreferrer"
-                       href="https://github.com/mpadge/libfuzzerr", style="color:#262626;">
-        <div align="center">
-            <h3>libfuzzerr</h3>
-        </div>
-        <p align="center">
-        <option "no"="yes">
-        <a href="">
-            <!--<img src="" alt="CRAN Downloads"/>-->
-            <img src="">
+    <div style="cursor: pointer;" onclick="window.open('https://github.com/mpadge/libfuzzerr', '_blank')">
+        <a target="_blank" rel="noopener noreferrer" href="https://github.com/mpadge/libfuzzerr" style="color:#262626; text-decoration: none;">
+            <div style="text-align: center;">
+                <h3>libfuzzerr</h3>
+            </div>
         </a>
-        </option>
+        <p style="text-align: center;">
         </p>
-        <div class="card-section" align="center">
+        <div class="card-section" style="text-align: center;">
             <p>Expements in using &#x27;libfuzzerr&#x27;</p>
             <p>Expements in using &#x27;libfuzzerr&#x27;.</p>
         </div>
-    </a>
+    </div>
         </div>
     </div>
     </div>
     <div class="medium-6 large-4 cell">
     <div class="large-2 medium-3 cell" style="background-color:#ffffffaa">
         <div class="callout">
-    <a target="_blank" rel="noopener noreferrer"
-                       href="https://github.com/atfutures/nyped", style="color:#262626;">
-        <div align="center">
-            <h3>nyped</h3>
-        </div>
-        <p align="center">
-        <option "no"="yes">
-        <a href="">
-            <!--<img src="" alt="CRAN Downloads"/>-->
-            <img src="">
+    <div style="cursor: pointer;" onclick="window.open('https://github.com/atfutures/nyped', '_blank')">
+        <a target="_blank" rel="noopener noreferrer" href="https://github.com/atfutures/nyped" style="color:#262626; text-decoration: none;">
+            <div style="text-align: center;">
+                <h3>nyped</h3>
+            </div>
         </a>
-        </option>
+        <p style="text-align: center;">
         </p>
-        <div class="card-section" align="center">
+        <div class="card-section" style="text-align: center;">
             <p>Model of pedestrian flows throughout New York City</p>
             <p>Model of pedestrian flows throughout New York City.</p>
         </div>
-    </a>
+    </div>
         </div>
     </div>
     </div>
     <div class="medium-6 large-4 cell">
     <div class="large-2 medium-3 cell" style="background-color:#ffffffaa">
         <div class="callout">
-    <a target="_blank" rel="noopener noreferrer"
-                       href="https://github.com/mpadge/hotspotr", style="color:#262626;">
-        <div align="center">
-            <h3>tnorm</h3>
-        </div>
-        <p align="center">
-        <option "no"="yes">
-        <a href="">
-            <!--<img src="" alt="CRAN Downloads"/>-->
-            <img src="">
+    <div style="cursor: pointer;" onclick="window.open('https://github.com/mpadge/hotspotr', '_blank')">
+        <a target="_blank" rel="noopener noreferrer" href="https://github.com/mpadge/hotspotr" style="color:#262626; text-decoration: none;">
+            <div style="text-align: center;">
+                <h3>tnorm</h3>
+            </div>
         </a>
-        </option>
+        <p style="text-align: center;">
         </p>
-        <div class="card-section" align="center">
+        <div class="card-section" style="text-align: center;">
             <p>Truncated Normal Distribution</p>
             <p>Truncated Normal Distributions can be generated by other
 packages such as msm, but these are slow. tnorm is a faster C++
 replacement.</p>
         </div>
-    </a>
+    </div>
         </div>
     </div>
     </div>
