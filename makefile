@@ -22,6 +22,9 @@ code: ## Update the 'code' section from current r-univ pkgs list
 build: ## Build the project
 	yarn build
 
+test: ## Run tests
+	yarn test
+
 deploy: publish
 
 publish: ## Deploy the project (same as 'deploy')
