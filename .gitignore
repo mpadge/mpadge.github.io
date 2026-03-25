@@ -7,8 +7,3 @@ dist
 .cache
 .idea
 *.un~
-
-# Generated files from blog examples
-src/pages/blog/myfile.R
-src/pages/blog/myresult.Rds
-src/pages/blog/src.cpp

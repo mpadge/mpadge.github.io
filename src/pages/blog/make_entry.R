@@ -156,7 +156,7 @@ blog_render <- function (fname, centre_images = TRUE) {
         paste ('Originally posted:', metadat$date_cre)
     )
     if (metadat$date_mod > metadat$date_cre) {
-        footer <- c (footer, paste ('Updated:', metadat$date_mod))
+        footer <- c (footer, paste ('<br>Updated:', metadat$date_mod))
     }
     footer <- c (footer, '</div>',
                  '{{/markdown}}',

@@ -1417,14 +1417,14 @@ Inserting this “type-selector” code in the above code permits a generic
 types, and then simply passed to a generic C++ template function.
 Presuming this C++ code to be in a file <code>src.cpp</code>, the whole
 thing then works like this:
+<code>{r writeSrcCpp, echo = FALSE} src_code &lt;- &#39; #include &lt;Rcpp.h&gt; template &lt;class T&gt; T mysquare (T &amp;x) {     for (size_t i = 0; i &lt; x.size (); i++)         x (i) = x (i) * x (i);     return x; } SEXP mysquare (SEXP &amp;x) {     switch (TYPEOF (x))     {         case INTSXP: {                          Rcpp::IntegerVector iv = Rcpp::as &lt;Rcpp::IntegerVector&gt; (x);                          return mysquare (iv);                      }         case REALSXP: {                          Rcpp::NumericVector nv = Rcpp::as &lt;Rcpp::NumericVector&gt; (x);                          return mysquare (nv);                      }         default: { Rcpp::stop (&quot;error&quot;);    }     }     return x; // this never happens } // [[Rcpp::export]] SEXP rcpp_mysquare (SEXP &amp;x) {     return mysquare (x); } &#39; writeLines (src_code, &quot;src.cpp&quot;)</code>
 <code>{r sourceCpp} Rcpp::sourceCpp (&quot;src.cpp&quot;) # source the file, placing the Rcpp::export-ed function in workspace x &lt;- 1:5 x &lt;- rcpp_mysquare (x) x class (x) storage.mode (x) &lt;- &quot;numeric&quot; x &lt;- rcpp_mysquare (x) x class (x)</code>
 An integer vector gives integer return values, and a numeric
 (floating-point) vector gives numeric return values. There you have it:
 templating through the magic of <code>SEXP</code>. Gratitude extended to
 Dirk Eddelbeuttel and David Cooley for advice and helpful pointers. ##
 The final code Just to make it clear, here’s the above code all placed
-in a single place:
-<code>{r writeSrcCpp, echo = FALSE} src_code &lt;- &#39; #include &lt;Rcpp.h&gt; template &lt;class T&gt; T mysquare (T &amp;x) {     for (size_t i = 0; i &lt; x.size (); i++)         x (i) = x (i) * x (i);     return x; } SEXP mysquare (SEXP &amp;x) {     switch (TYPEOF (x))     {         case INTSXP: {                          Rcpp::IntegerVector iv = Rcpp::as &lt;Rcpp::IntegerVector&gt; (x);                          return mysquare (iv);                      }         case REALSXP: {                          Rcpp::NumericVector nv = Rcpp::as &lt;Rcpp::NumericVector&gt; (x);                          return mysquare (nv);                      }         default: { Rcpp::stop (&quot;error&quot;);    }     }     return x; // this never happens } // [[Rcpp::export]] SEXP rcpp_mysquare (SEXP &amp;x) {     return mysquare (x); } &#39; writeLines (src_code, &quot;src.cpp&quot;)</code></p>
+in a single place:</p>
 <pre class="c++"><code>#include &lt;Rcpp.h&gt;
 template &lt;class T&gt;
 T mysquare (T &amp;x)

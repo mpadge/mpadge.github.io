@@ -215,27 +215,6 @@ above code permits a generic `SEXP`-in / `SEXP`-out function (our
 simply passed to a generic C++ template function. Presuming this C++ code to be
 in a file `src.cpp`, the whole thing then works like this:
 
-```{r sourceCpp}
-Rcpp::sourceCpp ("src.cpp") # source the file, placing the Rcpp::export-ed function in workspace
-x <- 1:5
-x <- rcpp_mysquare (x)
-x
-class (x)
-storage.mode (x) <- "numeric"
-x <- rcpp_mysquare (x)
-x
-class (x)
-```
-
-An integer vector gives integer return values, and a numeric (floating-point)
-vector gives numeric return values. There you have it: templating through the
-magic of `SEXP`. Gratitude extended to Dirk Eddelbeuttel and David Cooley for
-advice and helpful pointers.
-
-## The final code
-
-Just to make it clear, here's the above code all placed in a single place:
-
 ```{r writeSrcCpp, echo = FALSE}
 src_code <- '
 #include <Rcpp.h>
@@ -273,6 +252,27 @@ SEXP rcpp_mysquare (SEXP &x)
 '
 writeLines (src_code, "src.cpp")
 ```
+
+```{r sourceCpp}
+Rcpp::sourceCpp ("src.cpp") # source the file, placing the Rcpp::export-ed function in workspace
+x <- 1:5
+x <- rcpp_mysquare (x)
+x
+class (x)
+storage.mode (x) <- "numeric"
+x <- rcpp_mysquare (x)
+x
+class (x)
+```
+
+An integer vector gives integer return values, and a numeric (floating-point)
+vector gives numeric return values. There you have it: templating through the
+magic of `SEXP`. Gratitude extended to Dirk Eddelbeuttel and David Cooley for
+advice and helpful pointers.
+
+## The final code
+
+Just to make it clear, here's the above code all placed in a single place:
 
 ``` C++
 #include <Rcpp.h>
