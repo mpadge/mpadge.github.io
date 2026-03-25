@@ -1,6 +1,6 @@
 update_main <- function (n = 6, sort_date = "created")
 {
-    source ("make_entry_xml.R")
+    source ("../../../tools/blog/make_entry_xml.R")
 
     flist <- order_blog_files (sort_date = sort_date)
     fdat <- lapply (flist, function (i) get_one_blog_dat (i))

@@ -1,5 +1,5 @@
-source ("update_main.R")
-source ("make_entry_tables.R")
+source ("../../../tools/blog/update_main.R")
+source ("../../../tools/blog/make_entry_tables.R")
 
 blog_render <- function (fname, centre_images = TRUE) {
     rmarkdown::render(paste0 (fname, ".Rmd"),
