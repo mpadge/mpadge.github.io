@@ -1,0 +1,1532 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>mpadge blog</title>
+    <link>https://mpadge.github.io/blog</link>
+    <description>R, C++, spatial, open data</description>
+    <atom:link href="https://mpadge.github.io/feed.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>Debugging C++ code in R with a single command</title>
+      <link>https://mpadge.github.io/blog/blog012.html</link>
+      <guid>https://mpadge.github.io/blog/blog012.html</guid>
+      <description>There are several great references for how to debug C or C++ code in R, but descriptions of how to start a debugger are often not so informative. This post describes how to start a debugging session in R with a single command.</description>
+      <content:encoded><![CDATA[
+
+
+<div id="debugging-in-r-with-a-single-command" class="section level1">
+<h1>debugging in R with a single command</h1>
+<p>The art of debugging C++ code in R has been covered in many other
+places, notably including <a href="https://blog.davisvaughan.com/posts/2019-04-05-debug-r-package-with-cpp">this
+post by Davis Vaughan</a>, and <a href="https://tdhock.github.io/blog/2019/gdb/">this helpful
+introduction</a> by Toby Hocking, which provides a little more detail on
+how to get a debugger started. The detail on starting a debugger is
+nevertheless brief, and only added as an aside to the main point of the
+post. The aim of this post is to provide a detailed reference on how to
+start a source code debugger in R. This blog post will not describe
+details of common debugging environments, even if only because <a href="https://blog.davisvaughan.com/posts/2019-04-05-debug-r-package-with-cpp">Davis
+Vaughan has already done such a great job of that</a>. As he describes
+there, the two most common debugging environments used on Linux systems
+are <a href="https://www.sourceware.org/gdb/">“gdb” (the GNU Project
+Debugger)</a> and <a href="https://lldb.llvm.org/">“lldb”</a>. This
+whole post presumes code to be debugged is in an R package, and that all
+commands that follow are executed from within the root directory of that
+package. Debugging code from other packages requires modifying the
+following procedure to ensure that debug symbols are inserted within the
+source code of those other packages. But then it’ll generally be easier
+to do that from within the root directory of the package you want
+debugged anyway, so we’ll just presume that from here on anyway. ## How
+to start a source-code debugger in R Starting an R session causes a
+computer console to enter a dedicated computational environment where R
+commands can be typed, and will be appropriately interpreted and
+executed. Similarly, starting a source-code debugger generally results
+in entering a dedicated debugging environment where debugging commands
+can be entered in order to debug source code which has been pre-loaded
+into that environment. Starting a debugger from within an R environment
+generally consists of the two steps of: 1. Re-compiling source code to
+include debugging symbols; and then 2. Starting an R session in “debug”
+mode. Although people experienced with debugging might see these steps
+as trivial, they can easily prevent insurmountable challenges to anybody
+who has never used a source code debugger before. This post will
+describe a simple setup for “automating away” these two steps, and
+reducing them to a single command. ### Re-compiling source code to
+include debugging symbols While there are potentially a number of ways
+source code in an R package (or elsewhere) can be re-compiled with
+debugging symbols, perhaps the easiest is to insert the symbols within a
+<code>Makevars</code> file. These files are used to control compilation
+of source code. The following line in a <code>Makevars</code> file will
+insert debugging symbols when the code is re-compiled:</p>
+<pre><code>PKG_CPPFLAGS = -UDEBUG -g</code></pre>
+<p>The code can then be compiled with an R command like <a href="https://r-lib.github.io/pkgbuild/reference/compile_dll.html"><code>pkgbuild::compile_dll()</code></a>,
+and will then include the debug symbols needed in the debugging
+environment. I have a function in my <a href="https://github.com/mpadge/mpmisc">personal R package of general
+purpose functions</a>, called <a href="https://github.com/mpadge/mpmisc/blob/main/R/debug.R"><code>debug()</code></a>
+which automatically creates a Makevars file to insert these symbols (or
+modifies an existing file to add the symbols on to any existing
+compilation symbols). The following section describes how this function
+is used to implement a one-line command to start debugging. ### Starting
+an R session in debug mode As described above, R is effectively a
+self-contained computational environment within some other environment
+(such as a terminal environment, or RStudio). A debugger is also a
+self-contained computational environment. Unsurprisingly, this means
+that a debugging environment can not be started from within R, but must
+be started from the “host” environment from where you usually start R,
+such as a terminal, or a shell environment in RStudio. Debuggers also
+need to be started by evaluating some specified R expression, generally
+specified as an external R script. This means debugging some function,
+<code>f()</code>, requires creating a simple file, say “script.R”, which
+calls that function. The script must include any other lines necessary
+for R to know how to load the function, such as <code>library()</code>
+calls, or the full function definition. For example, if I wanted to
+debug a function within <a href="https://github.com/mpadge/mpmisc">my
+<code>mpmisc</code> package</a> - which would be silly, because it
+contains no source code, but the principle applies regardless - then I
+would create a “script.R” file with the following lines:
+<code>{r mpmisc-demo, eval = FALSE} library (mpmisc) check &lt;- increment_dev_version () # or whatever function I want debugged.</code>
+The debugger can then be started from that location by running:
+<code>{bash dbg-demo-call, eval = FALSE} R -d gdb -e &#39;source(&quot;script.R&quot;)&#39;</code>
+This command calls R, and must be run within a shell environment, not
+from within R! The <code>-d</code> flag tells R to run in debug mode,
+and requires specifying which debugger to use, such as “gdb” as in that
+example, or “lldb”, or any other available debugger. The <code>-e</code>
+flag specifies a command for R to evaluate while debugging. ### Putting
+it together in a single command My single-command solution is
+implemented via a shell alias, for which is use “debugr”, which just
+calls a shell script:
+<code>{bash debugr, eval = FALSE} alias debugr=&quot;bash /&lt;path&gt;/&lt;to&gt;/debug.bash&quot;</code>
+The shell script is in <a href="https://github.com/mpadge/dotfiles/blob/main/system/debug.bash">my
+<code>dotfiles</code> repo</a>, and contains these lines:
+<code>{bash debug.bash, eval = FALSE} #!/usr/bin/bash echo &quot;---------------------------------------------------&quot; echo &quot;         Debug an R script with gdb or lldb&quot; echo &quot;---------------------------------------------------&quot; read -p &quot;Enter name of script (empty = default &#39;script.R&#39;): &quot; SCRIPT Rscript -e &quot;mpmisc::debug (); pkgbuild::compile_dll()&quot; DEBUGGER=gdb if [ &quot;$SCRIPT&quot; == &quot;&quot; ]; then     R -d $DEBUGGER -e &quot;source(&#39;script.R&#39;)&quot; else     R -d $DEBUGGER -e &quot;source(&#39;$SCRIPT&#39;)&quot; fi</code>
+That script calls <code>mpmisc::debug()</code> to create or modify
+Makevars to include debug symbols, and then re-compiles the source
+object by calling <a href="https://r-lib.github.io/pkgbuild/reference/compile_dll.html"><code>pkgbuild::compile_dll()</code></a>.
+It also includes an interactive prompt to specify the script to be used
+for debugging, with a default of “script.R”. I can then debug any
+package by creating a debug script, and then simply calling
+<code>debugr</code> to drop me straight into a debugging environment. As
+said at the outset, this post is only intended to describe how to get
+that far. See the links given at the stop for what to do once you’re
+there.</p>
+</div>]]></content:encoded>
+      <pubDate>30 Aug 22</pubDate>
+    </item>
+    <item>
+      <title>Timeout on parallel jobs in R</title>
+      <link>https://mpadge.github.io/blog/blog011.html</link>
+      <guid>https://mpadge.github.io/blog/blog011.html</guid>
+      <description>Python's `multiprocessing` and `threading` libraries both have a timeout parameter for re-joining threads after they've finished. This provides an easy way to launch multi-threaded jobs while ensuing that no single thread exceeds a specified timeout. This post describes two ways to implement equivalent functionality in R.</description>
+      <content:encoded><![CDATA[
+
+
+<div id="timeout-on-parallel-jobs-in-r" class="section level1">
+<h1>Timeout on parallel jobs in R</h1>
+<p>Python’s <a href="https://docs.python.org/3/library/multiprocessing.html"><code>multiprocessing</code></a>
+and <a href="https://docs.python.org/3/library/threading.html"><code>threading</code></a>
+libraries both have a timeout parameter for re-joining threads after
+they’ve finished. This provides an easy way to launch multi-threaded
+jobs while ensuing that no single thread runs for longer than a
+specified timeout. This is very useful in implementing a standard
+“timeout on a function call” operation, as detailed in <a href="https://stackoverflow.com/questions/492519/timeout-on-a-function-call">this
+Stack Overflow question of that title</a> which offers a bewildering
+variety of approaches to that problem. Among the easiest of those is <a href="https://stackoverflow.com/a/14924210">the recommendation to rely
+on the <code>multiprocessing</code> libraries’s <code>join()</code>
+operation</a> which accepts a <code>timeout</code> parameter, <a href="https://docs.python.org/3/library/multiprocessing.html#multiprocessing.Process.join">as
+described in the library’s documentation</a>. There is also an
+equivalent parameter <a href="https://docs.python.org/3/library/threading.html#threading.Thread.join">for
+python’s other main parallelisation library, <code>threading</code></a>.
+A nice example of the usefulness of this <code>timeout</code> parameter
+in action is given in <a href="https://github.com/cokelaer/fitter">the
+<code>fitter</code> package</a> by <a href="https://github.com/cokelaer">@cokelaer</a> for fitting probability
+distributions to observed data. The main function fits a wide range of
+different distributions, and can even automagically select the best
+distribution according to specified criteria. This is done through
+fitting different distributions in parallel on different threads,
+generally greatly speeding up calculations. Distributional fitting is,
+however, often an iterative procedure, meaning the duration required to
+generate a fit within some specified tolerance can not be known in
+advance. Parallel threads by default must wait for all to terminate
+before individual results can be joined. To ensure distributional fits
+are generated within a reasonable duration, <a href="https://github.com/cokelaer/fitter/blob/cf222aab741492917bd3a2d1af821e0b5344907d/src/fitter/fitter.py#L429"><code>fitter</code>
+has a <code>_timed_run</code> function</a> to: &gt; spawn a thread and
+run the given function … and return the given default &gt; value if the
+timeout is exceeded. The bit of that function which controls the timeout
+consists of the following lines (with code for exception handling
+removed here):
+<code>{python, eval = FALSE} def _timed_run (self, func, args=()):     class InterruptableThread(threading.Thread):         def __init__(self):             threading.Thread.__init__(self)             self.result = default         def run(self):             self.result = func(args)     it = InterruptableThread()     it.start()     it.join(self.timeout)     return it.result</code>
+That represents a succinct way to run a multi-threaded job in which each
+thread obeys a specified timeout parameter. This post describes two
+approaches to implementing equivalent functionality in R. ## Timeout in
+R’s ‘parallel’ package R’s <a href="https://stat.ethz.ch/R-manual/R-devel/library/parallel/doc/parallel.pdf"><code>{parallel}</code>
+package</a> offers one way to implement a <code>timeout</code>
+parameter, via <a href="https://stat.ethz.ch/R-manual/R-devel/library/parallel/html/mcparallel.html">the
+<code>mccollect()</code> function</a>, which is (almost) equivalent to
+Python’s <code>.join()</code> operator. This can be illustrated with
+this arbitrarily slow function:
+<code>{r slow-fn, eval = FALSE} fn &lt;- function (x = 10L) {     vapply (seq (x), function (i) {                 Sys.sleep (0.2)                 runif (1)         }, numeric (1)) }</code>
+Calculating this in parallel is straightforward with the
+<code>mcparallel()</code> and <code>mccollect()</code> functions. This
+code generates 10 random inputs to <code>fn()</code> which will take
+random durations up to 20 * 0.2 = 4 seconds each.
+<code>{r parallel-src, eval = FALSE} set.seed (1) n &lt;- sample (1:20, size = 10, replace = TRUE) library (parallel) jobs &lt;- lapply (n, function (i) mcparallel (fn (i))) system.time (     res &lt;- mccollect (jobs) )</code>
+<br>
+<code>{r parallel-duration, echo = FALSE} c (user = 0.006, system = 0.000, elapsed = 3.615)</code>
+That took much less than the expected duration of,
+<code>{r dur-exp-src, eval = FALSE} sum (n) / 5</code> <br>
+<code>{r dur-exp, echo = FALSE} set.seed (1) n &lt;- sample (1:20, size = 10, replace = TRUE) sum (n) / 5</code>
+The <code>mccollect()</code> function has a <code>timeout</code>
+parameter “to check for job results”. Specifying that in the above
+function then gives the following, noting that the parameter
+<code>wait</code> also has to be passed with its non-default value of
+<code>FALSE</code> to activate <code>timeout</code>.
+<code>{r parallel-timeout-src, eval = FALSE} jobs &lt;- lapply (n, function (i) mcparallel (fn (i))) system.time (     res &lt;- mccollect (jobs, wait = FALSE, timeout = 2) )</code>
+<br>
+<code>{r parallel-timeout-duration, echo = FALSE} c (user = 0.000, system = 0.000, elapsed = 0.003)</code>
+That seems much too quick! What does the result look like?
+<code>{r parallel-timeout-res-src, eval = FALSE} res</code> <br>
+<code>{r parallel-timeout-res, echo = FALSE} list (`24053` = 0.6096623)</code>
+It seems that <code>mccollect()</code> has only returned one result. The
+reason can be seen by tracing the implementation of the
+<code>timeout</code> parameter from <a href="https://github.com/wch/r-source/blob/5ab79ec84040684c74dc9c901fde944fff6e8375/src/library/parallel/R/unix/mcparallel.R#L48-L65">the
+<code>mccollect()</code> function</a> through to <a href="https://github.com/wch/r-source/blob/5ab79ec84040684c74dc9c901fde944fff6e8375/src/library/parallel/R/unix/mcfork.R#L55-L67">the
+<code>selectChildren()</code> function</a> into <a href="https://github.com/wch/r-source/blob/5ab79ec84040684c74dc9c901fde944fff6e8375/src/library/parallel/src/fork.c#L808">the
+C function, <code>select_children()</code></a>, and finally to the <a href="https://github.com/wch/r-source/blob/5ab79ec84040684c74dc9c901fde944fff6e8375/src/library/parallel/src/fork.c#L905-L922">lines
+which implement the waiting procedure</a>. These lines show that the
+function returns as soon as it collects a value from any of the “child”
+processes (via <a href="https://github.com/wch/r-source/blob/5ab79ec84040684c74dc9c901fde944fff6e8375/src/include/R_ext/eventloop.h#L86-L88">the
+<code>R_ext/R_SelectEx()</code> function</a> which is <a href="https://github.com/wch/r-source/blob/5ab79ec84040684c74dc9c901fde944fff6e8375/src/unix/sys-std.c#L115">implemented
+here</a>). So setting <code>timeout</code> in <code>mccollect()</code>
+will then return results as soon as the first result has been been
+generated. That of course means that the remaining jobs continue to be
+processed, and can be returned by subsequent calls to
+<code>mccollect()</code>. Two consecutive calls will then naturally
+return the first two results to be processed. To check this, we need to
+note that the <code>jobs</code> list contains process ID
+(<code>pid</code>) values, one of which is detached by the first call to
+<code>mccollect()</code>, and so has to be removed from the
+<code>jobs</code> list.
+<code>{r timeout2A-src, eval = FALSE} jobs &lt;- lapply (n, function (i) mcparallel (fn (i))) pids &lt;- vapply (jobs, function (i) i$pid, integer (1)) system.time (     res1 &lt;- mccollect (jobs, wait = FALSE, timeout = 2) )</code>
+<br>
+<code>{r timeout2A, echo = FALSE} c (user = 0.000, system = 0.000, elapsed = 0.007)</code>
+<br>
+<code>{r timeout2B-src, eval = FALSE} jobs &lt;- jobs [which (!pids %in% names (res1))] system.time (     res2 &lt;- mccollect (jobs, wait = FALSE, timeout = 2) )</code>
+<code>{r timeout2B, echo = FALSE} c (user = 0.000, system = 0.000, elapsed = 0.003)</code>
+The two returned values are then,
+<code>{r timeout2-results-src, eval = FALSE} res1; res2</code> <br>
+<code>{r timeout2-results, echo = FALSE} list (`26140` = 0.05318079,       `26146` = 0.7513229)</code>
+So R has a <code>timeout</code> parameter on parallel jobs, but it
+doesn’t work like the equivalent Python parameters, and arguably doesn’t
+work how one might expect. That code exploration is nevertheless
+sufficient to understand how a pythonic version could be implemented:
+<code>{r pytimeout-src, eval = FALSE} par_timeout &lt;- function (f, n, timeout) {     jobs &lt;- lapply (n, function (i) mcparallel (f (i)))     Sys.sleep (timeout)     mccollect (jobs, wait = FALSE) } par_timeout (fn, n, 2)</code>
+<br>
+<code>{r pytimeout, echo = FALSE} list (`26913` = 0.008293313,       `26908` = c (0.2473093, 0.9442306),       `26907` = 0.8032608,       `26906` = c (0.1900972, 0.8134690, 0.2745623, 0.3148808, 0.3954601, 0.7415558, 0.9394560),       `26905` = c (0.7566425, 0.2494607, 0.4848817, 0.3469343))</code>
+And we get five out of the expected 10 results returning within our
+specified <code>timeout</code> of 2 seconds. We can estimate from the
+generated values of <code>n</code> which ones should have returned,
+given that <code>fn</code> takes 0.2s per unit of the input,
+<code>x</code>, repeating the initial code used to generate those
+values.
+<code>{r should_work_src-rpt, eval = FALSE} set.seed (1) n &lt;- sample (1:20, size = 10, replace = TRUE) timeout &lt;- 2 # in seconds data.frame (n = n, should_work = n / 5 &lt;= 2)</code>
+<br>
+<code>{r should_work-rpt, echo = FALSE} set.seed (1) n &lt;- sample (1:20, size = 10, replace = TRUE) timeout &lt;- 2 # in seconds data.frame (n = n, should_work = n / 5 &lt;= 2)</code>
+And we might have expected 6 values to have returned, of which we
+actually got only 5, but perhaps the value of <code>n = 10</code>
+extended just beyond the timeout? We’ll nevertheless compare this result
+with an alternative approach below. But first, there are some notable
+drawbacks to the approach illustrated here: 1. The <a href="https://stat.ethz.ch/R-manual/R-devel/library/parallel/html/mcparallel.html">documentation
+for the <code>mcparallel()</code> and <code>mccollect()</code>
+functions</a> state at the very first line, “These functions are based
+on forking and so are not available on Windows.” While that might not
+concern those who develop packages on other systems, it will greatly
+reduce the use of any code implementing parallel timeouts in this way.
+2. There are many “wrapper” packages around R’s core
+<code>{parallel}</code> functionality, notably including the <a href="https://futureverse.org">“futureverse” family of packages</a>, the
+primary aim of which is to make parallelisation in R simpler, through
+enabling any calls to be simply wrapped in parallelisation functions
+like <code>future()</code>. These packages offer no direct way of
+controlling the <code>timeout</code> parameter of
+<code>mccollect()</code>, or any equivalent functionality. The next
+section explores a different approach that is operating-system
+independent. ## Timeout via ‘callr’ The <a href="https://callr.r-lib.org">callr package by Gábor Csárdi and Winston
+Chang</a> is designed for ‘calling R from R’ – that is, for, &gt;
+performing computation in a separate R process, without affecting the
+current &gt; R process The package offers two main modes of calling
+processes: <a href="https://callr.r-lib.org/reference/r.html">as
+blocking, foreground processes via <code>callr::r()</code></a>, or <a href="https://callr.r-lib.org/reference/r_bg.html">as non-blocking,
+background processes via <code>callr::r_bg()</code></a>. The foreground
+<code>r()</code> function has an explicit <code>timeout</code>
+parameter, which returns a <code>system_command_timeout_error</code> if
+the specified timeout (in seconds) is exceeded. The following code calls
+the <code>fn()</code> function from above to demonstrate this
+functionality, wrapping the main call in <code>tryCatch()</code> to
+process the timeout errors:
+<code>{r long-fn-fg} timeout_fn &lt;- function (x = 1L, timeout = 2) {     tryCatch (         callr::r (fn, args = list (x = x), timeout = timeout),         error = function (e) NA         ) }</code>
+Passing a value of <code>x</code> larger than around 5 should then
+timeout at 1 second, as this code demonstrates:
+<code>{r slow-fn1-timing-src, eval = FALSE} system.time (     x &lt;- timeout_fn (x = 10, timeout = 1)     )</code>
+<br>
+<code>{r slow-fn1-timing, echo = FALSE} c (user = 0.152, system = 0.035, elapsed = 0.959)</code>
+The returned value is then:
+<code>{r slow-fn1-x-src, eval = FALSE} x</code> <br>
+<code>{r slow-fn1-x, echo = FALSE} NA</code> That function timed out as
+expected. Compare what happens when the <code>timeout</code> is extended
+well beyond that limit:
+<code>{r slow-fn2-src, eval = FALSE} timeout_fn (x = 5, timeout = 10)</code>
+<br> <code>{r slow-fn2-out, echo = FALSE} runif (5)</code> The
+<code>timeout</code> parameter of <code>callr::r()</code> can thus be
+used to directly implement a timeout parameter. The following
+sub-section demonstrates how to extend this to parallel jobs. ##
+Parallel timeout via ‘callr’ To illustrate a different approach than the
+previous <code>mcparallel()</code> function, the following code uses the
+<a href="https://stat.ethz.ch/R-manual/R-devel/library/parallel/html/mclapply.html"><code>mclapply</code>
+function of the <code>parallel</code> package</a>, which unfortunately
+also does not work on Windows, but suffices to demonstrate the
+principles.
+<code>{r parallel, eval = FALSE} set.seed (1) n &lt;- sample (1:20, size = 10, replace = TRUE) nc &lt;- parallel::detectCores () - 1L system.time (     res &lt;- parallel::mclapply (mc.cores = nc, n, function (i)                                timeout_fn (x = i, timeout = 2))     )</code>
+<br>
+<code>{r sys.time, echo = FALSE} c (user = 1.754, system = 0.544, elapsed = 3.008)</code>
+<br> <code>{r parallel-out, eval = FALSE} print (res)</code> <br>
+<code>{r parallel-out-for-real, echo = FALSE} res &lt;- as.list (rep (NA, 10L)) res [[1]] &lt;- c (0.20134728, 0.09508085, 0.75240848, 0.30041337) res [[2]] &lt;- c (0.5837042, 0.6133771, 0.3121486, 0.2943205, 0.4455983, 0.5102744, 0.8867751) res [[3]] &lt;- 0.9381157 res [[4]] &lt;- c (0.9201705, 0.9656466) res [[9]] &lt;- 0.7515151 print (res)</code>
+And that returned 5 out of the 10 jobs, as for the previous example
+using <code>mccollect()</code>. (The actual values differ due to random
+number generators being seeded differently in the two lots of jobs.)
+This approach, of using <code>callr</code> to control function
+<code>timeout</code> parameters, enables parallel jobs to be implemented
+on all operating systems through replacing the <code>mclapply()</code>
+or <code>mcparallel()</code> functions with, for example, <a href="https://cran.r-project.org/web/packages/snow/index.html">equivalent
+functions from the <code>{snow}</code> package</a>. These
+<code>{snow}</code> functions (such as the <code>parApply</code> family
+of functions) also do not implement a <code>timeout</code> parameter,
+and so this <code>{callr}</code> approach offers one practical way to do
+so via those packages. ### Timeout parameters and ‘future’ packages
+Processes triggered by the <code>{callr}</code> package do not generally
+play nicely with the core <code>{future}</code> package, which was
+likely one motivation for Henrik Bengtsson to develop <a href="https://future.callr.futureverse.org/">the
+<code>{future.callr}</code> package</a> which explicitly uses
+<code>{callr}</code> to run each process. The processes are nevertheless
+triggered as <code>callr::r_bg()</code> processes which do not have a
+<code>timeout</code> parameter. While it is possible to directly
+implement a timeout parameter of <code>r_bg</code> processes by
+monitoring until timeout and then using the <code>kill</code> method,
+the <code>future.callr</code> package does not directly expose the
+<code>r_bg</code> processes necessary to enable this. There is therefore
+currently no safe way to implement a timeout parameter along the lines
+demonstrated here within any <code>futureverse</code> packages.</p>
+</div>]]></content:encoded>
+      <pubDate>14 Jan 22</pubDate>
+    </item>
+    <item>
+      <title>GitHub notifications from the terminal</title>
+      <link>https://mpadge.github.io/blog/blog010.html</link>
+      <guid>https://mpadge.github.io/blog/blog010.html</guid>
+      <description>I work almost entirely from the terminal, and regret the few remaining tasks which still require me to venture elsewhere, such as a web browser. Until recently, one of my main reasons for constantly switching to my browser was to check my GitHub notifications. This post describes how I view my notifications within the terminal, including an option to mark them as "read" on GitHub.</description>
+      <content:encoded><![CDATA[
+
+
+<div id="github-notifications-from-the-terminal" class="section level1">
+<h1>GitHub notifications from the terminal</h1>
+<p>I work almost entirely from the terminal, and regret the few
+remaining tasks which still require me to venture elsewhere, such as a
+web browser. Until recently, one of my main reasons for constantly
+switching to my browser was to check my GitHub notifications. This post
+describes how I view my notifications within the terminal, including an
+option to mark them as “read” on GitHub. The internal functionality is
+encoded in R, although the functions are mere <code>http::GET</code>
+calls which could easily be translated into any other language. The code
+described and linked to here uses GitHub’s REST (version 3) API, because
+notifications are not yet (at the time of writing) able to be accessed
+via the more recent GraphQL (verion 4) API. The <a href="https://cli.github.com">GitHub Command-Line-Interface (cli)</a>
+relies exclusively on the GraphQL API, and so also can’t (yet) be used
+to access notifications. Once notifications are accessible via GraphQL
+queries, the <code>cli</code> will be able to be used directly to do
+everything described here and much more. Until that time, the following
+provides one way to access GitHub notifications from the terminal. ##
+The script Like almost everything I do, I associate this with an alias,
+in this case <code>gn</code> for, of course, GitHub Notifications. The
+alias calls the following very simple <code>bash</code> script:
+<code>{bash, eval = FALSE} #!/usr/bin/bash if [ &quot;$1&quot; == &quot;&quot; ]; then     Rscript -e &quot;mpmisc::gh_notifications ()&quot; elif [ &quot;$1&quot; == &quot;done&quot; ]; then     Rscript -e &quot;mpmisc::mark_gh_notifications_as_read()&quot; elif [[ &quot;$1&quot; =~ ^[0-9]+$ ]]; then     Rscript -e &quot;mpmisc::open_gh_notification ($1)&quot; else     echo &quot;gn only accepts &#39;done&#39; or a single number&quot;     exit 1 fi</code>
+That shows the three options currently implemented: 1. <code>gn</code>
+to view notifications; 2. <code>gn done</code> to mark all notifications
+as read; and 3. <code>gn &lt;number&gt;</code> to open the nominated
+notification in GitHub All of these options call functions from an <a href="https://github.com/mpadge/mpmisc">R package I use to hold my
+miscellaneous functions, <code>mpmisc</code></a>. ## The
+<code>gh_notifications</code> functions All of these functions are
+contained within <a href="https://github.com/mpadge/mpmisc/blob/master/R/github-notifications.R">a
+single file of that package</a>, itself containing less than 200 lines
+of code. The main <code>gh_notifications()</code> function is a simple
+<a href="https://docs.github.com/en/rest/reference/activity#notifications"><code>GET</code>
+call to the API endpoint</a>. The request requires authentication with a
+GitHub API token, and returns notifications for the user associated with
+the token. The request returns a wealth of JSON data <a href="https://docs.github.com/en/rest/reference/activity#list-notifications-for-the-authenticated-user">described
+in the API docs (under “Response”)</a>, from which I extract a few
+essential details including: 1. Title of the notification; 2.
+Repository, in <code>org/repo</code> format; 3. Issue Number (where
+present; not for notifications from such things as commit messages); 4.
+Notification URL; 5. Time at which notification updated/issued; and 6.
+Time at which notification or issue was last read. These notifications
+are then cached for immediate recall by other functions. Finally the
+notifications are printed to screen with a separate function which
+formats output using <a href="https://en.wikipedia.org/wiki/ANSI_escape_code#SGR_(Select_Graphic_Rendition)_parameters">ANSII
+escape codes</a>. The result then looks something like this: → <span style="color:red">org1/repo2 #3</span>:<span style="color:green"> title
+one</span><br> → <span style="color:red">org4/repo5 #6</span>:<span style="color:green"> title two</span> Typing <code>gn 1</code> will then
+open the first notification in my default web browser. The notifications
+for <a href="https://github.com/mpadge/mpmisc/blob/master/R/github-notifications.R#L102-L133">the
+<code>open_gh_notification()</code> function</a> are loaded from the
+cached version, so opening is effectively instantaeous. Finally, the
+REST API offers <a href="https://docs.github.com/en/rest/reference/activity#mark-notifications-as-read">one
+additional function to mark all notifications as read by issuing a
+<code>PUT</code> command to the same API endpoint</a>. <a href="https://github.com/mpadge/mpmisc/blob/c4fbbeb32b9a6e9ef9a10c58643fe9ea18afb470/R/github-notifications.R#L141-L151">The
+<code>mark_gh_notifications_as_read()</code> function</a> does exactly
+that, and is aliased in the above shell script to
+<code>gn done</code>.</p>
+</div>]]></content:encoded>
+      <pubDate>27 Oct 21</pubDate>
+    </item>
+    <item>
+      <title>The allcontributors package</title>
+      <link>https://mpadge.github.io/blog/blog009.html</link>
+      <guid>https://mpadge.github.io/blog/blog009.html</guid>
+      <description>An alternative implementation in R of the original 'allcontributors.org' to acknowledge all contributors in your 'README' (or elsewhere). The original is intended to help acknowledge all contributions including those beyond the contents of an actual repository, such as community or other or less-tangible organisational contributions. This version only acknowledges tangible contributions to a repository, but automates that task to a single function call, in the hope that such simplicity will spur greater usage.</description>
+      <content:encoded><![CDATA[
+
+
+<div id="the-allcontributors-package" class="section level1">
+<h1>The
+<a href="https://github.com/ropenscilabs/allcontributors">allcontributors</a>
+package</h1>
+<p>The <a href="https://github.com/ropenscilabs/allcontributors"><code>allcontributors</code>
+package</a> is an alternative implementation in R of the original <a href="https://allcontributors.org/"><code>all-contributors</code></a> to
+acknowledge all contributors in your ‘README’ (or elsewhere). The
+original is intended to help acknowledge <em>all</em> contributions
+including those beyond the contents of an actual repository, such as
+community or other or less-tangible organisational contributions. This
+version only acknowledges tangible contributions to a repository, but
+automates that task to a single function call, in the hope that such
+simplicity will spur greater usage. In short: This package can’t do
+everything the original does, but it makes what it does much easier. ##
+Why then? The original <a href="https://allcontributors.org/"><code>all-contributors</code></a> is
+primarily a bot which responds to commit messages such as
+<code>add @user for &lt;contribution&gt;</code>, where
+<code>&lt;contribution&gt;</code> is one of the <a href="https://allcontributors.org/docs/en/emoji-key">recognized
+types</a>. As said above, the relative advantage of that original system
+lies primarily in the diversity of contribution types able to be
+acknowledged, with each type for a given user appearing as a
+corresponding <a href="https://allcontributors.org/docs/en/emoji-key">emoji</a> below
+their github avatar as listed on the README. In comparison, this R
+package: 1. Works automatically, by calling
+<code>add_contributors()</code> at any time to add or update contributor
+acknowledgements. 2. Works locally without any bot integration 3. Can
+add contributors to any file, not just the main README 4. Offers a
+variety of formats for listing contributors: (i) divided into sections
+by types of contributions, or as a single section (ii) presented as full
+grids (like <a href="https://github.com/all-contributors/all-contributors/blob/master/README.md#contributors-">the
+original</a>), numbered lists of github user names only, or single text
+strings of comma-separated names. ## Usage The primary function of the
+package, <a href="https://ropenscilabs.github.io/allcontributors/reference/add_contributors.html"><code>add_contributors()</code></a>,
+adds a table of all contributors by default to the main
+<code>README.md</code> file (and <code>README.Rmd</code> if that
+exists). Tables or lists can be added to other files by specifying the
+<code>files</code> argument of that function. The appearance of the
+contributors table is determined by several parameters in that function,
+including: 1. <code>type</code> For the type of contributions to include
+(code, contributors who open issues, contributors who discuss issues).
+2. <code>num_sections</code> For whether to present contributors in 1,
+2, or 3 distinct sections, dependent upon which <code>type</code>s of
+contributions are to be acknowledged. 3. <code>format</code> Determining
+whether contributors are presented in a grid with associated avatars of
+each contributor, as in <a href="https://github.com/all-contributors/all-contributors/blob/master/README.md#contributors-">the
+original</a>, an enumerated list of github user names only, or a single
+text string of comma-separated names. Contribution data are obtained by
+querying the github API, for which a local key should be set as an
+environmental variable containing the name <code>&quot;GITHUB&quot;</code> (either
+via <code>Sys.setenv()</code>, or as an equivalent entry in a file
+<code>~/.Renviron</code>). If the main <code>README</code> file(s)
+contains a markdown section entitled <code>&quot;Contributors&quot;</code>, the <a href="https://ropenscilabs.github.io/allcontributors/reference/add_contributors.html"><code>add_contributors()</code></a>
+function will add a table of contributors there, otherwise it will be
+appended to the end of the document(s). If you wish your contributors
+table to be somewhere other than at the end of the <code>README</code>
+file(s), start by adding an empty <code>&quot;## Contributors</code> section
+to the file(s) and the function will insert the table at that point. Any
+time you wish to update your contributor list, simply re-run the
+<code>add_contributors()</code> function. There’s even an
+<code>open_issue</code> parameter that will automatically open or update
+a github issue on your repository so that contributors will be pinged
+about them being added to your list of contributors. The data used to
+construct the contributions table can also be extracted without writing
+to the <code>README</code> file(s) with the function <a href="https://ropenscilabs.github.io/allcontributors/reference/get_contributors.html"><code>get_contributors()</code></a>:
+<code>{r get_contributors} library (allcontributors) get_contributors(org = &quot;ropenscilabs&quot;, repo = &quot;allcontributors&quot;)</code>
+## Updating Contributor Acknowledgements “Contributors” sections of
+files will be automatically updated to reflect any new contributions by
+simply calling <a href="https://ropenscilabs.github.io/allcontributors/reference/add_contributors.html"><code>add_contributors()</code></a>.
+If your contributors have not changed then your lists of
+acknowledgements will not be changed. The <a href="https://ropenscilabs.github.io/allcontributors/reference/add_contributors.html"><code>add_contributors()</code></a>
+function has an additional parameter which may be set to
+<code>force_update = TRUE</code> to force lists to be updated regardless
+of whether contributions have changed. This can be used to change the
+formats of acknowledgements at any time. If anything goes wrong, the
+easiest way to replace a contributions section is to simply delete the
+old ones from all files, and call <a href="https://ropenscilabs.github.io/allcontributors/reference/add_contributors.html"><code>add_contributors()</code></a>
+again. ## More Information The package has a <a href="https://ropenscilabs.github.io/allcontributors/articles/allcontributors.html">single
+vignette</a> which visually demonstrates the various formats in which an
+“allcontributors” section can be presented.</p>
+</div>]]></content:encoded>
+      <pubDate>10 Mar 21</pubDate>
+    </item>
+    <item>
+      <title>The troubles with getting help files in R</title>
+      <link>https://mpadge.github.io/blog/blog008.html</link>
+      <guid>https://mpadge.github.io/blog/blog008.html</guid>
+      <description>A primer on ways to extract the actual content of help files. Because one day people will hopefully start text-mining these things, and show us all sorts of things we never knew about the people who make R packages. When they do, this entry will hopefully help.</description>
+      <content:encoded><![CDATA[
+
+
+<div id="the-troubles-with-getting-help-files-in-r" class="section level1">
+<h1>The troubles with getting help files in R</h1>
+<div id="databases-of-help-files-in-r" class="section level2">
+<h2>Databases of help files in R</h2>
+<p>R has a very well structured system for documenting and accessing
+help for packages. In most systems, attempts to access help files will
+result in a dedicated window opening up with nicely formatted help
+content for a requested topic. This blog entry addresses the issue of
+how to extract the underlying text of those files, for example in order
+to do any kind of text mining-type analyses. The content of the help
+files can be extracted for a given package via the <a href="https://stat.ethz.ch/R-manual/R-devel/library/tools/html/Rdutils.html"><code>tools::Rd_db()</code>
+function</a>. That function works like this:
+<code>{r rd_db} x &lt;- tools::Rd_db (package = &quot;tools&quot;) class (x) length (x) class (x [[1]])</code>
+Say I want to extract the help file shown on the <code>html</code> page
+for <code>Rd_db</code> linked to immediately above. Then I just have to
+find the entry in the <code>Rd_db</code> data. As a first try, I simply
+examine the names of the files in the database, and try to match (via
+<code>grep</code>) the one called something like <code>rd_db</code>:
+<code>{r rd_db2} grep (&quot;rd_db&quot;, names (x), ignore.case = TRUE)</code>
+The database contains no file called <code>Rd_db</code> or the like. If
+you click again on the above link to the html entry you’ll notice that
+the page itself is called, <code>Rdutils</code>. Where does that name
+come from? Help files for R packages are contained within a
+<code>/man</code> directory of the package source. When a package is
+installed, all files within that directory (which end with a suffix of
+<code>.Rd</code>) are compiled into a binary database object which can
+then be read by the <a href="https://stat.ethz.ch/R-manual/R-devel/library/tools/html/Rdutils.html"><code>Rd_db()</code>
+function</a>. So the databases of help files for any given package
+contain one entry for each file in the original <code>/man</code>
+directory of the package source, with the names of those original files
+transferred over to the names of the corresponding entries in the
+<code>Rd_db</code> file. These databases in installed packages are no
+longer contained within directories named <code>/man</code>, rather they
+are compiled within a directory called <code>/help</code>. The contents
+of this directory can be readily examined with code like the following:
+<code>{r} loc &lt;- file.path (R.home (), &quot;library&quot;, &quot;tools&quot;, &quot;help&quot;) list.files (loc)</code>
+And the two <code>tools.rdb</code> and <code>toools.rdx</code> files
+represent the binary database of help files for the <code>tools</code>
+package. An alternative way to access the databases contained within
+that directory is via the <a href="https://stat.ethz.ch/R-manual/R-devel/library/base/html/lazyload.html"><code>lazyLoad()</code>
+function</a>. (And clicking on that website indicates another
+inconsistency that the function is called <code>lazyLoad</code>, yet the
+page is named <code>lazyload</code>, for reasons which should become
+clear as you read on.)
+<code>{r} package &lt;- &quot;tools&quot; loc &lt;- file.path (R.home (), &quot;library&quot;, package, &quot;help&quot;, package) e &lt;- new.env () chk &lt;- lazyLoad (loc, envir = e) head (names (x)) head (ls (envir = e))</code>
+Those last two commands reveal that the entries in the object returned
+from <code>Rd_db()</code> are the original and full file names within
+the <code>/man</code> directory of the package source, while the
+corresponding names when <code>lazyLoad</code>ed have the suffix,
+<code>.Rd</code>, removed. The following line nevertheless confirms that
+the two methods yield identical results:
+<code>{r rd-vs-lazyload} all (ls (envir = e) == gsub (&quot;\\.Rd$&quot;, &quot;&quot;, names (tools::Rd_db (package = &quot;tools&quot;))))</code>
+### An alternative approach An alternative approach to extract some of
+the information contained in the <code>Rd_db</code> object uses a trick
+that the <a href="https://stat.ethz.ch/R-manual/R-devel/library/utils/html/help.html"><code>utils::help</code>
+function</a> can be called without specifying a <code>topic</code>.
+Additionally specifying <code>help_type = &quot;text&quot;</code> will then
+retrieve a few components of the database in text form.
+<code>{r} package &lt;- &quot;tools&quot; h &lt;- utils::help (package = eval (substitute (package)), help_type = &quot;text&quot;) class (h)</code>
+At that point, attempting to <code>print</code> the object
+<code>h</code> will simply open the help file the usual way, rather than
+giving you the textual content. Noting the output of the following,
+<code>{r} str (h)</code> leads to the obvious next step of examining
+<code>{r hinfo-fakey, eval = FALSE, echo = TRUE} h$info</code>
+<code>{r hinfo, eval = TRUE, echo = FALSE} hcut &lt;- lapply (h$info, function (i) i [1:10]) hcut</code>
+And the second component of the <code>h$info</code> object has the names
+and descriptions of each entry in the help database. ## Getting help
+content for a particular function If we want to analyse the textual
+content of help files, then we obviously need a way to extract that
+content for any given function. Armed with the basics described above,
+let’s say we want to extract the content of the help file for the <a href="https://stat.ethz.ch/R-manual/R-devel/library/tools/html/Rdutils.html"><code>tools::Rd_db()</code>
+function</a>. If you click on that link, you’ll notice that the page
+which describes only the function <code>Rd_db()</code> is actually
+called, <code>Rdutils</code>. So how could we automatically extract the
+content of the help file for <code>Rd_db()</code>, or indeed any
+particular function, when the help files describing our desired function
+may have entirely arbitrary names? The full entry for
+<code>Rdutils</code> looks like this:
+<code>{r} x [[&quot;Rdutils.Rd&quot;]]</code> And you’ll notice at the top that
+<code>Rd_db</code> is given as an <code>alias</code>. The structure of
+these files is described in a section of the <a href="https://cran.r-project.org/doc/manuals/R-exts.html#Documenting-functions">“Writing
+R Extensions” manual</a>, which explains that these files contain a
+“name”, a “title”, and optional “alias” entries. Comparing the above
+text to the formatted <code>html</code> help page for <a href="https://stat.ethz.ch/R-manual/R-devel/library/tools/html/Rdutils.html"><code>Rd_db()</code></a>
+reveals what those three fields are: 1. The “name” field defines the
+name of a single help topic, which may or may not be the name of the
+original <code>/man</code> directory file in the package source (more on
+this below). 2. The “title” field specifies an arbitrary description
+which will appear at the top of the help file. 3. The “alias” fields
+specify topics which will be linked to the given help file. So to locate
+the help entry for a nominated function, we need to find match that
+function with an <code>alias</code> entry for some help file which we do
+not necessarily know the name of. As long as we know the package in
+which we are searching, we can then simply extract all
+<code>alias</code> entries for every single help file. The example in
+the help file for the <a href="https://stat.ethz.ch/R-manual/R-devel/library/tools/html/Rdutils.html"><code>Rd_db()</code></a>
+function use a non-exported function called
+<code>.Rd_get_metadata()</code> (non-exported meaning that function can
+only be called via the triple-colon method as
+<code>tools:::.Rd_get_metadata()</code>, and also meaning that there
+will be no help entry for this function). This function can be used to
+extract all “alias” fields for every help topic:
+<code>{r get-aliases} aliases &lt;- lapply (x, function (i) tools:::.Rd_get_metadata (i, &quot;alias&quot;))</code>
+Code like the following can then be used to find the file which
+describes the <code>Rd_db</code> function.
+<code>{r find-aliases} myfn &lt;- &quot;Rd_db&quot; aliases [which (vapply (aliases, function (i) myfn %in% i, logical (1)))]</code>
+And that gives us the name of the help file describing our desired
+function. ## Getting help content for a particular function (#2) An
+alternative approach to finding the names of help files associated with
+a specified function is to use the <a href="https://stat.ethz.ch/R-manual/R-devel/library/utils/html/help.search.html"><code>help.search()</code>
+function</a> which returns the following kinds of results:
+<code>{r hs-fakey, echo = TRUE, eval = FALSE} hs &lt;- help.search (pattern = &quot;Rd_db&quot;, package = &quot;tools&quot;) str (hs) hs$matches</code>
+<code>{r hs, echo = FALSE, eval = TRUE} hs &lt;- help.search (pattern = &quot;Rd_db&quot;, package = &quot;tools&quot;) hs$lib.loc [1] &lt;- &quot;/&lt;path&gt;/&lt;to&gt;/&lt;my&gt;/&lt;lib&gt;/&lt;loc&gt;&quot; str (hs)</code>
+<code>{r hs-matches} hs$matches</code> We can see there that the final,
+<code>&quot;Entry&quot;</code> column includes <code>Rd_db</code>, and specifies
+that it is an <code>&quot;alias&quot;</code>. The name of the associated file is
+also given there as “Rdutils”. ## Names of help topics; names of help
+files I indicated above that the “name” field of an “Rd” file &gt;
+defines the name of a single help topic, which may or may not be the
+name of the original <code>/man</code> directory file in the package
+source An example of a help topic which differs from the name of the
+underlying file arises courtesy of the <code>&quot;formatC&quot;</code> function
+from the “base” package.
+<code>{r} hs &lt;- help.search (pattern = &quot;formatC&quot;, package = &quot;base&quot;) hs$matches [hs$matches$Topic == &quot;formatC&quot;, ]</code>
+So “formatC” is the official name of one of the help topics within the
+“base” package, and therefore should also be the name of the entry
+within its help database. And yet look what happens when the help
+database is accessed via <code>lazyLoad</code>:
+<code>{r} package &lt;- &quot;base&quot; loc &lt;- file.path (R.home (), &quot;library&quot;, package, &quot;help&quot;, package) e &lt;- new.env () chk &lt;- lazyLoad (loc, envir = e) fns &lt;- ls (envir = e) fns [grep (&quot;formatC&quot;, fns, ignore.case = TRUE)]</code>
+And the entry in the database is called <code>formatc</code> (lower-case
+“c”), yet the content of that entry declares a “name” of
+<code>formatC</code> (upper-case “C”). So the “Name” entry in the object
+returned by the <a href="https://stat.ethz.ch/R-manual/R-devel/library/utils/html/help.search.html"><code>help.search()</code>
+function</a> is not actually the name of the <code>/man</code> file in
+the source package, rather it is the “name” entry specified in the
+actual “Rd” file. The contents of the corresponding file can
+nevertheless be extracted via <code>Rd_db</code> like this:
+<code>{r} x &lt;- tools::Rd_db (package = &quot;base&quot;) aliases &lt;- lapply (x, function (i) tools:::.Rd_get_metadata (i, &quot;alias&quot;)) myfn &lt;- &quot;formatC&quot; i &lt;- which (vapply (aliases, function (i) myfn %in% i, logical (1))) # number of entry in db names (x) [i] tools:::.Rd_get_metadata (x [[i]], &quot;name&quot;)</code>
+This indicates that the <code>help.search()</code> function ought not be
+used to extract the contents of help files, but that the
+<code>Rd_db()</code> function can be used as illustrated above, with no
+need to worry about the names of the underlying files. A final function
+might look something like the following:
+<code>{r} help_text &lt;- function (fn_name, package) {     x &lt;- tools::Rd_db (package = package)     aliases &lt;- lapply (x, function (i) tools:::.Rd_get_metadata (i, &quot;alias&quot;))     i &lt;- which (vapply (aliases, function (i) fn_name %in% i, logical (1)))     return (x [[i]]) }</code>
+### Conclusion Hopefully this has been helpful to anyone wanting to
+extract the actual contents of R help files. While the objects extracted
+by the methods described above can generally be treated as
+<code>character</code> objects, and any form of parsing applied, they
+are also objects with a defined class of <code>Rd</code>. There are
+several methods already available to parse such objects, in particular
+those described in the help file for the <a href="https://stat.ethz.ch/R-manual/R-patched/library/tools/html/parse_Rd.html"><code>parse_Rd()</code>
+function</a> which claims at the outset that, &gt; This function parses
+‘Rd’ files according to the specification given in <a href="https://developer.r-project.org/parseRd.pdf">https://developer.r-project.org/parseRd.pdf</a>
+The document referred to there goes in to extensive detail about methods
+for parsing these objects.</p>
+</div>
+</div>]]></content:encoded>
+      <pubDate>29 Sep 20</pubDate>
+    </item>
+    <item>
+      <title>Using RcppParallel to aggregate to a vector</title>
+      <link>https://mpadge.github.io/blog/blog007.html</link>
+      <guid>https://mpadge.github.io/blog/blog007.html</guid>
+      <description>This article was recently published in the Rcpp Gallery, and demonstrates using the RcppParallel package to aggregate to an output vector. It extends directly from previous demonstrations of single-valued aggregation, through providing necessary details to enable aggregation to a vector, or by extension, to any arbitrary form.</description>
+      <content:encoded><![CDATA[
+
+
+<div id="using-rcppparallel-to-aggregate-to-a-vector" class="section level1">
+<h1>Using RcppParallel to aggregate to a vector</h1>
+<p>This article was <a href="https://gallery.rcpp.org/articles/parallel-aggregate-to-vector/">recently
+published in the Rcpp Gallery</a>, and demonstrates using the <a href="https://rcppcore.github.com/RcppParallel">RcppParallel</a> package
+to aggregate to an output vector. It extends directly from previous
+demonstrations of <a href="https://gallery.rcpp.org/articles/parallel-vector-sum">single-valued
+aggregation</a>, through providing necessary details to enable
+aggregation to a vector, or by extension, to any arbitrary form. ### The
+General Problem Many tasks require aggregation to a vector result, and
+many such tasks can be made more efficient by performing such
+aggregation in parallel. The general problem is that the vector in which
+results are to be aggregated has to be shared among the parallel
+threads. This is a <code>parallelReduce</code> task - we need to split
+the singular task into effectively independent, parallel tasks, perform
+our aggregation operation on each of those tasks, yielding as many
+instances of our aggregate result vector as there are parallel tasks,
+and then finally join all of those resultant vectors from the parallel
+tasks into our desired singular result vector. The general structure of
+the code demonstrated here extends from the previous Gallery article on
+<a href="https://gallery.rcpp.org/articles/parallel-vector-sum">parallel
+vector sums</a>, through extending to summation to a vector result,
+along with the passing of additional variables to the parallel worker.
+The following code demonstrates aggregation to a vector result that
+holds the row sums of a matrix, noting at the output that is not
+intended to represent efficient code, rather it is written to explicitly
+emphasise the principles of using <code>RcppParallel</code> to aggregate
+over a vector result. ### The parallelReduce Worker The following code
+defines our parallel worker, in which the input is presumed for
+demonstration purposes to be a matrix stored as a single vector, and so
+has of total length <code>nrow * ncol</code>. The demonstration includes
+a few notable features: 1. The main <code>input</code> simply provides
+an integer index into the rows of the matrix, with the parallel job
+splitting the task among elements of that index. This explicit
+specification of an index vector is not necessary, but serves here to
+clarify what the worker is actually doing. An alternative would be for
+<code>input</code> to be <code>the_matrix</code>, and subsequently call
+the parallel worker only over <code>[0 ... nrow]</code> of that vector
+which has a total length of <code>nrow * ncol</code>. 2. We are passing
+two additional variables specifying <code>nrow</code> and
+<code>ncol</code>. Although one of these could be inferred at run time,
+we pass them simply to demonstrate how this is done. Note in particular
+the form in the second constructor, called for each <code>Split</code>
+job, which accepts as input the variables as defined by the main
+constructor, and so all variable definitions are of the form,
+<code>nrow(oneJob.nrow)</code>. The initial constructor also has input
+variables explicitly defined with <code>_in</code> suffices, to clarify
+exactly how such variable passing works. 3. No initial values for the
+<code>output</code> are passed to the constructors. Rather,
+<code>output</code> must be resized to the desired size by each of those
+constructors, and so each repeats the line
+<code>output.resize(nrow, 0.0)</code>, which also initialises the
+values. (This is more readily done using a <code>std::vector</code> than
+an <code>Rcpp</code> vector, with final conversion to an
+<code>Rcpp</code> vector result achieved through a simple
+<code>Rcpp::wrap</code> call.)
+<code>{r, engine=&#39;Rcpp&#39;, eval = FALSE} #include &lt;Rcpp.h&gt; // [[Rcpp::depends(RcppParallel)]] #include &lt;RcppParallel.h&gt; using namespace Rcpp; using namespace RcppParallel; struct OneJob : public Worker {     RVector&lt;int&gt; input;     const NumericVector the_matrix;     const size_t nrow;     const size_t ncol;     std::vector&lt;double&gt; output;     // Constructor 1: The main constructor     OneJob (             const IntegerVector input_in,             const NumericVector the_matrix_in,             const size_t nrow_in,             const size_t ncol_in) :         input(input_in), the_matrix(the_matrix_in),         nrow(nrow_in), ncol(ncol_in), output()     {         output.resize(nrow, 0.0);     }     // Constructor 2: Called for each split job     OneJob (             const OneJob &amp;oneJob,             Split) :         input(oneJob.input), the_matrix(oneJob.the_matrix),         nrow(oneJob.nrow), ncol(oneJob.ncol), output()     {         output.resize(nrow, 0.0);     }     // Parallel function operator     void operator() (std::size_t begin, std::size_t end)     {         for (size_t i = begin; i &lt; end; i++)         {             // Very inefficient yet explicit way to calculate row sums:             for (size_t j = 0; j &lt; ncol; j++) {                 // static_cast becuase (i,j,nrow) are size_t, aka unsigned long,                 // but Rcpp vectors require `R_xlen_t`, aka long.                 output[i] += the_matrix[static_cast&lt;R_xlen_t&gt;(i + j * nrow)];             }         }     } // end parallel function operator     void join (const OneJob &amp;rhs)     {         for (size_t i = 0; i &lt; nrow; i++) {             output[i] += rhs.output[i];         }     } };</code>
+The worker can then be called via <code>parallelReduce</code> with the
+following code, in which <code>static_cast</code>s are necessary because
+<code>.size()</code> applied to <code>Rcpp</code> objects returns an
+<code>R_xlen_t</code> or <code>long</code> value, but we need to pass
+<code>unsigned long</code> or <code>size_t</code> values to the worker
+to use as indices into standard C++ vectors. The <code>output</code> of
+<code>oneJob</code> is a <code>std::vector&lt;double&gt;</code>, which
+is converted to an <code>Rcpp::NumericVector</code> through a simple
+call to <code>Rcpp::wrap</code>.
+<code>{r, engine=&#39;Rcpp&#39;, eval = FALSE} // [[Rcpp::export]] NumericVector vector_aggregator (IntegerVector index, NumericVector x) {     const size_t nrow = static_cast &lt;size_t&gt; (index.size ());     const size_t ncol = static_cast &lt;size_t&gt; (x.size ()) / nrow;     OneJob oneJob (index, x, nrow, ncol);     parallelReduce (0, nrow, oneJob);     return wrap (oneJob.output); }</code>
+<code>{r, engine=&#39;Rcpp&#39;, echo = FALSE} #include &lt;Rcpp.h&gt; // [[Rcpp::depends(RcppParallel)]] #include &lt;RcppParallel.h&gt; using namespace Rcpp; using namespace RcppParallel; struct OneJob : public Worker {     RVector&lt;int&gt; input;     const NumericVector the_matrix;     const size_t nrow;     const size_t ncol;     std::vector&lt;double&gt; output;     // Constructor 1: The main constructor     OneJob (             const IntegerVector input_in,             const NumericVector the_matrix_in,             const size_t nrow_in,             const size_t ncol_in) :         input(input_in), the_matrix(the_matrix_in),         nrow(nrow_in), ncol(ncol_in), output()     {         output.resize(nrow, 0.0);     }     // Constructor 2: Called for each split job     OneJob (             const OneJob &amp;oneJob,             Split) :         input(oneJob.input), the_matrix(oneJob.the_matrix),         nrow(oneJob.nrow), ncol(oneJob.ncol), output()     {         output.resize(nrow, 0.0);     }     // Parallel function operator     void operator() (std::size_t begin, std::size_t end)     {         for (size_t i = begin; i &lt; end; i++)         {             // Very inefficient yet explicit way to calculate row sums:             for (size_t j = 0; j &lt; ncol; j++) {                 // static_cast becuase (i,j,nrow) are size_t, aka unsigned long,                 // but Rcpp vectors require `R_xlen_t`, aka long.                 output[i] += the_matrix[static_cast&lt;R_xlen_t&gt;(i + j * nrow)];             }         }     } // end parallel function operator     void join (const OneJob &amp;rhs)     {         for (size_t i = 0; i &lt; nrow; i++) {             output[i] += rhs.output[i];         }     } }; // [[Rcpp::export]] NumericVector vector_aggregator (IntegerVector index, NumericVector x) {     const size_t nrow = static_cast &lt;size_t&gt; (index.size ());     const size_t ncol = static_cast &lt;size_t&gt; (x.size ()) / nrow;     OneJob oneJob (index, x, nrow, ncol);     parallelReduce (0, nrow, oneJob);     return wrap (oneJob.output); }</code>
+### Demonstration Finally, the following code demonstrates that this
+parallel worker correctly returns the row sums of the input matrix.
+<code>{r} # allocate a vector nrow &lt;- 1e5 ncol &lt;- 10 x &lt;- runif (nrow * ncol) # input matrix res &lt;- vector_aggregator (seq(nrow), x) # confirm that this equals rowsums of the matrix: xmat &lt;- matrix(x, ncol = ncol) identical(res, rowSums(xmat))</code>
+You can learn more about using RcppParallel at <a href="https://rcppcore.github.com/RcppParallel">https://rcppcore.github.com/RcppParallel</a>.</p>
+</div>]]></content:encoded>
+      <pubDate>07 Nov 19</pubDate>
+    </item>
+    <item>
+      <title>Github 2FA, git push, and password entry</title>
+      <link>https://mpadge.github.io/blog/blog006.html</link>
+      <guid>https://mpadge.github.io/blog/blog006.html</guid>
+      <description>Activating github two-factor authentication (2FA) offers an indubitable security boost, with one notable side effect--https authentication requires entering a Personal Access Token instead of password. This entry explains how I reconfigured my git push commands with 2FA to be able to enter my password once again, instead of a random 32-character token.</description>
+      <content:encoded><![CDATA[
+
+
+<div id="github-2fa-git-push-and-password-entry" class="section level1">
+<h1>Github 2FA, git push, and password entry</h1>
+<p>Activating github two-factor authentication (2FA) offers an
+indubitable security boost, with one notable side effect:
+<code>https</code> authentication requires entering a Personal Access
+Token instead of password, as very clearly explained in the official
+<a target="_blank" rel="noopener noreferrer" href="https://help.github.com/en/github/authenticating-to-github/accessing-github-using-two-factor-authentication#authenticating-on-the-command-line-using-https">
+github documentation </a>, which states: &gt; The command line prompt
+won’t specify that you should enter your personal access token when it
+asks for your password. So everything <em>looks</em> like it stays the
+same, except now I have to enter a random 32-character long Personal
+Access Token (PAT), instead of my former, sensibly memorable, and
+readily typeable password. But I liked things the old way! This blog
+entry describes the process I went through to effectively restore the
+previous behaviour of the git prompt prior to me switching on 2FA on
+github, enabling me to type a password for <code>git push</code>,
+instead of the un-typeable PAT. ## Why enter a password each time? Many
+– maybe most? – people are likely content with SSH authentication, which
+avoids any of these issues, and simply allows your <code>git push</code>
+commands to be identified through connecting your local <code>ssh</code>
+agent with github to do the authentication. <code>git push</code> then
+just works. My problem with this is twofold: 1. <em>i like typing in
+both my github name, and my password</em>, especially because i have
+long learnt to appreciate the brief cognitive disconnect this gives me,
+one which not infrequently leads to me realising that, no, i really do
+not want to push that commit. The necessity of me manually entering my
+name and password for each push provides an extra level of security
+against me inadvertently pushing breaking or otherwise silly commits. I
+like that. 2. The immediacy of SSH pushes disturbs me somewhat. Yes, my
+local machine is absolutely authenticated, but this means that anybody
+who happens to get their maws on my machine can push whatever they want
+anytime. Although this is wildly unlikely to ever happen, the mere
+notion that it could nevertheless disturbs me. I like having to type my
+name and password. It is impossible for me to type my name and PAT. For
+a brief moment after having switched on 2FA on github, i feared that i
+was going to have to constantly copy-paste my PAT for every commit. I
+didn’t wanna do that, so i did the following … but first a brief
+digression into my SSL habits. ## OpenSSL encryption I use
+<a target="_blank" rel="noopener noreferrer" href="https://www.openssl.org/">
+OpenSSL </a> a lot. I encrypt any and all sensitive information, and use
+a host of local scripts and bash aliases to do so. I wasn’t going to
+leave my github PAT just lying around on my machine, so it naturally
+gets encrypted too, simply by storing it as a single line in a text
+file, and typing:
+<code>{bash, eval = FALSE} openssl des3 -salt -md sha256 -pbkdf2 -in gitpat.txt -out gitpat</code>
+That command prompts me to enter and repeat a password. See the
+<a target="_blank" rel="noopener noreferrer" href="https://www.openssl.org/">
+OpenSSL </a> manual for what all those flags mean; or just believe me
+that they ensure that it’s really encrypted. Delete
+<code>gitpat.txt</code> — and don’t forget any extra files like
+<code>.gitpat.txt.un~</code> on linux, or whatever traces might be left
+lying around on other operating systems — and your PAT is secure.
+Decrypting pretty much just reverses the above:
+<code>{bash, eval = FALSE} openssl des3 -salt -md sha256 -pbkdf2 -d -in gitpat -out gitpat.txt</code>
+Then i’ve got my token in <code>gitpat.txt</code>, which i can …
+copy-and-paste each time i need to <code>git push</code>? No way! And so
+… on to my solution. ## github 2FA via https with password entry, and
+not an untypeable token My solution involved two main tricks: 1.
+Replacing my pushes in the form <code>git push origin master</code>,
+where <code>origin</code> can be identified via
+<code>git remote -v</code> as something like
+<code>https://github.com/mpadge/&lt;repo&gt;</code>, and which
+necessitates entering <code>&quot;mpadge&quot;</code> and my PAT, with
+<code>git push    https://mpadge:&lt;PAT&gt;@github.com/mpadge/&lt;repo&gt;</code>,
+where the PAT is passed directly to github, circumventing the need to
+enter it manually, so that the push is directly sent and accepted; and
+2. Writing a script requiring my (github or other) password, and using
+that to automatically decrypt my PAT, convert it to an environmental
+variable, and using that to convert <code>git push</code> into the form
+above with my PAT embedded. The second of those steps looks, in the form
+of a <code>bash</code> script, like this:
+<code>{bash, eval = FALSE} read -s -p &quot;Enter Password: &quot; PASS echo &quot;&quot; openssl des3 -salt -md sha256 -pbkdf2 -d -in /&lt;my&gt;/&lt;secret&gt;/&lt;path&gt;/gitpat -out gitpat.txt -pass pass:$PASS PASS=&quot;&quot; PAT=$(&lt;aaagit.txt) rm aaagit.txt</code>
+I then have a variable, <code>&quot;PAT&quot;</code>, containing my PAT, with no
+other traces of its value, or of my password, left on my machine. Note
+that the password required is whatever was entered for the initial
+encryption of <code>gitpat.txt</code> to <code>gitpat</code>. The first
+step then inserts this PAT, and my github user name, into a
+<code>git push</code> command via the following <code>bash</code> code,
+presuming here that my github user name is stored in a variable named
+<code>UNAME</code>:
+<code>{bash, eval = FALSE} REMOTE=$(git remote -v | head -n 1) # REMOTE=&quot;origin https://github.com/&lt;org&gt;/&lt;repo&gt; (fetch)&quot; (or similar) # function to cut string by delimiter cut () {     local s=$REMOTE$1     while [[ $s ]]; do         array+=( &quot;${s%%&quot;$1&quot;*}&quot; );         s=${s#*&quot;$1&quot;};     done; } # cut terminal bit &quot;(fetch)&quot; from remote, returning first part as array[0]: array=(); cut &quot; &quot; REMOTE=&quot;${array[0]}&quot; # cut remainder around &quot;github.com&quot;, returning 2nd part as &quot;/&lt;org&gt;/&lt;repo&gt;&quot; array=(); cut &quot;github.com&quot; # convert REMOTE given above to # REMOTE=&quot;https://&lt;UNAME&gt;:&lt;PAT&gt;@github.com/&lt;org&gt;/&lt;repo&gt;&quot; (or similar) printf -v REMOTE &quot;https://%s:%s@github.com%s&quot; &quot;$UNAME&quot; &quot;$PAT&quot; &quot;${array[1]}&quot; echo $REMOTE</code>
+That script gives our desired output:
+<code>{r bash1, echo = FALSE} f &lt;- file (&quot;junk.bash&quot;) txt &lt;- c (&#39;#!/bin/bash&#39;,           &#39;UNAME=&quot;mpadge&quot;&#39;,           &#39;PAT=&quot;&lt;mypat&gt;&quot;&#39;,           &#39;REMOTE=$(git remote -v | head -n 1)&#39;,           &#39;cut () {&#39;,           &#39;    local s=$REMOTE$1&#39;,           &#39;    while [[ $s ]]; do&#39;,           &#39;        array+=( &quot;${s%%&quot;$1&quot;*}&quot; );&#39;,           &#39;        s=${s#*&quot;$1&quot;};&#39;,           &#39;    done;&#39;,           &#39;}&#39;,           &#39;array=();&#39;,           &#39;cut &quot; &quot;&#39;,           &#39;REMOTE=&quot;${array[0]}&quot;&#39;,           &#39;array=();&#39;,           &#39;cut &quot;github.com&quot;&#39;,           &#39;printf -v REMOTE &quot;https://%s:%s@github.com%s&quot; &quot;$UNAME&quot; &quot;$PAT&quot; &quot;${array[1]}&quot;&#39;,           &#39;echo $REMOTE $BRANCH&#39;) writeLines (txt, f) close (f) #system (&quot;bash junk.bash&quot;, intern = TRUE) &quot;https://mpadge:&lt;mypat&gt;@github.com/&lt;org&gt;/&lt;repo&gt;&quot; invisible (file.remove (&quot;junk.bash&quot;))</code>
+## Final script My solution then just involved combining those two
+tricks within a single script, designed to <em>almost</em> but not quite
+reflect the old <code>git push</code> prompt and behaviour i was trying
+to emulate, and including an additional option to call the script with
+an extra parameter specifying the branch to push to, or otherwise
+defaulting to the current branch:
+<code>{bash, eval = FALSE} #!/bin/bash read -p &quot;User name for &#39;https://github.com&#39;: &quot; UNAME read -s -p &quot;Password (NOT PAT) for &#39;https://$UNAME@github.com&#39; &quot; PASS echo &quot;&quot; openssl des3 -salt -md sha256 -pbkdf2 -d -in /&lt;my&gt;/&lt;secret&gt;/&lt;path&gt;/gitpat -out gitpat.txt -pass pass:$PASS PASS=&quot;&quot; PAT=$(&lt;aaagit.txt) rm aaagit.txt # get git branch: if [ &quot;$1&quot; == &quot;&quot; ]; then     BRANCH=$(git branch --show-current) else     BRANCH=$1 fi REMOTE=$(git remote -v | head -n 1) # REMOTE=&quot;origin https://github.com/&lt;org&gt;/&lt;repo&gt; (fetch)&quot; (or similar) # function to cut string by delimiter cut () {     local s=$REMOTE$1     while [[ $s ]]; do         array+=( &quot;${s%%&quot;$1&quot;*}&quot; );         s=${s#*&quot;$1&quot;};     done; } # cut terminal bit &quot;(fetch)&quot; from remote, returning first part as array[0]: array=(); cut &quot; &quot; REMOTE=&quot;${array[0]}&quot; # cut remainder around &quot;github.com&quot;, returning 2nd part as &quot;/&lt;org&gt;/&lt;repo&gt;&quot; array=(); cut &quot;github.com&quot; # convert REMOTE given above to # REMOTE=&quot;https://&lt;UNAME&gt;:&lt;PAT&gt;@github.com/&lt;org&gt;/&lt;repo&gt;&quot; (or similar) printf -v REMOTE &quot;https://%s:%s@github.com%s&quot; &quot;$UNAME&quot; &quot;$PAT&quot; &quot;${array[1]}&quot; git push $REMOTE $BRANCH # clear variables: PAT=&quot;&quot; REMOTE=&quot;&quot;</code>
+I then only needed to set an alias to that script in
+<code>~/.bash_aliases</code>, along the lines of
+<code>{bash, eval = FALSE} alias gitpush=&quot;bash /&lt;my&gt;/&lt;secret&gt;/&lt;path&gt;/gitpatscript.bash&quot;</code>
+and then replace my former <code>git push</code> with
+<code>gitpush</code>, to enable me to once again type in my password
+like i always liked to do.</p>
+</div>]]></content:encoded>
+      <pubDate>25 Oct 19</pubDate>
+    </item>
+    <item>
+      <title>What are matrices in R?</title>
+      <link>https://mpadge.github.io/blog/blog005.html</link>
+      <guid>https://mpadge.github.io/blog/blog005.html</guid>
+      <description>If everything in R is a vector, then what is a matrix? This entry will demonstrate that even matrices are vectors, and that processing of matrices can in certain circumstances be considerably more efficient if they are treated as simple vectors.</description>
+      <content:encoded><![CDATA[
+
+
+<div id="what-are-matrices-in-r" class="section level1">
+<h1>What are matrices in R?</h1>
+<p>“R is a shockingly dreadful language for an exceptionally useful data
+analysis environment” (
+<a target="_blank" rel="noopener noreferrer" href="http://arrgh.tim-smith.us/">
+Tim Smith &amp; Kevin Ushey </a>). One of the strangest manifestations
+of claims like these is that,
+<a target="_blank" rel="noopener noreferrer" href="https://www.noamross.net/blog/2014/4/16/vectorization-in-r--why.html">
+“Everything in R is a vector” </a>. The simple question that then arises
+is, What is a matrix? One commonly cited current repository of things R
+is Hadley Wickham’s book,
+<a target="_blank" rel="noopener noreferrer" href="http://adv-r.had.co.nz">
+Advanced R </a>, which has a section on
+<a target="_blank" rel="noopener noreferrer" href="http://adv-r.had.co.nz/Data-structures.html">
+Data Structures </a> which simply states that a matrix is the two
+dimensional equivalent of a vector, and that,
+<a target="_blank" rel="noopener noreferrer" href="http://adv-r.had.co.nz/Data-structures.html#matrices-and-arrays">
+“Adding a <code>dim</code> attribute to an atomic vector allows it to
+behave like a multi-dimensional array.” </a> The chapter linked to above
+goes on to say that, “Vectors are not the only 1-dimensional data
+structure. You can have matrices with a single row or single column, or
+arrays with a single dimension. They may print similarly, but will
+behave differently. The differences aren’t too important.” This blog
+entry will attempt to illustrate the kind of circumstances under which
+differences between vectors and matrices actually become quite important
+indeed. ## An initial illustration Vectors do differ from matrices, as
+the following code clearly illustrates:
+<code>{r, echo = FALSE} library (magrittr)</code>
+<code>{r rowsum1-fakey, eval = FALSE} n &lt;- 1e6 x &lt;- runif (n) y &lt;- runif (n) xy &lt;- cbind (x, y) # a matrix rbenchmark::benchmark (                        res &lt;- x + y,                        res &lt;- rowSums (xy),                        replications = 100,                        order = NULL) [, 1:4]</code>
+<code>{r rowsum1, echo = FALSE} n &lt;- 1e6 x &lt;- runif (n) y &lt;- runif (n) xy &lt;- cbind (x, y) # a matrix knitr::kable (rbenchmark::benchmark (                                      res &lt;- x + y,                                      res &lt;- rowSums (xy),                                      replications = 100,                                      order = NULL) [, 1:4])</code>
+Adding the two rows of a matrix takes 3-4 times longer than adding two
+otherwise equivalent vectors. And okay, that’s very likely something to
+do with the <code>rowSums</code> function rather than the matrix itself,
+but why should these two behave so differently? At that point, I must
+freely admit to being not sufficiently clever to have uncovered the
+actual reason in the
+<a target="_blank" rel="noopener noreferrer" href="https://github.com/wch/r-source/blob/trunk/src/main/array.c">
+underlying C source code. </a> The answer must lie somewhere in there,
+so any pointers would be greatly appreciated. Short of that, the
+following is a phenomenological explanation, derived through attempting
+to reconstruct in C code what <code>rowSums</code> is actually doing.
+Direct vector addition must work something like the following C code,
+written here in a form able to be directly parsed in R via the
+<a target="_blank" rel="noopener noreferrer" href="https://cran.r-project.org/package=inline">
+inline package </a>.
+<code>{r add1} library (inline) add &lt;- cfunction(c(a = &quot;numeric&quot;, b = &quot;numeric&quot;), &quot;                  int n = length (a);                  SEXP result = PROTECT (allocVector (REALSXP, n));                  double *ra, *rb, *rout;                  ra = REAL (a);                  rb = REAL (b);                  rout = REAL (result);                  for (int i = 0; i &lt; n; i++)                      rout [i] = ra [i] + rb [i];                  UNPROTECT (1);                  return result;                  &quot;)</code>
+That’s a simple C function to add two vectors and return the result,
+with most of the code providing the necessary scaffolding for an R
+function. The following benchmark compares that with the previous two
+equivalent functions.
+<code>{r benchmark1-fakey, eval = FALSE} rbenchmark::benchmark (                        res &lt;- x + y,                        res &lt;- add (x, y),                        res &lt;- rowSums (xy),                        replications = 100,                        order = NULL) [, 1:4]</code>
+<code>{r benchmark1, echo = FALSE} knitr::kable (rbenchmark::benchmark (                                      res &lt;- x + y,                                      res &lt;- add (x, y),                                      res &lt;- rowSums (xy),                                      replications = 100,                                      order = NULL) [, 1:4])</code>
+So our <code>add</code> function is broadly equivalent to R’s underlying
+code for vector addition, and correspondingly, considerably more
+efficient than <code>rowSums</code> applied to an equivalent matrix.
+This naturally fosters the question of whether the inefficiency arises
+in <code>rowSums</code> itself, or whether it is somehow something
+inherent to R’s internal representation of matrices and/or matrix
+operations? The following code provides an initial answer to that
+quesiton.
+<code>{r benchmark2-fakey, eval = FALSE} rbenchmark::benchmark (                        res &lt;- x + y,                        res &lt;- add (x, y),                        res &lt;- rowSums (xy),                        res &lt;- xy [, 1] + xy [, 2],                        replications = 100,                        order = NULL) [, 1:4]</code>
+<code>{r benchmark2, echo = FALSE} knitr::kable (rbenchmark::benchmark (                                      res &lt;- x + y,                                      res &lt;- add (x, y),                                      res &lt;- rowSums (xy),                                      res &lt;- xy [, 1] + xy [, 2],                                      replications = 100,                                      order = NULL) [, 1:4])</code>
+And direct addition of two columns of a matrix, through indexing into
+those columns, is roughly as <em>inefficient</em> as
+<code>rowSums</code> itself, while direct addition of the equivalent
+vectors remains 3-4 times more efficient. ### How are matrices stored?
+So the reason for the relative inefficiency of <code>rowSums</code> is
+likely to extend directly from the column selection operation,
+<code>xy[, i]</code>. The reference manual for the C-level details of
+data storage and sub-selection in R is the online compendium,
+<a target="_blank" rel="noopener noreferrer" href="https://cran.r-project.org/doc/manuals/r-release/R-ints.html#SEXPs">
+R Internals </a>, yet even this has remarkably little to say in regard
+to how matrices are actually stored or manipulated. The key is a single
+incidental statement that,
+<a target="_blank" rel="noopener noreferrer" href="https://cran.r-project.org/doc/manuals/R-ints.html#Large-matrices">
+“Matrices are stored as vectors” </a>. The storage can then be
+understood through reading the details of vector storage, and then
+simply figuring out how the indexing of a matrix-as-vector is
+implemented. This can be easily discerned from direct conversion within
+R: <code>{r matrix-as-vector} as.vector (cbind (1:5, 6:10))</code> The
+columns of a matrix are directly concatenated within the vector object.
+This enables us to then re-write the above C code for vector addition to
+instead accept a matrix object, noting that the indices <code>i</code>
+and <code>n + i</code> respectively refer to the first and second
+columns of the matrix.
+<code>{r} matadd &lt;- cfunction(c(a = &quot;numeric&quot;), &quot;                  int n = floor (length (a) / 2);                  SEXP result = PROTECT (allocVector (REALSXP, n));                  double *ra, *rout;                  ra = REAL (a);                  rout = REAL (result);                  for (int i = 0; i &lt; n; i++)                      rout [i] = ra [i] + ra [n + i];                  UNPROTECT (1);                  return result;                  &quot;)</code>
+Benchmarking that against the previous versions, and including an
+additional comparison of direct matrix addition, gives the following
+results.
+<code>{r benchmark3-fakey, eval = FALSE} rbenchmark::benchmark (                        res &lt;- x + y,                        res &lt;- add (x, y),                        res &lt;- rowSums (xy),                        res &lt;- xy [, 1] + xy [, 2],                        res &lt;- matadd (xy),                        res &lt;- xy + xy,                        replications = 100,                        order = NULL) [, 1:4]</code>
+<code>{r benchmark3, echo = FALSE} knitr::kable (rbenchmark::benchmark (                                      res &lt;- x + y,                                      res &lt;- add (x, y),                                      res &lt;- rowSums (xy),                                      res &lt;- xy [, 1] + xy [, 2],                                      res &lt;- matadd (xy),                                      res &lt;- xy + xy,                                      replications = 100,                                      order = NULL) [, 1:4])</code>
+That benchmark demonstrates that operations on matrix columns are only
+as efficient as equivalent operations on vectors when the matrices are
+treated as singular vector objects. Direct addition of entire matrices
+(<code>xy + xy</code>) is also as efficient as vector addition, taking
+here around twice as long because twice as many values are being added.
+Inefficiencies arise in handling matrices only when extracting
+individual rows or columns – the <code>xy[, i]</code> operations,
+presumably because these operations involve creating an additional copy
+of the entire row or column. ## Conclusion What the above code was
+intended to demonstrate was that matrices should only be considered to
+be <strong>like</strong> vectors in the sense of operations on the
+entire objects. Sub-setting or sub-selecting of matrices involves
+creating additional copies of the sub-set/sub-selected portions, and is
+comparably less efficient than equivalent vector operations. In
+particular, efficient C or C++ operations on matrices should index
+directly into the underlying vector object, rather than sub-setting
+particular rows or columns of the matrices. The assertion that
+everything in R is a vector hereby deepens: Even matrices in R are
+vectors, and should in many circumstances be treated as such.</p>
+</div>]]></content:encoded>
+      <pubDate>31 Jul 19</pubDate>
+    </item>
+    <item>
+      <title>Calling external files from C in R</title>
+      <link>https://mpadge.github.io/blog/blog004.html</link>
+      <guid>https://mpadge.github.io/blog/blog004.html</guid>
+      <description>I recently encountered a problem while bundling an old C library into a new R package. The library itself depends on, and includes, an external "dictionary" in plain text format used to construct a large lookup table. The creators of this library of course assume that this dictionary file will always reside in the same directory as the compiled object, and so can always be directly linked. The `src` directory of R packages is, however, only permitted to contain source code, which text files definitively are not. This blog entry is about where to put such files, and how to link them within the source code.</description>
+      <content:encoded><![CDATA[
+
+
+<div id="calling-external-files-from-c-in-r" class="section level1">
+<h1>Calling external files from C in R</h1>
+<p>I recently encountered a problem while bundling an old C library into
+a new R package. The library itself depends on, and includes, an
+external “dictionary” in plain text format used to construct a large
+lookup table. The creators of this library of course assume that this
+dictionary file will always reside in the same directory as the compiled
+object, and so can always be directly linked. The <code>src</code>
+directory of R packages is, however, only permitted to contain source
+code, which text files definitively are <em>not</em>. This blog entry is
+about where to put such files, and how to link them <em>within the
+source code</em>. The answer turns out to be very simple, yet was
+nevertheless one which occupied a couple of days of my time, hence this
+documentation for the sake of posterity. As with many “external” files
+within R packages, the recommended locations is within the
+<code>inst</code> directory, or some sub-directory thereof. Any files
+within this directory will be copied “recursively to the installation
+directory” (from Writing R Extensions). Such files can nevertheless
+<em>not</em> be called directly from any <code>src</code> code, because
+there is no way for a compiled source object to find them – relative
+paths can not be used, because they will be implemented relative to the
+directory from which the compiled object is called. Tests, for example,
+will call the compiled object from the <code>./tests</code> directory,
+while direct use within the package directory will call from
+<code>.</code>. For general usage, the directory from which the object
+is called could be anywhere, and external files can not be linked. In
+other words, it is not possible to directly link a compiled object in a
+R package with other package-local files, because the only “local” in R
+is the currently working directory. It is thus necessary to step back
+“out” from the source into the R environment to obtain the path to the
+external file – in my case, to the dictionary. This information needs
+somehow to be fed to the source code whenever and wherever the package
+is used: precisely the kind of job for which the <code>.onLoad()</code>
+function is intended. An additional problem in my particular case was
+that the source code relied very extensively on defining the dictionary
+file through a simple C macro:</p>
+<pre class="c"><code>#define MY_DICTIONARY &quot;dictionary.txt&quot;</code></pre>
+<p>Literally dozens of functions then call that simple macro to read
+from the dictionary. Rewriting all of them to accept a dynamic parameter
+defining the location would have been way too much work, and so I
+urgently needed a simpler solution. The easiest turned out to be to use
+environmental variables, which are universally accessible by any
+programming language. I just needed to define and write the
+environmental variable of the package dictionary in the
+<code>.onLoad()</code> function as,
+<code>{r, eval = FALSE} Sys.setenv (&quot;DICT_DIR&quot; = system.file (package = &quot;my_package&quot;, &quot;subdir&quot;, &quot;my_dict.txt&quot;))</code>
+Accessing this within the source code was then as simple as defining an
+equivalent function in C to read that variable:</p>
+<pre class="c"><code>char * getDictPath()
+{
+    char *ret = getenv(&quot;DICT_DIR&quot;);
+    return ret;
+}</code></pre>
+<p>and then replacing the hard-coded macro with a functional
+equivalent:</p>
+<pre class="c"><code>#define MY_DICTIONARY getDictPath()</code></pre>
+<p>The entire bundled source then remained intact, with the
+<code>getDictPath()</code> function returning the appropriate path as
+defined within R itself, and accessible through the
+<code>system.file()</code> function, and leaving the C code able to
+simply call the macro <code>MY_DICTIONARY</code> to access the local
+copy of that file. Credit and gratitude to Iñaki Ucar and Martin Morgan
+for suggestions on the <a href="https://stat.ethz.ch/pipermail/r-package-devel/2019q2/004113.html">r-package-devel
+mailing list</a>.</p>
+</div>]]></content:encoded>
+      <pubDate>04 Jul 19</pubDate>
+    </item>
+    <item>
+      <title>Caching via background R processes</title>
+      <link>https://mpadge.github.io/blog/blog003.html</link>
+      <guid>https://mpadge.github.io/blog/blog003.html</guid>
+      <description>Caching is implemented because it saves time, generally by saving the results of one function call for subsequent reuse. Background processes are also commonly implemented as time-saving measures, through delegating long-running tasks to "somewhere else", allowing you to keep focussing on whatever (un)important things you were doing in the meantime. This blog entry describes how to combine the two to save double time through caching via background processes.</description>
+      <content:encoded><![CDATA[
+
+
+<div id="caching-via-background-r-processes" class="section level1">
+<h1>Caching via background R processes</h1>
+<p>The title of this blog entry should be fairly self-evident for those
+who might incline to read it, yet is motivated by the simple fact that
+there currently appear to be no online sources that clearly describe the
+relatively straightforward process of using background processes in
+<strong>R</strong> to cache objects. (Check out search engine results
+for
+<a target="_blank" rel="noopener noreferrer" href="https://duckduckgo.com/?q=caching+background+R+processes&amp;t=ffab&amp;ia=web">
+“caching background R processes” </a>: most of the top entries are for
+Android, and even opting for other search engines
+<a target="_blank" rel="noopener noreferrer" href="https://duckduckgo.com/?q=!g+caching+background+R+processes&amp;t=ffab&amp;ia=web">
+does little to help uncover any useful information </a>.) Caching is
+implemented because it saves time, generally by saving the results of
+one function call for subsequent reuse. Background processes are also
+commonly implemented as time-saving measures, through delegating
+long-running tasks to “somewhere else”, allowing you to keep focussing
+on whatever (un)important things you were doing in the meantime.
+Straightforward caching of the results of single function calls is often
+achieved through
+<a target="_blank" rel="noopener noreferrer" href="https://duckduckgo.com/?q=!w+memoization&amp;t=ffab&amp;ia=web">
+“memoisation” </a>, implemented in several <strong>R</strong> packages
+including
+<a target="_blank" rel="noopener noreferrer" href="https://cran.r-project.org/package=R.cache">
+R.cache </a>,
+<a target="_blank" rel="noopener noreferrer" href="https://cran.r-project.org/package=memoise">
+memoise </a>,
+<a target="_blank" rel="noopener noreferrer" href="https://cran.r-project.org/package=memo">
+memo </a>,
+<a target="_blank" rel="noopener noreferrer" href="https://cran.r-project.org/package=simpleCache">
+simpleCache </a>, and
+<a target="_blank" rel="noopener noreferrer" href="https://cran.r-project.org/package=simpleRCache">
+simpleRCache </a>, not to mention the extremely useful cache-management
+package,
+<a target="_blank" rel="noopener noreferrer" href="https://cran.r-project.org/package=hoardr">
+hoardr </a>. None of these packages offer the ability to perform the
+caching via a background process, and thus the initial call to a
+function to-be-cached will have to wait until that function finishes
+before returning a value. This blog entry describes how to implement
+caching via background processes. Using a background process to cache an
+object naturally requires a measure of anticipation that the object to
+be cached is likely to be useful sometime in the future, as opposed to
+necessarily needed right now. This is nevertheless a relatively common
+situation is complex, multi-stage analyses, where the results of one
+stage generally proceed in a predictable manner to subsequent stages.
+The typical inputs and outputs of those subsequent stages are the things
+that can be anticipated, and the results pre-calculated via background
+processes, and then cached for subsequent <em>and immediate</em> recall.
+So having briefly described “standard” caching (“foreground” caching, if
+you like), it’s time to describe background processes in
+<strong>R</strong>. ## Background processes in R Background processes
+are, among other things, the key to the much-used
+<a target="_blank" rel="noopener noreferrer" href="https://cran.r-project.org/package=future">
+future package </a>. This package seems at first like a barely
+intelligible miracle of mysterious implementation. What are these
+“futures”? The host of highly informative vignettes provide a wealth of
+information on how the users of this package can implement their own
+“futures”, yet little information on how the futures themselves are
+implemented. (This is not a criticism; it reflects a reasonably
+self-justifying design choice, because the average user of this package
+will be generally satisfied with knowing how to use the package, and
+won’t necessarily want or need to know <em>how</em> the magic is
+performed.) In short: a “future” is just a background process that dumps
+its results somewhere ready for later recall. What is a background
+process? Simply another <strong>R</strong> session running as a separate
+<a target="_blank" rel="noopener noreferrer" href="https://duckduckgo.com/?q=!w+computer+process&amp;t=ffab&amp;ia=web">
+process </a>. It’s easy to implement in base R. We first need a simple
+<strong>R</strong> script, as for example generated by the following
+code:
+<code>{r my_code, eval = TRUE} my_code &lt;- c (&quot;x &lt;- rnorm (1e6)&quot;,                            &quot;y &lt;- x ^ 2&quot;,                            &quot;y [x &lt; 0] &lt;- -y [x &lt; 0]&quot;,                            &quot;saveRDS (sd (y), file = &#39;myresult.Rds&#39;)&quot;) writeLines (my_code, con = &quot;myfile.R&quot;)</code>
+That script can be executed as a background process by simply calling
+<a target="_blank" rel="noopener noreferrer" href="https://stat.ethz.ch/R-manual/R-devel/library/utils/html/Rscript.html">
+Rscript </a> via a
+<a target="_blank" rel="noopener noreferrer" href="https://stat.ethz.ch/R-manual/R-devel/library/base/html/system.html">
+system </a> or
+<a target="_blank" rel="noopener noreferrer" href="https://stat.ethz.ch/R-manual/R-devel/library/base/html/system2.html">
+system2 </a> call, where the latter two allow <code>wait = FALSE</code>
+to send the process to the background. (The more recent implementation
+of system calls via the
+<a target="_blank" rel="noopener noreferrer" href="https://github.com/jeroen/sys">
+sys package </a> and its simple <code>exec_background()</code> function
+also deserve a mention here.) In base R terms, a script can be called
+from an interactive session via
+<code>{r background, eval = TRUE} system2 (command = &quot;Rscript&quot;, args = &quot;myfile.R&quot;, wait = FALSE) list.files (pattern = &quot;^my&quot;)</code>
+The script has been executed as a background process, and the result
+dumped to the file, “myresult.Rds”. This can then simply be read to
+retrieve the cached result generated by that background process:
+<code>{r} readRDS (&quot;myresult.Rds&quot;)</code> And that value was calculated
+in, and cached from, a background process. Simple. ### Complications
+Where was the above value stored? In the working directory of that
+<strong>R</strong> session, of course. This is often neither a
+practicable nor sensible approach, for example whenever any control over
+storage locations is desired. These cached values are generally going to
+be temporary in nature, and the <code>tempdir()</code> of the current
+<strong>R</strong> session offers an alternative location, and is in
+fact the only location acceptable for CRAN packages to write to during
+package tests. Other common options include a sub-directory of
+<code>~/.Rcache</code>, as used for example in the
+<a target="_blank" rel="noopener noreferrer" href="https://cran.r-project.org/package=R.cache">
+R.cache </a> package. I’ll only consider <code>tempdir()</code> from
+here on, but doing so will also reveal why the more enduring location of
+<code>~/.Rcache</code> is often preferred. Another complication arises
+in calling
+<a target="_blank" rel="noopener noreferrer" href="https://stat.ethz.ch/R-manual/R-devel/library/utils/html/Rscript.html">
+Rscript </a>, by virtue of the claims in
+<a target="_blank" rel="noopener noreferrer" href="https://cran.r-project.org/doc/manuals/r-release/R-exts.html">
+“Writing R Extensions” </a> – the official CRAN guide to
+<strong>R</strong> packages – that one should, &gt; … not invoke R by
+plain R, Rscript or (on Windows) Rterm in your examples, tests,
+vignettes, makefiles or other scripts. As pointed out in several places
+earlier in this manual, use something like “$(R_HOME)/bin/Rscript” or
+“$(R_HOME)/bin$(R_ARCH_BIN)/Rterm” That comment is not very helpful
+because the alluded “several places” are in different contexts, and are
+also only examples rather than actual guidelines. The problem is those
+suggestions will usually, <em>but not always</em> work, depending on
+Operating System idiosyncrasies. So calling
+<a target="_blank" rel="noopener noreferrer" href="https://stat.ethz.ch/R-manual/R-devel/library/utils/html/Rscript.html">
+Rscript </a> directly is less straightforward than it might seem. A
+further problem arises in that both <code>system</code> and
+<code>system2</code> will generally return values of <code>0</code> when
+everything works okay. “Works” then means that the process has been
+successfully started. But where is that process in relation to the
+current <strong>R</strong> session? And likely most importantly, has
+that process finished or is it still operating? While it is possible to
+use further <code>system</code> calls to determine the
+<a target="_blank" rel="noopener noreferrer" href="https://duckduckgo.com/?q=!w+process+identifier&amp;t=ffab&amp;ia=web">
+process identifier (PID) </a>, that process itself is fraught and
+perilous. There are further complications which arise through directly
+calling background <strong>R</strong> processes via
+<code>Rscript</code>, but those should suffice to argue for the fabulous
+alternative available thanks to Gábor Csárdi and … ## The processx
+package The
+<a target="_blank" rel="noopener noreferrer" href="https://github.com/r-lib/processx">
+processx </a> package states simply that it provides, &gt; “Tools to run
+system processes in the background” This package is designed to run
+<em>any</em> available system process, including ones that potentially
+have nothing to do with <strong>R</strong> let alone a current
+<strong>R</strong> session. Using
+<a target="_blank" rel="noopener noreferrer" href="https://github.com/r-lib/processx">
+processx </a> to run background <strong>R</strong> process thus requires
+calling <code>Rscript</code>, with the associated problems described
+above. Fortunately for us, Gábor foresaw this need and created the
+“companion” package,
+<a target="_blank" rel="noopener noreferrer" href="https://github.com/r-lib/callr">
+callr </a> to simply &gt; “Call R from R”
+<a target="_blank" rel="noopener noreferrer" href="https://github.com/r-lib/callr">
+callr </a> relies directly on
+<a target="_blank" rel="noopener noreferrer" href="https://github.com/r-lib/processx">
+processx </a>, but provides the far simpler function,
+<a target="_blank" rel="noopener noreferrer" href="https://callr.r-lib.org/reference/r_bg.html">
+r_bg </a> to &gt; “Evaluate an expression in another R session, in the
+background” So
+<a target="_blank" rel="noopener noreferrer" href="https://callr.r-lib.org/reference/r_bg.html">
+r_bg </a> provides the perfect tool for our needs. This function
+directly evaluates R code, without needing to render it to text as we
+did above in order to write it to an external script file. An
+<a target="_blank" rel="noopener noreferrer" href="https://callr.r-lib.org/reference/r_bg.html">
+r_bg </a> version of the above would look like this:
+<code>{r my_fn} f &lt;- function () {     x &lt;- rnorm (1e6)     y &lt;- x ^ 2     y [x &lt; 0] &lt;- -y [x &lt; 0]     saveRDS (sd (y), file = &quot;myresult.Rds&quot;) } callr::r_bg (f)</code>
+We immediately see that
+<a target="_blank" rel="noopener noreferrer" href="https://callr.r-lib.org/reference/r_bg.html">
+r_bg </a> returns a handle to the process itself, along with the single
+piece of critical diagnostic information: Whether the process is still
+running or not:
+<code>{r r_bg} px &lt;- callr::r_bg (f) px Sys.sleep (1) px</code>
+Multiple processes can be generated and queried this way. The package is
+designed around, and returns,
+<a target="_blank" rel="noopener noreferrer" href="https://github.com/r-lib/R6">
+R6 </a> class objects, enabling function calls on the objects, notably
+including the following:
+<code>{r r_bg2} px &lt;- callr::r_bg (f) px while (px$is_alive())     px$wait () px</code>
+The <code>px$is_alive()</code> and <code>px$wait()</code> functions are
+all that is needed to wait until a background process is finished. In
+the context of using background processes to cache objects, these lines
+enable the primary <strong>R</strong> session to simply wait until
+caching is finished before retrieving the object. ## processx, callr,
+and caching There is only one remaining issue with the above code: Where
+is “myresult.Rds” in the following code?
+<code>{r my_fn2} f &lt;- function () {     x &lt;- rnorm (1e6)     y &lt;- x ^ 2     y [x &lt; 0] &lt;- -y [x &lt; 0]     saveRDS (sd (y), file = file.path (tempdir (), &quot;myresult.Rds&quot;)) } px &lt;- callr::r_bg (f)</code>
+It’s in <code>tempdir()</code>, but <em>not</em> the
+<code>tempdir()</code> of the current process. Where is his other
+<code>tempdir()</code>? It’s temporary of course, so has been dutifully
+cleaned up, thereby removing our desired result. What is needed is a way
+to store the result in the <code>tempdir()</code>of the current – active
+– <strong>R</strong> session. This <code>tempdir()</code> is merely
+specified as a character string, which we can pass directly to our
+function:
+<code>{r myfn3} f &lt;- function (temp_dir) {     x &lt;- rnorm (1e6)     y &lt;- x ^ 2     y [x &lt; 0] &lt;- -y [x &lt; 0]     saveRDS (sd (y), file = file.path (temp_dir, &quot;mynewresult.Rds&quot;)) }</code>
+We then only need to note that the second parameter of
+<a target="_blank" rel="noopener noreferrer" href="https://callr.r-lib.org/reference/r_bg.html">
+r_bg </a> is <code>args</code>, which is, &gt; “Arguments to pass to the
+function. Must be a list.” That is then all we need, so let it run …
+<code>{r r_bg3} px &lt;- callr::r_bg (f, list (tempdir ())) while (px$is_alive())     px$wait () list.files (tempdir (), pattern = &quot;^my&quot;)</code>
+And there is our new result, along with all we need to understand how to
+cache objects via background <strong>R</strong> processes. ## Summary 1.
+Define a function to generate the object to be cached, and include a
+<code>tempdir()</code> parameter if that is to be used as the cache
+location. 2. Use <code>callr::r_bg()</code> to call that function in the
+background and deliver the result to the desired location. 3. Examine
+the handle of the process returned by <code>r_bg()</code> to determine
+whether it has finished or not. 4. … use the cached result.</p>
+</div>]]></content:encoded>
+      <pubDate>06 Jun 19</pubDate>
+    </item>
+    <item>
+      <title>C++ templates and Rcpp</title>
+      <link>https://mpadge.github.io/blog/blog/blog002.html</link>
+      <guid>https://mpadge.github.io/blog/blog/blog002.html</guid>
+      <description>C++ templates are really useful. Templates allow you to code a function able to accept arguments of different types that can't necessarily be known until compile time. There is, however, no such thing as an Rcpp template -- all inputs and outputs must have defined types. This blog entry is about how to maximise the usefulness of C++ templates in an Rcpp context.</description>
+      <content:encoded><![CDATA[]]></content:encoded>
+      <pubDate>07 May 19</pubDate>
+    </item>
+    <item>
+      <title>how i made this site</title>
+      <link>https://mpadge.github.io/blog/blog001.html</link>
+      <guid>https://mpadge.github.io/blog/blog001.html</guid>
+      <description>This site is built with zurb foundation, because i had read that it did everything that hugo could, but that final products were more lightweight and flexible. Plus i had no idea about it, and learning something new is sometimes worthwhile. I was also frustrated that standard hugo advice seemed to be, ''oh, just pick a template and off you go,'' yet there is surprisingly little advice on how to modify any given template, let alone how to start from scratch. It turned out that foundation at least made starting from scratch fairly easy, and so this entry is about that process.</description>
+      <content:encoded><![CDATA[
+
+
+<div id="how-i-made-this-site-from-scratch" class="section level1">
+<h1>how i made this site (from scratch)</h1>
+New blog, new website, so here we go. I’ll start by describing how i
+built the website. From scratch. The site is built with
+<a target="_blank" rel="noopener noreferrer" href="https://foundation.zurb.com">
+zurb foundation </a> , because i had read that it did everything that
+<a target="_blank" rel="noopener noreferrer" href="https://gohugo.io">
+hugo </a> could, but that final products were more lightweight and
+flexible. Plus i had no idea about it, and learning something new is
+<del>always</del> <del>often</del> sometimes worthwhile. I was also
+frustrated that standard
+<a target="_blank" rel="noopener noreferrer" href="https://gohugo.io">
+hugo </a> advice seemed to be, ‘’oh, just pick a template and off you
+go,’’ yet there is surprisingly little advice on how to modify any given
+template, let alone how to start from scratch. It turned out that
+<a target="_blank" rel="noopener noreferrer" href="https://foundation.zurb.com">
+foundation </a> at least made starting from scratch fairly easy, and so
+this entry is about that process. Note that i consider myself a
+technically-oriented, back-end programmer more focussed on getting stuff
+in and processing it than on getting stuff out. So when i say ‘’starting
+from scratch,’’ i mean that most sincerely. ## visual style This is
+largely <code>html</code>-related ramblings, so if you’re interested in
+the code stuff, you might like to skip straight ahead to the <a href="#the-content">next section</a>.
+<a target="_blank" rel="noopener noreferrer" href="https://foundation.zurb.com">
+zurb </a> provides a template (see
+<a target="_blank" rel="noopener noreferrer" href="https://foundation.zurb.com/sites/docs/starter-projects.html">
+here </a> for details) which deposits a basic infrastructure on your
+local playground, along with the required
+<a target="_blank" rel="noopener noreferrer" href="https://foundation.zurb.com">
+foundation </a> libraries. The basic system is fairly well
+<a target="_blank" rel="noopener noreferrer" href="https://foundation.zurb.com/sites/docs"> documented </a>, so
+there’s little point going into that here. The top of this site is a
+standard <a target="_blank" rel="noopener noreferrer" href="https://foundation.zurb.com/sites/docs/top-bar.html">
+top bar </a>, and most of the rest is built from standard
+<a target="_blank" rel="noopener noreferrer" href="https://foundation.zurb.com/sites/docs/callout.html">
+callout </a> containers or plain cells. This and all blog pages, for
+example, are full-width <a target="_blank" rel="noopener noreferrer" href="https://foundation.zurb.com/sites/docs/xy-grid.html">
+xy-grid </a> containers with simple headers of
+<pre><code class="hljs xml">&lt;div class=&quot;grid-x grid-padding-x&quot;&gt;
+    &lt;div class=&quot;cell medium-12 large-12&quot;&gt;
+</code></pre>
+<p>The entire site lives within the local <code>src/</code> directory,
+with the remainder being stuff used by
+<a target="_blank" rel="noopener noreferrer" href="https://foundation.zurb.com">
+foundation </a> to build the site. This <code>src</code> directory
+really is impressively lightweight. The primary components of
+<a target="_blank" rel="noopener noreferrer" href="https://foundation.zurb.com">
+foundation </a> are ‘’pages’’ and ‘’partials,’’ with the latter
+identical to most other systems for building websites. Crudely
+interpreted, ‘’pages’’ hold the actual content, while ‘’partials’’
+define the styles, generally as <code>html</code> header and footer
+components inserted before and after the content of a page.
+<a target="_blank" rel="noopener noreferrer" href="https://foundation.zurb.com">
+foundation </a> integrates directly with arbitrarily-structured
+<code>yaml</code> files, which made auto-generation of my main web page
+particularly easy. The files themselves live in the
+<code>src/data</code> directory, with the blog entries, for example,
+read straight from a <code>src/data/blog.yaml</code> file that looks
+like this:</p>
+<pre class="markdown"><code>-
+    title: how i made this site
+    description: &lt; blah blah blah &gt;
+    created: 06 May 19
+    modified: 06 May 19
+    link: blog/blog001.html
+- 
+    title: C++ templates and Rcpp
+    description: &lt; blah blah blah &gt;
+    created: 07 May 19
+    modified: 07 May 19
+    link: blog/blog002.html</code></pre>
+More on how that gets automatically generated below; for now, just
+pretend it’s a static file. This has two entries, each of which has a
+variety of components (such as <code>title</code>,
+<code>description</code>, and <code>link</code>). The ‘’blog’’ section
+on the main page is generated directly from these <code>yaml</code>
+meta-data, using the {{#each blog}} command to automatically loop over
+each of the above entries in the <code>data/blog.yml</code> file, using
+the same double-curly-bracket syntax from zurb’s
+<a target="_blank" rel="noopener noreferrer" href="https://foundation.zurb.com/sites/docs/panini.html">
+panini </a> to insert variables into the <code>html</code> code:
+<pre><code class="hljs xml">{{#each blog}}
+    {{&gt; blog_header}}
+        &lt;a href={{ link }}, style=&quot;color:#262626;&quot;&gt;
+            &lt;div align=&quot;center&quot;&gt;
+                &lt;h3&gt;{{ title }}&lt;/h3&gt;
+            &lt;/div&gt;
+            &lt;div align=&quot;center&quot;&gt;
+                &lt;p&gt;{{ description }}&lt;/p&gt;
+            &lt;/div&gt;
+        &lt;/a&gt;
+    {{&gt; blog_footer}}
+{{/each blog}}
+</code></pre>
+<p>The whole site is set up with a grid 12 squares across, so these are
+full-width containers with <code>grid-padding-x</code>, which by default
+reads values from the global
+<code>/src/assets/scss/_settings.scss</code> file. Yep, it’s an
+<a target="_blank" rel="noopener noreferrer" href="https://sass-lang.com/">
+scss </a> file, which is both great and … not so great. It means that
+almost all variables used to generate your site - this site - can be
+modified through directly modifying the values in
+<code>src/assets/scss/_settings.scss</code>. The not so great is that
+these are <em>global variables</em> which are translated during
+compilation into <code>css</code> variables which generally won’t share
+the same names. So if you want to change these values locally rather
+than globally, you can’t ‘just do it’, you are forced to revert to
+standard <code>css</code> (to define class structures) or
+<code>html</code> (to explicitly define elements). This blog page, for
+example, is defined by a simple entry in
+<code>src/assets/scss/app.scss</code> – the sole location needed to
+define all local classes - as:</p>
+<pre class="css"><code>.blogClass{
+    margin-top: 0px;
+    margin-left: 50px;
+    margin-right: 50px;
+}</code></pre>
+<p>The <code>margin-</code> elements are bog-standard <code>css</code>,
+and absent these custom definitions all inherit the global properties
+specified in <code>src/assets/scss/_settings.scss</code> (definining
+standard properties of foundation’s <code>xy-grid</code>):</p>
+<pre class="css"><code>$grid-margin-gutters: (
+    small: 20px,
+    medium: 30px
+);
+$grid-padding-gutters: $grid-margin-gutters;
+$grid-container-padding: $grid-padding-gutters;</code></pre>
+<p>Examples of <code>html</code> modifications to the global default
+<code>scss</code> variables are the background colours for each
+component of the code and blog sections. Remember that everything on the
+main page is a ‘callout’, meaning that they all inherit the global
+variables defined in <code>src/assets/scss/_settings.scss</code>. I
+defined the global background as</p>
+<pre class="css"><code>$callout-backgroud: transparent;</code></pre>
+<p>so the background image would appear underneath everything by
+default. This required local changes to render the components
+semi-transparent white, which was achieved with a simple two-line
+<code>src/partials/blog_header.html</code> of:</p>
+<pre class="html"><code>&lt;div class=&quot;large-4 medium-6 cell&quot; style=&quot;background-color:#ffffffaa&quot;&gt;</code></pre>
+The code above with {{&gt; blog_header }} simply inserts that header in
+its rightful place. That is the very short version of how i got this
+site to look the way it does. It’s simple, but it was fairly easy, and
+most important to me was that i didn’t have to borrow somebody else’s
+arbitrary and way-more-difficult-to-modify-than-i-thought template for
+whatever other site/blog-generating system i may otherwise have chosen.
+## the content The steps roughly described above yielded a static site
+largely as you see here. The only remaining step was automating the
+procedure of updating the site. Perhaps the easiest approach would be to
+do this manually, but as most of the content is contained within
+<code>yaml</code> files, this is a procedure ripe for automation. As the
+end product of most of my coding efforts is packaged in
+<strong>R</strong>-form, i opted to automate this procedure within
+<strong>R</strong>, although the same principles apply to any other
+language. What this section effectively describes is how easy
+<a target="_blank" rel="noopener noreferrer" href="https://foundation.zurb.com">
+foundation </a> made the task of effectively recreating
+<a target="_blank" rel="noopener noreferrer" href="https://yihui.name">
+Yihui Xie </a> ’s fabulous <a target="_blank" rel="noopener noreferrer" href="https://github.com/rstudio/blogdown"> blogdown </a> package.
+Subjective judgement here, but the blogdown package was first released
+to cran in August 2017, and a lot has changed in that short time. As
+often happens, the enormity of the task Yihui achieved with that package
+can now be recreated in
+<a target="_blank" rel="noopener noreferrer" href="https://foundation.zurb.com">
+foundation </a> form much easier, and with much less code. In the case
+of this site, it effectively amounts to connecting some kind of
+<code>blog_render()</code> function to a simple update of a
+<code>yaml</code> text file, with a few more tricks for other included
+elements, notably graphics. With the help of partials, the entire
+<code>html</code> formatting of a blog page is as simple as a header
+with these few lines:
+<pre><code class="hljs xml">{{&gt; header}}
+&lt;div class=&quot;blogClass&quot;&gt;
+  &lt;div class=&quot;grid-x grid-padding-x&quot;&gt;
+    &lt;div class=&quot;cell medium-12 large-12&quot;&gt;
+      {{#markdown}}
+</code></pre>
+and a footer simply closing each section with:
+<pre><code class="hljs xml">    {{/markdown}}
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+<p>(plus just a couple of extra lines to add the navigation bar at the
+side – shown <a href="https://github.com/mpadge/mpadge.github.io/blob/master/src/pages/blog/make_entry.R#L67">here</a>
+in a <code>navbar()</code> function, if you’re interested). In between
+is ‘’standard’’ markdown (at least in a form I’ve yet to encounter any
+particular idosynracies with ..), which
+<a target="_blank" rel="noopener noreferrer" href="https://foundation.zurb.com">
+foundation </a> interprets seamlessly. Converting an
+<strong>R</strong>markdown (<code>.Rmd</code>) document to a blog entry
+is thus in essence as simple as rendering (via
+<code>rmarkdown::render()</code>) it to some kind of standard markdown,
+renaming that to <code>.html</code>, and inserting the 5 lines of header
+and four lines of footer shown above. The following function forms the
+basis of a <code>blog_render()</code> function:
+<code>{r blog_render, eval = FALSE} blog_render &lt;- function (fname) {     rmarkdown::render(paste0 (fname, &quot;.Rmd&quot;), rmarkdown::md_document(variant=&#39;gfm&#39;))     file.rename (paste0 (fname, &quot;.md&quot;), paste0 (fname, &quot;.html&quot;))     conn &lt;- file (paste0 (fname, &quot;.html&quot;))     md &lt;- readLines (conn)     header &lt;- c (&lt;... defined above ...&gt;)     footer &lt;- c (&lt;... defined above ...&gt;)     md &lt;- c (header, md, footer)     writeLines (md, conn)     close (conn) }</code>
+Simply calling <code>blog_render (&quot;this_page&quot;)</code> will then render
+and transform <code>this_page.Rmd</code> into
+<code>this_page.html</code> formatted for this website. The full
+function used to generate these pages has a couple of other
+sub-functions, mostly to move images to locations accessible by
+<a target="_blank" rel="noopener noreferrer" href="https://foundation.zurb.com">
+foundation </a>, and to replace a few character fields not otherwise
+interpretable in either standard <code>html</code> or
+<a target="_blank" rel="noopener noreferrer" href="https://foundation.zurb.com">
+foundation </a> terms. Examples of the latter are the {{ breadcrumbs }}
+used by <a target="_blank" rel="noopener noreferrer" href="https://foundation.zurb.com/sites/docs/panini.html">
+foundation’s panini</a> interpreter, which are replaced by corresponding
+<code>html</code> encodings; or the <strong>R</strong>markdown code
+chunk delimiter, ```{r}, from which the curly brackets must be removed
+to replace it with, ``` r. ### images While it is possible to specify an
+image directory in the <code>yaml</code> front-matter of an
+<code>.Rmd</code>document, it was just as easy, and more explict, to add
+another function to my <code>blog_render()</code> function to move them
+to the appropriate place in the <a target="_blank" rel="noopener noreferrer" href="https://foundation.zurb.com">
+foundation </a> directory, which is <code>assets/img</code>, and any
+arbitrary sub-directories thereof. The following lines achieve this
+<code>{r fig-move, eval = FALSE} path &lt;- file.path (paste0 (fname, &quot;_files&quot;), &quot;figure-gfm&quot;) flist &lt;- list.files (path, full.names = TRUE) newpath &lt;- file.path (&quot;..&quot;, &quot;..&quot;, &quot;assets&quot;, &quot;img&quot;, fname) if (!dir.exists (newpath))     dir.create (newpath, recursive = TRUE) file.rename (flist, file.path (newpath, list.files (path))) unlink (paste0 (fname, &quot;_files&quot;), recursive = TRUE)</code>
+along with a simple replacement in the main file of the former with the
+latter path. A final parameter called <code>center_images</code>, when
+<code>TRUE</code>, inserts simple <code>&lt;center&gt;</code> and
+<code>&lt;/center&gt;</code> lines before and after the standard
+markdown image insertion command
+(<code>![](&lt;path&gt;/&lt;to&gt;/&lt;image&gt;)</code>). ## meta-data,
+yaml data, and the front page The <code>blog_render()</code> function
+then worked, but I still needed to automatically update the front page
+to link directly to the latest entry. Another fairly straightforward
+<code>yaml</code>-processing task, this time stripping the
+<code>yaml</code> headers from all blog entries. This became the second,
+and only other, main function, <code>update_main()</code>. This function
+essentially just strips the <code>yaml</code> header data out of each
+<code>.Rmd</code> blog entry, and re-formats it slightly as the
+<code>data/blog.yml</code> file. This in turn relies on one main
+function, <code>get_one_blog_dat()</code> which, for example, converts
+the metadata for this entry of:</p>
+<pre class="markdown"><code>---
+title: how i made this site
+description: &lt;blah blah blah&gt;
+date: 06/05/2019
+link: blog/blog001.html
+---</code></pre>
+<p>into the only slightly-modified version in <code>data/blog.yml</code>
+of</p>
+<pre class="markdown"><code>-
+    title: how i made this site
+    description: &lt;blah blah blah&gt;
+    created: 06 May 19
+    modified: 06 May 19
+    link: blog/blog001.html</code></pre>
+<p>The “created” date is read from the original <code>date</code> field
+of the <code>.Rmd</code> metadata, while the “modified” date is the
+actual date of file modification. These two dates enable blog entries to
+be sorted by dates of either creation or modification with a simple
+binary parameter. # conclusion That’s it. It took me a little while to
+construct this site, but most of the time was me learning how
+<a target="_blank" rel="noopener noreferrer" href="https://foundation.zurb.com">
+zurb foundation </a> works. Most of the mechanics of site construction
+and updating are nevertheless done via the <strong>R</strong> code,
+which is really very short and efficient. If you’re interested, the two
+files that do the work are <a href="https://github.com/mpadge/mpadge.github.io/blob/source/src/pages/blog/make_entry.R">here,
+for rendering a blog entry</a> and <a href="https://github.com/mpadge/mpadge.github.io/blob/source/src/pages/blog/update_main.R">here,
+for updating the main page</a>. The <code>render_blog()</code> function
+calls the main updating function anyway, so all I ever need to do is to
+call one simple function to render any new blog entry and update the
+website. The site itself is housed on the <code>master</code> branch of
+<a href="https://github.com/mpadge/mpadge.github.io">mpadge.github.io</a>,
+while the generating code behind the site is on the <a href="https://github.com/mpadge/mpadge.github.io/tree/source"><code>source</code>
+branch</a>. Deployment is controlled with a very simple <a href="https://github.com/mpadge/mpadge.github.io/blob/source/script.sh">bash
+script</a>, called by a single <a href="https://github.com/mpadge/mpadge.github.io/blob/source/makefile"><code>makefile</code>
+command</a>, which builds the foundation site, copies everything across
+from the <code>source</code> to <code>master</code> branches, adds the
+changes to <code>git</code>, and creates a commit to update the site.
+That’s it. Advantages of having done this my own way: - no borrowed
+templates! - no blogdown - full control over everything</p>
+</div>]]></content:encoded>
+      <pubDate>06 May 19</pubDate>
+    </item>
+  </channel>
+</rss>
