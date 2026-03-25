@@ -127,7 +127,7 @@ process_headers <- function (md, level = 1)
         nm <- gsub ("[[:space:]]+|[[:punct:]]+", "-", hdr)
         nm <- gsub ("-+", "-", nm)
         md [h] <- paste0 ('<section id="', nm, '" data-magellan-target="',
-                          nm, '"><h', level, '>', hdr, '</h></section>')
+                          nm, '"><h', level, '>', hdr, '</h', level, '></section>')
     }
     return (md)
 }
@@ -179,5 +179,3 @@ clean_figure_files <- function (md, fname, dest_dir = c ("assets", "img"))
     if (length (lf) == 0)
         unlink (figpath, recursive = TRUE)
 }
-
-blog_render ("blog012")
