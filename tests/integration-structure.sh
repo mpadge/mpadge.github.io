@@ -1,7 +1,11 @@
 #!/bin/bash
 # Integration tests: Build structure and file generation
 
-DIST_DIR="${1:-.}/dist"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/common.sh"
+
+PROJECT_ROOT="${1:-.}"
+DIST_DIR="$PROJECT_ROOT/dist"
 
 # ----- Test: dist directory exists
 [ -d "$DIST_DIR" ]
@@ -48,3 +52,10 @@ test_result $? "blog/index.html exists"
 
 [ -f "$DIST_DIR/code/index.html" ]
 test_result $? "code/index.html exists"
+
+# Print summary if run standalone
+if [ "${BASH_SOURCE[0]}" == "${0}" ]; then
+    echo
+    print_summary
+    exit $?
+fi

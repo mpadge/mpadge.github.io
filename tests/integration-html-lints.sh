@@ -1,7 +1,11 @@
 #!/bin/bash
 # Integration tests: HTML linting and validation
 
-DIST_DIR="${1:-.}/dist"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/common.sh"
+
+PROJECT_ROOT="${1:-.}"
+DIST_DIR="$PROJECT_ROOT/dist"
 
 # ----- Test: HTML files are valid
 HTML_FILES=$(find "$DIST_DIR" -name "*.html" -type f)
@@ -78,3 +82,10 @@ test_result $? "No duplicate HTML IDs in index.html"
 # ----- Test: Proper section closing tags
 grep -q "</section>" "$DIST_DIR/blog/blog001.html"
 test_result $? "Blog posts have proper section closing tags"
+
+# Print summary if run standalone
+if [ "${BASH_SOURCE[0]}" == "${0}" ]; then
+    echo
+    print_summary
+    exit $?
+fi

@@ -1,7 +1,11 @@
 #!/bin/bash
 # Integration tests: Content, feed, and navigation
 
-DIST_DIR="${1:-.}/dist"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/common.sh"
+
+PROJECT_ROOT="${1:-.}"
+DIST_DIR="$PROJECT_ROOT/dist"
 
 # ----- Test: Feed file is valid XML
 if command -v xmllint &> /dev/null; then
@@ -43,3 +47,10 @@ test_result $? "index.html links to CSS"
 
 grep -q 'app.js' "$DIST_DIR/index.html"
 test_result $? "index.html links to JavaScript"
+
+# Print summary if run standalone
+if [ "${BASH_SOURCE[0]}" == "${0}" ]; then
+    echo
+    print_summary
+    exit $?
+fi
