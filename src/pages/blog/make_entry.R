@@ -106,7 +106,7 @@ navbar <- function (hdrs)
                                '" style="color:#111111">', hdrs [h, 1],
                                '</a></li>'))
 
-    c (res, '</div>', '</nav>', '</div>', "")
+    c (res, '</ul>', '</div>', '</nav>', '</div>', "")
 }
 
 process_headers <- function (md, level = 1)
