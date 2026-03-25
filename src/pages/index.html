@@ -6,8 +6,8 @@
 
     <a href=blog.html style="color:#262626;">
         <div class="grid-y grid-margin y">
-            <div class="cell"><h2 align="center">blog</h2></div>
-            <div class="cell"><h4 align="center">Recent Entries</h4></div>
+            <div class="cell"><h2 style="text-align: center;">blog</h2></div>
+            <div class="cell"><h4 style="text-align: center;">Recent Entries</h4></div>
         </div>
     </a>
 
@@ -15,14 +15,14 @@
     {{> sections_header}}
     {{#each blogshort}}
     {{> blog_header}}
-    <a href="{{ link }}", style="color:#262626;">
-        <div align="center">
+    <a href="{{ link }}" style="color:#262626;">
+        <div style="text-align: center;">
             <h3>{{ title }}</h3>
         </div>
-        <div align="center">
+        <div style="text-align: center;">
             <p style="color:#888888;">{{ created }}</p>
         </div>
-        <div align="center">
+        <div style="text-align: center;">
             <p>{{ description }}</p>
         </div>
     </a>
@@ -33,9 +33,9 @@
 
     <a href="code/" style="color:#262626;">
         <div class="grid-y grid-margin y">
-            <div class="cell"><h2 align="center">code</h2></div>
+            <div class="cell"><h2 style="text-align: center;">code</h2></div>
             <div class="cell">
-                <h4 align="center">a selection of R packages</h4>
+                <h4 style="text-align: center;">a selection of R packages</h4>
             </div>
         </div>
     </a>
@@ -46,30 +46,28 @@
     {{#each code}}
     <div class="code-item medium-4 large-2 cell">
     {{> code_header}}
-    <a target="_blank" rel="noopener noreferrer"
-                       href="{{ link }}", style="color:#262626;">
-        <div align="center">
-            <h3>{{ package }}</h3>
-        </div>
-        <p align="center">
-        <option "{{ cran }}"="yes">
-        <a href="{{ cranlink }}">
-            <!--<img src="{{ cranlogs }}" alt="CRAN Downloads"/>-->
-            <img src="{{ cranlogs }}">
+    <div style="cursor: pointer;" onclick="window.open('{{ link }}', '_blank')">
+        <a target="_blank" rel="noopener noreferrer" href="{{ link }}" style="color:#262626; text-decoration: none;">
+            <div style="text-align: center;">
+                <h3>{{ package }}</h3>
+            </div>
         </a>
-        </option>
+        <p style="text-align: center;">
+        {{#if cranlink}}
+        <a href="{{ cranlink }}" target="_blank" rel="noopener noreferrer">
+            <img src="{{ cranlogs }}" alt="CRAN Downloads">
+        </a>
+        {{/if}}
         {{#if roslink}}
-        <option "{{ ros }}"="yes">
-        <a href="{{ roslink }}">
-            <img src="{{ rosstatus }}"/>
+        <a href="{{ roslink }}" target="_blank" rel="noopener noreferrer">
+            <img src="{{ rosstatus }}" alt="rOpenSci package status"/>
         </a>
-        </option>
         {{/if}}
         </p>
-        <div class="card-section" align="center">
+        <div class="card-section" style="text-align: center;">
             <p>{{ title }}</p>
         </div>
-    </a>
+    </div>
     {{> code_footer}}
     </div>
     {{/each}}
