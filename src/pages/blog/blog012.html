@@ -18,7 +18,7 @@
 <div class="cell medium-10 large-10">
 <div class="sections">
 {{#markdown}}
-<section id="debugging-in-R-with-a-single-command" data-magellan-target="debugging-in-R-with-a-single-command"><h1>debugging in R with a single command</h></section>
+<section id="debugging-in-R-with-a-single-command" data-magellan-target="debugging-in-R-with-a-single-command"><h1>debugging in R with a single command</h1></section>
 
 The art of debugging C++ code in R has been covered in many other
 places, notably including [this post by Davis
@@ -48,7 +48,7 @@ generally be easier to do that from within the root directory of the
 package you want debugged anyway, so we’ll just presume that from here
 on anyway.
 
-<section id="How-to-start-a-source-code-debugger-in-R" data-magellan-target="How-to-start-a-source-code-debugger-in-R"><h2>How to start a source-code debugger in R</h></section>
+<section id="How-to-start-a-source-code-debugger-in-R" data-magellan-target="How-to-start-a-source-code-debugger-in-R"><h2>How to start a source-code debugger in R</h2></section>
 
 Starting an R session causes a computer console to enter a dedicated
 computational environment where R commands can be typed, and will be
@@ -69,7 +69,7 @@ who has never used a source code debugger before. This post will
 describe a simple setup for “automating away” these two steps, and
 reducing them to a single command.
 
-<section id="Re-compiling-source-code-to-include-debugging-symbols" data-magellan-target="Re-compiling-source-code-to-include-debugging-symbols"><h3>Re-compiling source code to include debugging symbols</h></section>
+<section id="Re-compiling-source-code-to-include-debugging-symbols" data-magellan-target="Re-compiling-source-code-to-include-debugging-symbols"><h3>Re-compiling source code to include debugging symbols</h3></section>
 
 While there are potentially a number of ways source code in an R package
 (or elsewhere) can be re-compiled with debugging symbols, perhaps the
@@ -93,7 +93,7 @@ modifies an existing file to add the symbols on to any existing
 compilation symbols). The following section describes how this function
 is used to implement a one-line command to start debugging.
 
-<section id="Starting-an-R-session-in-debug-mode" data-magellan-target="Starting-an-R-session-in-debug-mode"><h3>Starting an R session in debug mode</h></section>
+<section id="Starting-an-R-session-in-debug-mode" data-magellan-target="Starting-an-R-session-in-debug-mode"><h3>Starting an R session in debug mode</h3></section>
 
 As described above, R is effectively a self-contained computational
 environment within some other environment (such as a terminal
@@ -132,7 +132,7 @@ specifying which debugger to use, such as “gdb” as in that example, or
 “lldb”, or any other available debugger. The `-e` flag specifies a
 command for R to evaluate while debugging.
 
-<section id="Putting-it-together-in-a-single-command" data-magellan-target="Putting-it-together-in-a-single-command"><h3>Putting it together in a single command</h></section>
+<section id="Putting-it-together-in-a-single-command" data-magellan-target="Putting-it-together-in-a-single-command"><h3>Putting it together in a single command</h3></section>
 
 My single-command solution is implemented via a shell alias, for which
 is use “debugr”, which just calls a shell script:

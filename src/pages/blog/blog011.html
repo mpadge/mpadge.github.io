@@ -18,7 +18,7 @@
 <div class="cell medium-10 large-10">
 <div class="sections">
 {{#markdown}}
-<section id="Timeout-on-parallel-jobs-in-R" data-magellan-target="Timeout-on-parallel-jobs-in-R"><h1>Timeout on parallel jobs in R</h></section>
+<section id="Timeout-on-parallel-jobs-in-R" data-magellan-target="Timeout-on-parallel-jobs-in-R"><h1>Timeout on parallel jobs in R</h1></section>
 
 Python’s
 [`multiprocessing`](https://docs.python.org/3/library/multiprocessing.html)
@@ -82,7 +82,7 @@ That represents a succinct way to run a multi-threaded job in which each
 thread obeys a specified timeout parameter. This post describes two
 approaches to implementing equivalent functionality in R.
 
-<section id="Timeout-in-R-s-parallel-package" data-magellan-target="Timeout-in-R-s-parallel-package"><h2>Timeout in R’s ‘parallel’ package</h></section>
+<section id="Timeout-in-R-s-parallel-package" data-magellan-target="Timeout-in-R-s-parallel-package"><h2>Timeout in R’s ‘parallel’ package</h2></section>
 
 R’s [`{parallel}`
 package](https://stat.ethz.ch/R-manual/R-devel/library/parallel/doc/parallel.pdf)
@@ -304,7 +304,7 @@ to the approach illustrated here:
 The next section explores a different approach that is operating-system
 independent.
 
-<section id="Timeout-via-callr-" data-magellan-target="Timeout-via-callr-"><h2>Timeout via ‘callr’</h></section>
+<section id="Timeout-via-callr-" data-magellan-target="Timeout-via-callr-"><h2>Timeout via ‘callr’</h2></section>
 
 The [callr package by Gábor Csárdi and Winston
 Chang](https://callr.r-lib.org) is designed for ‘calling R from R’ –
@@ -372,7 +372,7 @@ The `timeout` parameter of `callr::r()` can thus be used to directly
 implement a timeout parameter. The following sub-section demonstrates
 how to extend this to parallel jobs.
 
-<section id="Parallel-timeout-via-callr-" data-magellan-target="Parallel-timeout-via-callr-"><h2>Parallel timeout via ‘callr’</h></section>
+<section id="Parallel-timeout-via-callr-" data-magellan-target="Parallel-timeout-via-callr-"><h2>Parallel timeout via ‘callr’</h2></section>
 
 To illustrate a different approach than the previous `mcparallel()`
 function, the following code uses the [`mclapply` function of the
@@ -446,7 +446,7 @@ package](https://cran.r-project.org/web/packages/snow/index.html). These
 not implement a `timeout` parameter, and so this `{callr}` approach
 offers one practical way to do so via those packages.
 
-<section id="Timeout-parameters-and-future-packages" data-magellan-target="Timeout-parameters-and-future-packages"><h3>Timeout parameters and ‘future’ packages</h></section>
+<section id="Timeout-parameters-and-future-packages" data-magellan-target="Timeout-parameters-and-future-packages"><h3>Timeout parameters and ‘future’ packages</h3></section>
 
 Processes triggered by the `{callr}` package do not generally play
 nicely with the core `{future}` package, which was likely one motivation

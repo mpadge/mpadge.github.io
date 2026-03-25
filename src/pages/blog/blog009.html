@@ -18,7 +18,7 @@
 <div class="cell medium-10 large-10">
 <div class="sections">
 {{#markdown}}
-<section id="The-a-href-https-github-com-ropenscilabs-allcontributors-allcontributors-a-package" data-magellan-target="The-a-href-https-github-com-ropenscilabs-allcontributors-allcontributors-a-package"><h1>The <a href="https://github.com/ropenscilabs/allcontributors">allcontributors</a> package</h></section>
+<section id="The-a-href-https-github-com-ropenscilabs-allcontributors-allcontributors-a-package" data-magellan-target="The-a-href-https-github-com-ropenscilabs-allcontributors-allcontributors-a-package"><h1>The <a href="https://github.com/ropenscilabs/allcontributors">allcontributors</a> package</h1></section>
 
 The [`allcontributors`
 package](https://github.com/ropenscilabs/allcontributors) is an
@@ -33,7 +33,7 @@ task to a single function call, in the hope that such simplicity will
 spur greater usage. In short: This package can’t do everything the
 original does, but it makes what it does much easier.
 
-<section id="Why-then-" data-magellan-target="Why-then-"><h2>Why then?</h></section>
+<section id="Why-then-" data-magellan-target="Why-then-"><h2>Why then?</h2></section>
 
 The original [`all-contributors`](https://allcontributors.org/) is
 primarily a bot which responds to commit messages such as
@@ -51,14 +51,14 @@ package:
 2.  Works locally without any bot integration
 3.  Can add contributors to any file, not just the main README
 4.  Offers a variety of formats for listing contributors:
-    1.  divided into sections by types of contributions, or as a single
+    1)  divided into sections by types of contributions, or as a single
         section
-    2.  presented as full grids (like [the
+    2)  presented as full grids (like [the
         original](https://github.com/all-contributors/all-contributors/blob/master/README.md#contributors-)),
         numbered lists of github user names only, or single text strings
         of comma-separated names.
 
-<section id="Usage" data-magellan-target="Usage"><h2>Usage</h></section>
+<section id="Usage" data-magellan-target="Usage"><h2>Usage</h2></section>
 
 The primary function of the package,
 [`add_contributors()`](https://ropenscilabs.github.io/allcontributors/reference/add_contributors.html),
@@ -116,14 +116,48 @@ get_contributors(org = "ropenscilabs", repo = "allcontributors")
 
     ## ✔ Extracted github issue contributors
 
-    ##   logins contributions                                                                                         avatar
-    ## 1 mpadge           130                                            https://avatars.githubusercontent.com/u/6697851?v=4
-    ## 2 maelle            NA https://avatars.githubusercontent.com/u/8360597?u=144e03ae2bbe8a69318cb0c6c3f647e25aec6763&v=4
-    ##            type
-    ## 1          code
-    ## 2 issue_authors
+    ## ★  Checking GitHub URLs
 
-<section id="Updating-Contributor-Acknowledgements" data-magellan-target="Updating-Contributor-Acknowledgements"><h2>Updating Contributor Acknowledgements</h></section>
+    ## ✔ Checked GitHub URLs
+
+    ##            logins contributions
+    ## 1          mpadge           300
+    ## 2     chartgerink             9
+    ## 3          maelle             7
+    ## 4  iantaylor-NOAA             1
+    ## 5     maurolepore             1
+    ## 6       milanmlft             1
+    ## 7   SaranjeetKaur             1
+    ## 8           sbfnk             1
+    ## 9      shamindras            NA
+    ## 10     assignUser            NA
+    ## 11    RichardLitt            NA
+    ##                                                                                             avatar
+    ## 1                                              https://avatars.githubusercontent.com/u/6697851?v=4
+    ## 2                                              https://avatars.githubusercontent.com/u/2946344?v=4
+    ## 3                                              https://avatars.githubusercontent.com/u/8360597?v=4
+    ## 4                                              https://avatars.githubusercontent.com/u/4992918?v=4
+    ## 5                                              https://avatars.githubusercontent.com/u/5856545?v=4
+    ## 6                                             https://avatars.githubusercontent.com/u/38256462?v=4
+    ## 7                                             https://avatars.githubusercontent.com/u/28556616?v=4
+    ## 8                                              https://avatars.githubusercontent.com/u/1156307?v=4
+    ## 9   https://avatars.githubusercontent.com/u/7627188?u=d05fb551796e6ce6db64ae43cd8ce48a0217ef85&v=4
+    ## 10 https://avatars.githubusercontent.com/u/16141871?u=b8095df6a10813031922a72335bd6579d5494c16&v=4
+    ## 11   https://avatars.githubusercontent.com/u/910753?u=a638615a7167b368f0c102aa2047cef15b0ce9cc&v=4
+    ##             type
+    ## 1           code
+    ## 2           code
+    ## 3           code
+    ## 4           code
+    ## 5           code
+    ## 6           code
+    ## 7           code
+    ## 8           code
+    ## 9  issue_authors
+    ## 10 issue_authors
+    ## 11 issue_authors
+
+<section id="Updating-Contributor-Acknowledgements" data-magellan-target="Updating-Contributor-Acknowledgements"><h2>Updating Contributor Acknowledgements</h2></section>
 
 “Contributors” sections of files will be automatically updated to
 reflect any new contributions by simply calling
@@ -140,7 +174,7 @@ all files, and call
 [`add_contributors()`](https://ropenscilabs.github.io/allcontributors/reference/add_contributors.html)
 again.
 
-<section id="More-Information" data-magellan-target="More-Information"><h2>More Information</h></section>
+<section id="More-Information" data-magellan-target="More-Information"><h2>More Information</h2></section>
 
 The package has a [single
 vignette](https://ropenscilabs.github.io/allcontributors/articles/allcontributors.html)

@@ -17,7 +17,7 @@
 <div class="cell medium-10 large-10">
 <div class="sections">
 {{#markdown}}
-<section id="What-are-matrices-in-R-" data-magellan-target="What-are-matrices-in-R-"><h1>What are matrices in R?</h></section>
+<section id="What-are-matrices-in-R-" data-magellan-target="What-are-matrices-in-R-"><h1>What are matrices in R?</h1></section>
 
 “R is a shockingly dreadful language for an exceptionally useful data
 analysis environment” (
@@ -43,7 +43,7 @@ The differences aren’t too important.” This blog entry will attempt to
 illustrate the kind of circumstances under which differences between
 vectors and matrices actually become quite important indeed.
 
-<section id="An-initial-illustration" data-magellan-target="An-initial-illustration"><h2>An initial illustration</h></section>
+<section id="An-initial-illustration" data-magellan-target="An-initial-illustration"><h2>An initial illustration</h2></section>
 
 Vectors do differ from matrices, as the following code clearly
 illustrates:
@@ -149,7 +149,7 @@ those columns, is roughly as *inefficient* as `rowSums` itself, while
 direct addition of the equivalent vectors remains 3-4 times more
 efficient.
 
-<section id="How-are-matrices-stored-" data-magellan-target="How-are-matrices-stored-"><h3>How are matrices stored?</h></section>
+<section id="How-are-matrices-stored-" data-magellan-target="How-are-matrices-stored-"><h3>How are matrices stored?</h3></section>
 
 So the reason for the relative inefficiency of `rowSums` is likely to
 extend directly from the column selection operation, `xy[, i]`. The
@@ -228,7 +228,7 @@ individual rows or columns – the `xy[, i]` operations, presumably
 because these operations involve creating an additional copy of the
 entire row or column.
 
-<section id="Conclusion" data-magellan-target="Conclusion"><h2>Conclusion</h></section>
+<section id="Conclusion" data-magellan-target="Conclusion"><h2>Conclusion</h2></section>
 
 What the above code was intended to demonstrate was that matrices should
 only be considered to be **like** vectors in the sense of operations on

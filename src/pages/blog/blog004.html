@@ -14,7 +14,7 @@
 <div class="cell medium-10 large-10">
 <div class="sections">
 {{#markdown}}
-<section id="Calling-external-files-from-C-in-R" data-magellan-target="Calling-external-files-from-C-in-R"><h1>Calling external files from C in R</h></section>
+<section id="Calling-external-files-from-C-in-R" data-magellan-target="Calling-external-files-from-C-in-R"><h1>Calling external files from C in R</h1></section>
 
 I recently encountered a problem while bundling an old C library into a
 new R package. The library itself depends on, and includes, an external
@@ -31,8 +31,7 @@ occupied a couple of days of my time, hence this documentation for the
 sake of posterity. As with many “external” files within R packages, the
 recommended locations is within the `inst` directory, or some
 sub-directory thereof. Any files within this directory will be copied
-“recursively to the installation directory” (from Writing R
-Extensions).
+“recursively to the installation directory” (from Writing R Extensions).
 
 Such files can nevertheless *not* be called directly from any `src`
 code, because there is no way for a compiled source object to find them

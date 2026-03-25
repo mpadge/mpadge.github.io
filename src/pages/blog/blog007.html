@@ -17,7 +17,7 @@
 <div class="cell medium-10 large-10">
 <div class="sections">
 {{#markdown}}
-<section id="Using-RcppParallel-to-aggregate-to-a-vector" data-magellan-target="Using-RcppParallel-to-aggregate-to-a-vector"><h1>Using RcppParallel to aggregate to a vector</h></section>
+<section id="Using-RcppParallel-to-aggregate-to-a-vector" data-magellan-target="Using-RcppParallel-to-aggregate-to-a-vector"><h1>Using RcppParallel to aggregate to a vector</h1></section>
 
 This article was [recently published in the Rcpp
 Gallery](https://gallery.rcpp.org/articles/parallel-aggregate-to-vector/),
@@ -29,7 +29,7 @@ aggregation](https://gallery.rcpp.org/articles/parallel-vector-sum),
 through providing necessary details to enable aggregation to a vector,
 or by extension, to any arbitrary form.
 
-<section id="The-General-Problem" data-magellan-target="The-General-Problem"><h3>The General Problem</h></section>
+<section id="The-General-Problem" data-magellan-target="The-General-Problem"><h3>The General Problem</h3></section>
 
 Many tasks require aggregation to a vector result, and many such tasks
 can be made more efficient by performing such aggregation in parallel.
@@ -50,7 +50,7 @@ of a matrix, noting at the output that is not intended to represent
 efficient code, rather it is written to explicitly emphasise the
 principles of using `RcppParallel` to aggregate over a vector result.
 
-<section id="The-parallelReduce-Worker" data-magellan-target="The-parallelReduce-Worker"><h3>The parallelReduce Worker</h></section>
+<section id="The-parallelReduce-Worker" data-magellan-target="The-parallelReduce-Worker"><h3>The parallelReduce Worker</h3></section>
 
 The following code defines our parallel worker, in which the input is
 presumed for demonstration purposes to be a matrix stored as a single
@@ -82,8 +82,6 @@ includes a few notable features:
     is more readily done using a `std::vector` than an `Rcpp` vector,
     with final conversion to an `Rcpp` vector result achieved through a
     simple `Rcpp::wrap` call.)
-
-<!-- end list -->
 
 ``` cpp
 #include <Rcpp.h>
@@ -167,7 +165,7 @@ NumericVector vector_aggregator (IntegerVector index, NumericVector x)
 }
 ```
 
-<section id="Demonstration" data-magellan-target="Demonstration"><h3>Demonstration</h></section>
+<section id="Demonstration" data-magellan-target="Demonstration"><h3>Demonstration</h3></section>
 
 Finally, the following code demonstrates that this parallel worker
 correctly returns the row sums of the input matrix.

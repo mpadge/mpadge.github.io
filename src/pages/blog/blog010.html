@@ -16,7 +16,7 @@
 <div class="cell medium-10 large-10">
 <div class="sections">
 {{#markdown}}
-<section id="GitHub-notifications-from-the-terminal" data-magellan-target="GitHub-notifications-from-the-terminal"><h1>GitHub notifications from the terminal</h></section>
+<section id="GitHub-notifications-from-the-terminal" data-magellan-target="GitHub-notifications-from-the-terminal"><h1>GitHub notifications from the terminal</h1></section>
 
 I work almost entirely from the terminal, and regret the few remaining
 tasks which still require me to venture elsewhere, such as a web
@@ -37,7 +37,7 @@ the `cli` will be able to be used directly to do everything described
 here and much more. Until that time, the following provides one way to
 access GitHub notifications from the terminal.
 
-<section id="The-script" data-magellan-target="The-script"><h2>The script</h></section>
+<section id="The-script" data-magellan-target="The-script"><h2>The script</h2></section>
 
 Like almost everything I do, I associate this with an alias, in this
 case `gn` for, of course, GitHub Notifications. The alias calls the
@@ -67,7 +67,7 @@ That shows the three options currently implemented:
 All of these options call functions from an [R package I use to hold my
 miscellaneous functions, `mpmisc`](https://github.com/mpadge/mpmisc).
 
-<section id="The-gh-notifications-functions" data-magellan-target="The-gh-notifications-functions"><h2>The `gh_notifications` functions</h></section>
+<section id="The-gh-notifications-functions" data-magellan-target="The-gh-notifications-functions"><h2>The `gh_notifications` functions</h2></section>
 
 All of these functions are contained within [a single file of that
 package](https://github.com/mpadge/mpmisc/blob/master/R/github-notifications.R),
@@ -94,10 +94,10 @@ separate function which formats output using [ANSII escape
 codes](https://en.wikipedia.org/wiki/ANSI_escape_code#SGR_(Select_Graphic_Rendition)_parameters).
 The result then looks something like this:
 
-→ <span style="color:red">org1/repo2 #3</span>:<span
-style="color:green"> title one</span><br> → <span
-style="color:red">org4/repo5 #6</span>:<span style="color:green"> title
-two</span>
+→ <span style="color:red">org1/repo2
+\#3</span>:<span style="color:green"> title one</span><br> →
+<span style="color:red">org4/repo5 \#6</span>:<span style="color:green">
+title two</span>
 
 Typing `gn 1` will then open the first notification in my default web
 browser. The notifications for [the `open_gh_notification()`

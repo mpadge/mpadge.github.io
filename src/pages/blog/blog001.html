@@ -19,7 +19,7 @@
 <div class="cell medium-10 large-10">
 <div class="sections">
 {{#markdown}}
-<section id="how-i-made-this-site-from-scratch-" data-magellan-target="how-i-made-this-site-from-scratch-"><h1>how i made this site (from scratch)</h></section>
+<section id="how-i-made-this-site-from-scratch-" data-magellan-target="how-i-made-this-site-from-scratch-"><h1>how i made this site (from scratch)</h1></section>
 
 New blog, new website, so here we go. I’ll start by describing how i
 built the website. From scratch. The site is built with
@@ -41,7 +41,7 @@ technically-oriented, back-end programmer more focussed on getting stuff
 in and processing it than on getting stuff out. So when i say ‘’starting
 from scratch,’’ i mean that most sincerely.
 
-<section id="visual-style" data-magellan-target="visual-style"><h2>visual style</h></section>
+<section id="visual-style" data-magellan-target="visual-style"><h2>visual style</h2></section>
 
 This is largely `html`-related ramblings, so if you’re interested in the
 code stuff, you might like to skip straight ahead to the [next
@@ -66,7 +66,6 @@ callout </a> containers or plain cells. This and all blog pages, for
 example, are full-width <a target="_blank" rel="noopener noreferrer"
                    href="https://foundation.zurb.com/sites/docs/xy-grid.html">
 xy-grid </a> containers with simple headers of
-
 <pre><code class="hljs xml">&lt;div class="grid-x grid-padding-x"&gt;
     &lt;div class="cell medium-12 large-12"&gt;
 </code></pre>
@@ -92,7 +91,6 @@ entries, for example, read straight from a `src/data/blog.yaml` file
 that looks like this:
 
 ``` markdown
--
     title: how i made this site
     description: < blah blah blah >
     created: 06 May 19
@@ -110,13 +108,12 @@ More on how that gets automatically generated below; for now, just
 pretend it’s a static file. This has two entries, each of which has a
 variety of components (such as `title`, `description`, and `link`). The
 ‘’blog’’ section on the main page is generated directly from these
-`yaml` meta-data, using the &#123;&#123;\#each blog&#125;&#125; command to automatically
-loop over each of the above entries in the `data/blog.yml` file, using
-the same double-curly-bracket syntax from zurb’s
+`yaml` meta-data, using the &#123;&#123;&#35;each blog&#125;&#125; command to automatically loop
+over each of the above entries in the `data/blog.yml` file, using the
+same double-curly-bracket syntax from zurb’s
 <a target="_blank" rel="noopener noreferrer"
                    href="https://foundation.zurb.com/sites/docs/panini.html">
 panini </a> to insert variables into the `html` code:
-
 <pre><code class="hljs xml">&#123;&#123;&#35;each blog&#125;&#125;
     &#123;&#123;> blog_header&#125;&#125;
         &lt;a href=&#123;&#123; link &#125;&#125;, style="color:#262626;"&gt;
@@ -189,7 +186,7 @@ white, which was achieved with a simple two-line
 <div class="large-4 medium-6 cell" style="background-color:#ffffffaa">
 ```
 
-The code above with &#123;&#123;\> blog\_header &#125;&#125; simply inserts that header in
+The code above with &#123;&#123;\> blog_header &#125;&#125; simply inserts that header in
 its rightful place.
 
 That is the very short version of how i got this site to look the way it
@@ -198,7 +195,7 @@ that i didn’t have to borrow somebody else’s arbitrary and
 way-more-difficult-to-modify-than-i-thought template for whatever other
 site/blog-generating system i may otherwise have chosen.
 
-<section id="the-content" data-magellan-target="the-content"><h2>the content</h></section>
+<section id="the-content" data-magellan-target="the-content"><h2>the content</h2></section>
 
 The steps roughly described above yielded a static site largely as you
 see here. The only remaining step was automating the procedure of
@@ -225,7 +222,6 @@ a few more tricks for other included elements, notably graphics.
 
 With the help of partials, the entire `html` formatting of a blog page
 is as simple as a header with these few lines:
-
 <pre><code class="hljs xml">&#123;&#123;> header&#125;&#125;
 &lt;div class="blogClass"&gt;
   &lt;div class="grid-x grid-padding-x"&gt;
@@ -234,7 +230,6 @@ is as simple as a header with these few lines:
 </code></pre>
 
 and a footer simply closing each section with:
-
 <pre><code class="hljs xml">    &#123;&#123;/markdown&#125;&#125;
     &lt;/div&gt;
   &lt;/div&gt;
@@ -286,7 +281,7 @@ foundation’s panini</a> interpreter, which are replaced by corresponding
 from which the curly brackets must be removed to replace it with, \`\`\`
 r.
 
-<section id="images" data-magellan-target="images"><h3>images</h></section>
+<section id="images" data-magellan-target="images"><h3>images</h3></section>
 
 While it is possible to specify an image directory in the `yaml`
 front-matter of an `.Rmd`document, it was just as easy, and more
@@ -311,7 +306,7 @@ latter path. A final parameter called `center_images`, when `TRUE`,
 inserts simple `<center>` and `</center>` lines before and after the
 standard markdown image insertion command (`![](<path>/<to>/<image>)`).
 
-<section id="meta-data-yaml-data-and-the-front-page" data-magellan-target="meta-data-yaml-data-and-the-front-page"><h2>meta-data, yaml data, and the front page</h></section>
+<section id="meta-data-yaml-data-and-the-front-page" data-magellan-target="meta-data-yaml-data-and-the-front-page"><h2>meta-data, yaml data, and the front page</h2></section>
 
 The `blog_render()` function then worked, but I still needed to
 automatically update the front page to link directly to the latest
@@ -324,18 +319,15 @@ turn relies on one main function, `get_one_blog_dat()` which, for
 example, converts the metadata for this entry of:
 
 ``` markdown
----
 title: how i made this site
 description: <blah blah blah>
 date: 06/05/2019
 link: blog/blog001.html
----
 ```
 
 into the only slightly-modified version in `data/blog.yml` of
 
 ``` markdown
--
     title: how i made this site
     description: <blah blah blah>
     created: 06 May 19
@@ -348,7 +340,7 @@ metadata, while the “modified” date is the actual date of file
 modification. These two dates enable blog entries to be sorted by dates
 of either creation or modification with a simple binary parameter.
 
-<section id="conclusion" data-magellan-target="conclusion"><h1>conclusion</h></section>
+<section id="conclusion" data-magellan-target="conclusion"><h1>conclusion</h1></section>
 
 That’s it. It took me a little while to construct this site, but most of
 the time was me learning how
@@ -378,9 +370,9 @@ commit to update the site. That’s it.
 
 Advantages of having done this my own way:
 
-  - no borrowed templates\!
-  - no blogdown
-  - full control over everything
+- no borrowed templates!
+- no blogdown
+- full control over everything
 <div style="text-align: right">
 Originally posted: 06 May 19
 Updated: 07 May 19

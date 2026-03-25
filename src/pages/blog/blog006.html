@@ -18,7 +18,7 @@
 <div class="cell medium-10 large-10">
 <div class="sections">
 {{#markdown}}
-<section id="Github-2FA-git-push-and-password-entry" data-magellan-target="Github-2FA-git-push-and-password-entry"><h1>Github 2FA, git push, and password entry</h></section>
+<section id="Github-2FA-git-push-and-password-entry" data-magellan-target="Github-2FA-git-push-and-password-entry"><h1>Github 2FA, git push, and password entry</h1></section>
 
 Activating github two-factor authentication (2FA) offers an indubitable
 security boost, with one notable side effect: `https` authentication
@@ -33,12 +33,12 @@ github documentation </a>, which states:
 So everything *looks* like it stays the same, except now I have to enter
 a random 32-character long Personal Access Token (PAT), instead of my
 former, sensibly memorable, and readily typeable password. But I liked
-things the old way\! This blog entry describes the process I went
-through to effectively restore the previous behaviour of the git prompt
-prior to me switching on 2FA on github, enabling me to type a password
-for `git push`, instead of the un-typeable PAT.
+things the old way! This blog entry describes the process I went through
+to effectively restore the previous behaviour of the git prompt prior to
+me switching on 2FA on github, enabling me to type a password for
+`git push`, instead of the un-typeable PAT.
 
-<section id="Why-enter-a-password-each-time-" data-magellan-target="Why-enter-a-password-each-time-"><h2>Why enter a password each time?</h></section>
+<section id="Why-enter-a-password-each-time-" data-magellan-target="Why-enter-a-password-each-time-"><h2>Why enter a password each time?</h2></section>
 
 Many – maybe most? – people are likely content with SSH authentication,
 which avoids any of these issues, and simply allows your `git push`
@@ -65,7 +65,7 @@ github, i feared that i was going to have to constantly copy-paste my
 PAT for every commit. I didn’t wanna do that, so i did the following …
 but first a brief digression into my SSL habits.
 
-<section id="OpenSSL-encryption" data-magellan-target="OpenSSL-encryption"><h2>OpenSSL encryption</h></section>
+<section id="OpenSSL-encryption" data-magellan-target="OpenSSL-encryption"><h2>OpenSSL encryption</h2></section>
 
 I use
 <a target="_blank" rel="noopener noreferrer" href="https://www.openssl.org/">
@@ -92,19 +92,20 @@ openssl des3 -salt -md sha256 -pbkdf2 -d -in gitpat -out gitpat.txt
 ```
 
 Then i’ve got my token in `gitpat.txt`, which i can … copy-and-paste
-each time i need to `git push`? No way\! And so … on to my solution.
+each time i need to `git push`? No way! And so … on to my solution.
 
-<section id="github-2FA-via-https-with-password-entry-and-not-an-untypeable-token" data-magellan-target="github-2FA-via-https-with-password-entry-and-not-an-untypeable-token"><h2>github 2FA via https with password entry, and not an untypeable token</h></section>
+<section id="github-2FA-via-https-with-password-entry-and-not-an-untypeable-token" data-magellan-target="github-2FA-via-https-with-password-entry-and-not-an-untypeable-token"><h2>github 2FA via https with password entry, and not an untypeable token</h2></section>
 
 My solution involved two main tricks:
 
 1.  Replacing my pushes in the form `git push origin master`, where
     `origin` can be identified via `git remote -v` as something like
     `https://github.com/mpadge/<repo>`, and which necessitates entering
-    `"mpadge"` and my PAT, with `git push
-    https://mpadge:<PAT>@github.com/mpadge/<repo>`, where the PAT is
-    passed directly to github, circumventing the need to enter it
-    manually, so that the push is directly sent and accepted; and
+    `"mpadge"` and my PAT, with
+    `git push    https://mpadge:<PAT>@github.com/mpadge/<repo>`, where
+    the PAT is passed directly to github, circumventing the need to
+    enter it manually, so that the push is directly sent and accepted;
+    and
 2.  Writing a script requiring my (github or other) password, and using
     that to automatically decrypt my PAT, convert it to an environmental
     variable, and using that to convert `git push` into the form above
@@ -163,13 +164,14 @@ That script gives our desired output:
 
     ## [1] "https://mpadge:<mypat>@github.com/<org>/<repo>"
 
-<section id="Final-script" data-magellan-target="Final-script"><h2>Final script</h></section>
+<section id="Final-script" data-magellan-target="Final-script"><h2>Final script</h2></section>
 
 My solution then just involved combining those two tricks within a
-single script, designed to *almost* but not quite reflect the old `git
-push` prompt and behaviour i was trying to emulate, and including an
-additional option to call the script with an extra parameter specifying
-the branch to push to, or otherwise defaulting to the current branch:
+single script, designed to *almost* but not quite reflect the old
+`git push` prompt and behaviour i was trying to emulate, and including
+an additional option to call the script with an extra parameter
+specifying the branch to push to, or otherwise defaulting to the current
+branch:
 
 ``` bash
 #!/bin/bash
