@@ -84,8 +84,8 @@ inline package
 ```{r add1}
 library (inline)
 add <- cfunction(c(a = "numeric", b = "numeric"), "
-                 int n = length (a);
-                 SEXP result = PROTECT (allocVector (REALSXP, n));
+                 int n = LENGTH (a);
+                 SEXP result = PROTECT (Rf_allocVector (REALSXP, n));
                  double *ra, *rb, *rout;
                  ra = REAL (a);
                  rb = REAL (b);
@@ -170,8 +170,8 @@ instead accept a matrix object, noting that the indices `i` and `n + i`
 respectively refer to the first and second columns of the matrix.
 ```{r}
 matadd <- cfunction(c(a = "numeric"), "
-                 int n = floor (length (a) / 2);
-                 SEXP result = PROTECT (allocVector (REALSXP, n));
+                 int n = floor (LENGTH (a) / 2.0);
+                 SEXP result = PROTECT (Rf_allocVector (REALSXP, n));
                  double *ra, *rout;
                  ra = REAL (a);
                  rout = REAL (result);

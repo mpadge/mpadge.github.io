@@ -878,7 +878,7 @@ Direct vector addition must work something like the following C code,
 written here in a form able to be directly parsed in R via the
 <a target="_blank" rel="noopener noreferrer" href="https://cran.r-project.org/package=inline">
 inline package </a>.
-<code>{r add1} library (inline) add &lt;- cfunction(c(a = &quot;numeric&quot;, b = &quot;numeric&quot;), &quot;                  int n = length (a);                  SEXP result = PROTECT (allocVector (REALSXP, n));                  double *ra, *rb, *rout;                  ra = REAL (a);                  rb = REAL (b);                  rout = REAL (result);                  for (int i = 0; i &lt; n; i++)                      rout [i] = ra [i] + rb [i];                  UNPROTECT (1);                  return result;                  &quot;)</code>
+<code>{r add1} library (inline) add &lt;- cfunction(c(a = &quot;numeric&quot;, b = &quot;numeric&quot;), &quot;                  int n = LENGTH (a);                  SEXP result = PROTECT (Rf_allocVector (REALSXP, n));                  double *ra, *rb, *rout;                  ra = REAL (a);                  rb = REAL (b);                  rout = REAL (result);                  for (int i = 0; i &lt; n; i++)                      rout [i] = ra [i] + rb [i];                  UNPROTECT (1);                  return result;                  &quot;)</code>
 That’s a simple C function to add two vectors and return the result,
 with most of the code providing the necessary scaffolding for an R
 function. The following benchmark compares that with the previous two
@@ -918,7 +918,7 @@ This enables us to then re-write the above C code for vector addition to
 instead accept a matrix object, noting that the indices <code>i</code>
 and <code>n + i</code> respectively refer to the first and second
 columns of the matrix.
-<code>{r} matadd &lt;- cfunction(c(a = &quot;numeric&quot;), &quot;                  int n = floor (length (a) / 2);                  SEXP result = PROTECT (allocVector (REALSXP, n));                  double *ra, *rout;                  ra = REAL (a);                  rout = REAL (result);                  for (int i = 0; i &lt; n; i++)                      rout [i] = ra [i] + ra [n + i];                  UNPROTECT (1);                  return result;                  &quot;)</code>
+<code>{r} matadd &lt;- cfunction(c(a = &quot;numeric&quot;), &quot;                  int n = floor (LENGTH (a) / 2.0);                  SEXP result = PROTECT (Rf_allocVector (REALSXP, n));                  double *ra, *rout;                  ra = REAL (a);                  rout = REAL (result);                  for (int i = 0; i &lt; n; i++)                      rout [i] = ra [i] + ra [n + i];                  UNPROTECT (1);                  return result;                  &quot;)</code>
 Benchmarking that against the previous versions, and including an
 additional comparison of direct matrix addition, gives the following
 results.
@@ -1423,7 +1423,8 @@ An integer vector gives integer return values, and a numeric
 templating through the magic of <code>SEXP</code>. Gratitude extended to
 Dirk Eddelbeuttel and David Cooley for advice and helpful pointers. ##
 The final code Just to make it clear, here’s the above code all placed
-in a single place:</p>
+in a single place:
+<code>{r writeSrcCpp, echo = FALSE} src_code &lt;- &#39; #include &lt;Rcpp.h&gt; template &lt;class T&gt; T mysquare (T &amp;x) {     for (size_t i = 0; i &lt; x.size (); i++)         x (i) = x (i) * x (i);     return x; } SEXP mysquare (SEXP &amp;x) {     switch (TYPEOF (x))     {         case INTSXP: {                          Rcpp::IntegerVector iv = Rcpp::as &lt;Rcpp::IntegerVector&gt; (x);                          return mysquare (iv);                      }         case REALSXP: {                          Rcpp::NumericVector nv = Rcpp::as &lt;Rcpp::NumericVector&gt; (x);                          return mysquare (nv);                      }         default: { Rcpp::stop (&quot;error&quot;);    }     }     return x; // this never happens } // [[Rcpp::export]] SEXP rcpp_mysquare (SEXP &amp;x) {     return mysquare (x); } &#39; writeLines (src_code, &quot;src.cpp&quot;)</code></p>
 <pre class="c++"><code>#include &lt;Rcpp.h&gt;
 template &lt;class T&gt;
 T mysquare (T &amp;x)
