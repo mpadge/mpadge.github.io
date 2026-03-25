@@ -83,6 +83,17 @@ test_result $? "No duplicate HTML IDs in index.html"
 grep -q "</section>" "$DIST_DIR/blog/blog001.html"
 test_result $? "Blog posts have proper section closing tags"
 
+# ----- Test: HTML structure validation with tidy
+if command -v tidy &> /dev/null; then
+    tidy -q "$DIST_DIR/index.html" > /dev/null 2>&1
+    test_result $? "index.html passes HTML structure validation"
+
+    tidy -q "$DIST_DIR/blog/blog001.html" > /dev/null 2>&1
+    test_result $? "Blog posts pass HTML structure validation"
+else
+    test_result 2 "tidy not installed (skipped HTML structure validation)"
+fi
+
 # Print summary if run standalone
 if [ "${BASH_SOURCE[0]}" == "${0}" ]; then
     echo
