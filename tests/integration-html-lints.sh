@@ -88,12 +88,18 @@ if command -v tidy &> /dev/null; then
     tidy -q "$DIST_DIR/index.html" > /dev/null 2>&1
     test_result $? "index.html passes HTML structure validation"
 
-    # For blog posts, check for warnings but ignore utterances script attributes (intentional)
-    BLOG_WARNINGS=$(tidy -q "$DIST_DIR/blog/blog001.html" 2>&1 | head -20 | grep -i "warning" | grep -v "proprietary attribute" | wc -l)
-    if [ "$BLOG_WARNINGS" -eq 0 ]; then
-        test_result 0 "Blog posts pass HTML structure validation"
+    # For blog posts, check all files for warnings but ignore utterances script attributes (intentional)
+    BLOG_FILES=$(find "$DIST_DIR/blog" -name "blog*.html" -type f | sort)
+    TOTAL_BLOG_WARNINGS=0
+    for BLOG_FILE in $BLOG_FILES; do
+        BLOG_WARNINGS=$(tidy -q "$BLOG_FILE" 2>&1 | head -20 | grep -i "warning" | grep -v "proprietary attribute" | wc -l)
+        TOTAL_BLOG_WARNINGS=$((TOTAL_BLOG_WARNINGS + BLOG_WARNINGS))
+    done
+
+    if [ "$TOTAL_BLOG_WARNINGS" -eq 0 ]; then
+        test_result 0 "All blog posts pass HTML structure validation"
     else
-        test_result 1 "Blog posts pass HTML structure validation"
+        test_result 1 "All blog posts pass HTML structure validation ($TOTAL_BLOG_WARNINGS warnings found)"
     fi
 else
     test_result 2 "tidy not installed (skipped HTML structure validation)"
