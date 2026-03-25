@@ -104,7 +104,7 @@ navbar <- function (hdrs)
               '<div class="cell medium-2 large-2 left">',
               '<nav class="sticky-container" data-sticky-container>',
               paste0 ('<div class="sticky" data-sticky data-anchor=',
-                      '"how-i-make-this-site" data-sticky-on="large"',
+                      '"how-i-make-this-site" data-sticky-on="medium"',
                       ' data-margin-top="5">'),
               '<ul class="vertical menu" data-magellan>')
 
