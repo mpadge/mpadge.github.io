@@ -29,8 +29,9 @@ blog_render <- function (fname, centre_images = TRUE) {
     md <- process_headers (md, 3)
 
     # remove any alt-format header lines
-    if (any (grepl ("^=|-+$", md)))
+    if (any (grepl ("^=|-+$", md))) {
         md <- md [-grep ("^=|-+$", md)]
+    }
 
     # the foundation html header and footer:
     header <- c ('{{> header}}',
@@ -43,10 +44,13 @@ blog_render <- function (fname, centre_images = TRUE) {
     # get_one_blog_dat fn defined in "update_main.R"
     metadat <- get_one_blog_dat (paste0 (fname, ".Rmd"))
 
-    footer <- c ('<div style="text-align: right">',
-                 paste ('Originally posted:', metadat$date_cre))
-    if (metadat$date_mod > metadat$date_cre)
+    footer <- c (
+        '<div style="text-align: right">',
+        paste ('Originally posted:', metadat$date_cre)
+    )
+    if (metadat$date_mod > metadat$date_cre) {
         footer <- c (footer, paste ('Updated:', metadat$date_mod))
+    }
     footer <- c (footer, '</div>',
                  '{{/markdown}}',
                  '</div>',

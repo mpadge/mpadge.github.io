@@ -390,10 +390,8 @@ that, and is aliased in the above shell script to
 
 
 <div id="the-allcontributors-package" class="section level1">
-<h1>The
-<a href="https://github.com/ropenscilabs/allcontributors">allcontributors</a>
-package</h1>
-<p>The <a href="https://github.com/ropenscilabs/allcontributors"><code>allcontributors</code>
+<h1>The allcontributors package</h1>
+<p>The <a href="https://docs.ropensci.org/allcontributors"><code>allcontributors</code>
 package</a> is an alternative implementation in R of the original <a href="https://allcontributors.org/"><code>all-contributors</code></a> to
 acknowledge all contributors in your ‘README’ (or elsewhere). The
 original is intended to help acknowledge <em>all</em> contributions
@@ -421,7 +419,7 @@ by types of contributions, or as a single section (ii) presented as full
 grids (like <a href="https://github.com/all-contributors/all-contributors/blob/master/README.md#contributors-">the
 original</a>), numbered lists of github user names only, or single text
 strings of comma-separated names. ## Usage The primary function of the
-package, <a href="https://ropenscilabs.github.io/allcontributors/reference/add_contributors.html"><code>add_contributors()</code></a>,
+package, <a href="https://docs.ropensci.org/allcontributors/reference/add_contributors.html"><code>add_contributors()</code></a>,
 adds a table of all contributors by default to the main
 <code>README.md</code> file (and <code>README.Rmd</code> if that
 exists). Tables or lists can be added to other files by specifying the
@@ -440,7 +438,7 @@ querying the github API, for which a local key should be set as an
 environmental variable containing the name <code>&quot;GITHUB&quot;</code> (either
 via <code>Sys.setenv()</code>, or as an equivalent entry in a file
 <code>~/.Renviron</code>). If the main <code>README</code> file(s)
-contains a markdown section entitled <code>&quot;Contributors&quot;</code>, the <a href="https://ropenscilabs.github.io/allcontributors/reference/add_contributors.html"><code>add_contributors()</code></a>
+contains a markdown section entitled <code>&quot;Contributors&quot;</code>, the <a href="https://docs.ropensci.org/allcontributors/reference/add_contributors.html"><code>add_contributors()</code></a>,
 function will add a table of contributors there, otherwise it will be
 appended to the end of the document(s). If you wish your contributors
 table to be somewhere other than at the end of the <code>README</code>
@@ -452,20 +450,20 @@ time you wish to update your contributor list, simply re-run the
 a github issue on your repository so that contributors will be pinged
 about them being added to your list of contributors. The data used to
 construct the contributions table can also be extracted without writing
-to the <code>README</code> file(s) with the function <a href="https://ropenscilabs.github.io/allcontributors/reference/get_contributors.html"><code>get_contributors()</code></a>:
-<code>{r get_contributors} library (allcontributors) get_contributors(org = &quot;ropenscilabs&quot;, repo = &quot;allcontributors&quot;)</code>
+to the <code>README</code> file(s) with the function <a href="https://docs.ropensci.org/allcontributors/reference/get_contributors.html"><code>get_contributors()</code></a>,
+<code>{r get_contributors} library (allcontributors) get_contributors(org = &quot;ropensci&quot;, repo = &quot;allcontributors&quot;)</code>
 ## Updating Contributor Acknowledgements “Contributors” sections of
 files will be automatically updated to reflect any new contributions by
-simply calling <a href="https://ropenscilabs.github.io/allcontributors/reference/add_contributors.html"><code>add_contributors()</code></a>.
+simply calling <a href="https://docs.ropensci.org/allcontributors/reference/add_contributors.html"><code>add_contributors()</code></a>,
 If your contributors have not changed then your lists of
-acknowledgements will not be changed. The <a href="https://ropenscilabs.github.io/allcontributors/reference/add_contributors.html"><code>add_contributors()</code></a>
+acknowledgements will not be changed. The <a href="https://docs.ropensci.org/allcontributors/reference/add_contributors.html"><code>add_contributors()</code></a>,
 function has an additional parameter which may be set to
 <code>force_update = TRUE</code> to force lists to be updated regardless
 of whether contributions have changed. This can be used to change the
 formats of acknowledgements at any time. If anything goes wrong, the
 easiest way to replace a contributions section is to simply delete the
-old ones from all files, and call <a href="https://ropenscilabs.github.io/allcontributors/reference/add_contributors.html"><code>add_contributors()</code></a>
-again. ## More Information The package has a <a href="https://ropenscilabs.github.io/allcontributors/articles/allcontributors.html">single
+old ones from all files, and call <a href="https://docs.ropensci.org/allcontributors/reference/add_contributors.html"><code>add_contributors()</code></a>,
+again. ## More Information The package has a <a href="https://docs.ropensci.org/allcontributors/articles/allcontributors.html">single
 vignette</a> which visually demonstrates the various formats in which an
 “allcontributors” section can be presented.</p>
 </div>]]></content:encoded>
