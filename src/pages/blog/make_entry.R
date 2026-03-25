@@ -13,6 +13,8 @@ blog_render <- function (fname, centre_images = TRUE) {
     md <- gsub ("{{ #", "&#123;&#123; &#35;", md, fixed = TRUE)
     md <- gsub ("{{", "&#123;&#123;", md, fixed = TRUE)
     md <- gsub ("}}", "&#125;&#125;", md, fixed = TRUE)
+    # escape unescaped ampersands in URLs (but not already-escaped entities)
+    md <- gsub ("&(?![a-zA-Z0-9#]+;)", "&amp;", md, perl = TRUE)
 
     dest_dir <- c ("assets", "img")
     md <- move_image_files (md, fname, centre_images = TRUE,
