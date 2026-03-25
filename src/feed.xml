@@ -1237,10 +1237,233 @@ whether it has finished or not. 4. … use the cached result.</p>
     </item>
     <item>
       <title>C++ templates and Rcpp</title>
-      <link>https://mpadge.github.io/blog/blog/blog002.html</link>
-      <guid>https://mpadge.github.io/blog/blog/blog002.html</guid>
+      <link>https://mpadge.github.io/blog/blog002.html</link>
+      <guid>https://mpadge.github.io/blog/blog002.html</guid>
       <description>C++ templates are really useful. Templates allow you to code a function able to accept arguments of different types that can't necessarily be known until compile time. There is, however, no such thing as an Rcpp template -- all inputs and outputs must have defined types. This blog entry is about how to maximise the usefulness of C++ templates in an Rcpp context.</description>
-      <content:encoded><![CDATA[]]></content:encoded>
+      <content:encoded><![CDATA[
+
+
+<div id="c-templates-and-rcpp" class="section level1">
+<h1>C++ templates and Rcpp</h1>
+<p>C++ templates are really useful. Templates allow you to code a
+function able to accept arguments of different types that can’t
+necessarily be known until compile time. The R language is, however,
+written in C, and knows nothing of templates. Rcpp opens up to the R
+language the extensions offered by C++ over C, yet integrating templates
+within Rcpp code is not straightfoward. This blog entry will hopefully
+clarify the steps needed to use C++ templates in an Rcpp context. As
+often in programming, employing templates in Rcpp is about finding the
+most efficient level of abstraction. Templates are one of the coolest
+ways to “abstract” C++ code – generally meaning abstracting away from
+specific variable types (or classes, structures, whatever …) to generic
+templated forms that accept multiple, or indeed any possible, types.
+Templates in
+<a target="_blank" rel="noopener noreferrer" href="https://rust-lang.org">
+rust </a> just work - types are directly inferred, and any potential
+conflicts will be caught at compile time.
+<a target="_blank" rel="noopener noreferrer" href="https://rust-lang.org">
+rust </a> is the gold standard in which template abstraction is as
+pain-free as possible. C++ templates are, in contrast, somewhat more
+painful, as a minimal generic template must be explicitly specified.
+This is often as simple as replacing some function definition, say:</p>
+<pre class="c++"><code>int my_function (int my_integer_input)
+{
+    int result = my_integer_input;
+    // do something with `result`
+    return result;
+}</code></pre>
+<p>with a templated version:</p>
+<pre class="c++"><code>template &lt;class T&gt;
+T my_function_t (T my_generic_input)
+{
+    T result = my_generic_input;
+    // do something with `result`
+    return result;
+}</code></pre>
+<p>As it stands, <code>my_function_t</code> will accept inputs of any
+arbitrary kinds. (There are also ways to permit templated code to only
+accept objects of some pre-defined classes.) An Rcpp version of the
+first function might look like this:</p>
+<pre class="c++"><code>// [[Rcpp::export]]
+int my_rcpp_function (int my_integer_input)
+{
+    int result = my_integer_input;
+    // do something with `result`
+    return result;
+}</code></pre>
+<p>The problem arises when you try to do something like this:</p>
+<pre class="c++"><code>// [[Rcpp::export]]
+template &lt;class T&gt;
+int rcpp_template (T input)
+{
+    int result = Rcpp::as &lt;int&gt; (input);
+    // do something with `result`
+    return result;
+}</code></pre>
+<p>and that takes you here:</p>
+<pre class="c++"><code>RcppExports.cpp:46:36: error: use of undeclared identifier &#39;T&#39;
+    Rcpp::traits::input_parameter&lt; T &gt;::type input(inputSEXP);
+                                                              ^
+RcppExports.cpp:46:41: error: no type named &#39;type&#39; in the global namespace
+    Rcpp::traits::input_parameter&lt; T &gt;::type input(inputSEXP);
+                                                                    ~~^
+2 errors generated.</code></pre>
+<p>This provides highly informative error messages that clearly indicate
+that the cause is the ability to infer appropriate
+<code>inputSEXP</code> types (itself a necessity of <strong>R</strong>
+being written in C and so knowing nothing about inferred types or
+templates, as stated above). What we can nevertheless do here is replace
+our undefined type, <code>T</code>, with an equivalently undefined and
+generic <code>SEXP</code> (and let’s define our function while we’re at
+it to square the input; and also, if you’re wondering what all this
+<code>SEXP</code> stuff is, you could take a wee digression over to
+<a target="_blank" rel="noopener noreferrer" href="https://bragqut.github.io/2016/05/26/milesmcbain-rnoprimitives/">
+Miles McBain’s brief but illuminating ramblings on the topic </a>)</p>
+<pre class="c++"><code>// [[Rcpp::export]]
+int rcpp_template (SEXP input)
+{
+    int result = Rcpp::as &lt;int&gt; (input);
+    return result * result;
+}</code></pre>
+<p>This can be then called from <strong>R</strong>, and will return an
+integer output. (The <code>Rcpp::as &lt;int&gt; ()</code> is a wrapper
+for <code>static_cast &lt;int&gt; ()</code>, which simply truncates
+decimals, so <code>rcpp_template(1.9)</code> will give 1.) What about
+generic return values? The next obvious step would be to try this:</p>
+<pre class="c++"><code>// [[Rcpp::export]]
+SEXP rcpp_template2 (SEXP input)
+{
+    return input * input;
+}</code></pre>
+<p>This would obviously be rather dangerous if it actually worked, but
+we don’t need to worry because it fails with this:</p>
+<pre class="c++"><code>error: invalid operands to binary expression (&#39;SEXP&#39; (aka &#39;SEXPREC *&#39;) and &#39;SEXP&#39;)
+SEXP result = input * input;
+                        ~~~~~ ^ ~~~~~
+1 error generated.</code></pre>
+<p>The arrow points to the “operand”, indicating that this has defaulted
+to an attempt to implement bit-wise multiplication of two generic
+pointer objects (an <code>SEXP</code> object is nothing but a pointer to
+the underlying structure it points to, an <code>SEXPREC</code> object).
+So that all leaves us now knowing that the most we can do is to send
+generic inputs from <strong>R</strong> to C++ functions as
+<code>SEXP</code> parameters, and then coerce them with the magic of
+<code>Rcpp::as()</code>. This is of course also potentially
+dangerous:</p>
+<pre class="r"><code>rcpp_template (2.9) # = 4; okay
+rcpp_template (&quot;2.9&quot;)
+# Error in rcpp_template(input) :
+#   Not compatible with requested type: [type=character; target=integer].</code></pre>
+<p><br> ## A better level of abstraction Remembering that
+<a target="_blank" rel="noopener noreferrer" href="http://adv-r.had.co.nz/C-interface.html">
+R’s C interface </a> only knows about <code>SEXP</code>
+(“S-EXPression”), and that all <code>SEXP</code> objects are mere
+pointers to C arrays, suggests something like the following code—which
+does not work:</p>
+<pre class="c++"><code>#include &lt;Rcpp.h&gt;
+template &lt;class T&gt;
+T mysquare (T &amp;x)
+{
+    for (size_t i = 0; i &lt; x.size (); i++)
+        x (i) = x (i) * x (i);
+    return x;
+}
+// [[Rcpp::export]]
+SEXP rcpp_mysquare (SEXP &amp;x)
+{
+    return mysquare (x);
+}</code></pre>
+<p>That code fails to compile because of “incomplete definition of type
+‘SEXPREC’” (where a <code>SEXPREC</code> is a structure pointed to by an
+<code>SEXP</code>)—in other words, R has no way of inferring the type of
+data pointed to by the <code>SEXP</code>. The trick to getting this to
+compile, and thereby to using C++ templates via Rcpp, is to have an
+additional “type-selector” function that recognises and typecasts the
+input type as one of the
+<a target="_blank" rel="noopener noreferrer" href="https://cran.r-project.org/doc/manuals/R-exts.html#Registering-native-routines">
+six possible R types </a>. We’re only interested in a couple of those
+here, representing the integer and real or floating-point types, which
+are respectively <code>INTSXP</code> and <code>REALSXP</code>. Recalling
+that there is no distinction between a single integer or numeric
+(floating-point) value and equivalent vectors of these, we can
+distinguish these two cases through casting via <code>Rcpp::as</code> to
+<code>Rcpp</code> equivalents of either integer or numeric vectors with
+the following additional code, representing our “type selector”
+function:</p>
+<pre class="c++"><code>SEXP mysquare (SEXP &amp;x)
+{
+    switch (TYPEOF (x))
+    {
+        case INTSXP: {
+                         Rcpp::IntegerVector iv = Rcpp::as &lt;Rcpp::IntegerVector&gt; (x);
+                         return mysquare (iv);
+                     }
+        case REALSXP: {
+                         Rcpp::NumericVector nv = Rcpp::as &lt;Rcpp::NumericVector&gt; (x);
+                         return mysquare (nv);
+                     }
+        default: { Rcpp::stop (&quot;incompatible type&quot;);    }
+    }
+    return x; // this should never happen
+}</code></pre>
+<p>This function takes a generic (<code>SEXP</code>) input and returns a
+generic output, yet deploys actual calls to the templated version of
+<code>mysquare</code> with specified (<code>Rcpp</code>) types, ensuring
+that the above templated function will always be able to infer the input
+type. The <code>default</code> <code>Rcpp::stop</code> ensures that
+types other than our desired two are not processed further, preventing
+for example attempts to calculate the square of <code>&quot;a&quot;</code>.
+Inserting this “type-selector” code in the above code permits a generic
+<code>SEXP</code>-in / <code>SEXP</code>-out function (our
+<code>rcpp_mysquare</code> in the above code) to be deployed to specific
+types, and then simply passed to a generic C++ template function.
+Presuming this C++ code to be in a file <code>src.cpp</code>, the whole
+thing then works like this:
+<code>{r sourceCpp} Rcpp::sourceCpp (&quot;src.cpp&quot;) # source the file, placing the Rcpp::export-ed function in workspace x &lt;- 1:5 x &lt;- rcpp_mysquare (x) x class (x) storage.mode (x) &lt;- &quot;numeric&quot; x &lt;- rcpp_mysquare (x) x class (x)</code>
+An integer vector gives integer return values, and a numeric
+(floating-point) vector gives numeric return values. There you have it:
+templating through the magic of <code>SEXP</code>. Gratitude extended to
+Dirk Eddelbeuttel and David Cooley for advice and helpful pointers. ##
+The final code Just to make it clear, here’s the above code all placed
+in a single place:</p>
+<pre class="c++"><code>#include &lt;Rcpp.h&gt;
+template &lt;class T&gt;
+T mysquare (T &amp;x)
+{
+    for (size_t i = 0; i &lt; x.size (); i++)
+        x (i) = x (i) * x (i);
+    return x;
+}
+SEXP mysquare (SEXP &amp;x)
+{
+    switch (TYPEOF (x))
+    {
+        case INTSXP: {
+                         Rcpp::IntegerVector iv = Rcpp::as &lt;Rcpp::IntegerVector&gt; (x);
+                         return mysquare (iv);
+                     }
+        case REALSXP: {
+                         Rcpp::NumericVector nv = Rcpp::as &lt;Rcpp::NumericVector&gt; (x);
+                         return mysquare (nv);
+                     }
+        default: { Rcpp::stop (&quot;error&quot;);    }
+    }
+    return x; // this never happens
+}
+// [[Rcpp::export]]
+SEXP rcpp_mysquare (SEXP &amp;x)
+{
+    return mysquare (x);
+}</code></pre>
+<div id="update-31-july-2019" class="section level2">
+<h2>Update (31 July 2019)</h2>
+<p>Since writing that, I found
+<a target="_blank" rel="noopener noreferrer" href="https://gallery.rcpp.org/articles/rcpp-return-macros/">
+this very clear and more extensive explanation </a> in an
+<a target="_blank" rel="noopener noreferrer" href="https://gallery.rcpp.org">
+Rcpp Gallery post. </a>.</p>
+</div>
+</div>]]></content:encoded>
       <pubDate>07 May 19</pubDate>
     </item>
     <item>

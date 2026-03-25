@@ -9,17 +9,9 @@ update_main <- function (n = 6, sort_date = "created")
     all_content <- generate_all_blog_content ()
 
     # Build blog.yml (for blog index page - no content field)
-    res <- NULL
-    for (i in seq_along (fdat))
-    {
-        f <- fdat [[i]]
-        res <- c (res, "-",
-                  paste0 ("    title: ", f$title),
-                  paste0 ("    description: ", f$description),
-                  paste0 ("    created: ", f$date_cre),
-                  #paste0 ("    modified: ", f$date_mod),
-                  paste0 ("    link: ", f$link))
-    }
+    res <- format_blog_yaml (fdat)
+    fp <- file.path ("..", "..", "data", "blog.yml")
+    writeLines (res, fp)
 
     # Build feed_content.yml (for RSS feed - with full HTML content)
     feed_res <- NULL
@@ -33,9 +25,6 @@ update_main <- function (n = 6, sort_date = "created")
                        paste0 ("    content: '", content, "'"))
     }
 
-    fp <- file.path ("..", "..", "data", "blog.yml")
-    writeLines (res, fp)
-
     # Generate RSS feed directly (no need for YAML files for feed)
     # Convert fdat to data frame for generate_rss_feed()
     blog_df <- data.frame (
@@ -48,20 +37,26 @@ update_main <- function (n = 6, sort_date = "created")
     fp_feed_xml <- file.path ("..", "..", "feed.xml")
     generate_rss_feed (blog_df, all_content, output_file = fp_feed_xml)
 
-    if (n < length (fdat))
-        fdat <- fdat [seq (n)]
+    # Build blogshort.yml (limited to n entries)
+    fdat_short <- if (n < length (fdat)) fdat [seq (n)] else fdat
+    res <- format_blog_yaml (fdat_short, add_blog_prefix = TRUE)
+    fp <- file.path ("..", "..", "data", "blogshort.yml")
+    writeLines (res, fp)
+}
+
+format_blog_yaml <- function (fdat, add_blog_prefix = FALSE)
+{
     res <- NULL
     for (f in fdat)
     {
+        link <- if (add_blog_prefix) paste0 ("blog/", f$link) else f$link
         res <- c (res, "-",
                   paste0 ("    title: ", f$title),
                   paste0 ("    description: ", f$description),
                   paste0 ("    created: ", f$date_cre),
-                  #paste0 ("    modified: ", f$date_mod),
-                  paste0 ("    link: ", f$link))
+                  paste0 ("    link: ", link))
     }
-    fp <- file.path ("..", "..", "data", "blogshort.yml")
-    writeLines (res, fp)
+    return (res)
 }
 
 order_blog_files <- function (sort_date = "modified")
@@ -139,4 +134,4 @@ get_link <- function (x)
     strsplit (link, "link: ") [[1]] [2]
 }
 
-update_main (n = 7, sort_date = "created")
+update_main (n = 6, sort_date = "created")
