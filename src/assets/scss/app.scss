@@ -70,7 +70,7 @@
 @include motion-ui-animations;
 
 .backgroundClass{
-    background: url(../img/london.png) center center fixed;
+    background: linear-gradient(rgba(255,255,255,0.5), rgba(255,255,255,0.5)), url(../img/london.png) center center fixed;
     background-repeat: no-repeat;
     background-size: cover;
     height: 100%;
