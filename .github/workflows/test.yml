@@ -19,6 +19,8 @@ jobs:
           node-version: lts/*
           cache: yarn
 
+      - run: sudo apt-get install -y tidy
+
       - run: yarn install --frozen-lockfile
 
       - run: make test
