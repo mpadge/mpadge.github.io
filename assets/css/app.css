@@ -706,7 +706,7 @@ h6 small, .h6 small {
 }
 
 h1, .h1 {
-  font-size: 1.5rem;
+  font-size: 3rem;
   line-height: 1.4;
   margin-top: 0;
   margin-bottom: 0.5rem;
@@ -749,7 +749,7 @@ h6, .h6 {
 
 @media print, screen and (min-width: 40em) {
   h1, .h1 {
-    font-size: 3rem;
+    font-size: 4rem;
   }
   h2, .h2 {
     font-size: 2.5rem;
@@ -7755,7 +7755,8 @@ html.is-reveal-open body {
 }
 
 .backgroundClass {
-  background: url(../img/london.png) center center fixed;
+  background: -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, 0.5)), to(rgba(255, 255, 255, 0.5))), url(../img/london.png) center center fixed;
+  background: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)), url(../img/london.png) center center fixed;
   background-repeat: no-repeat;
   background-size: cover;
   height: 100%;
