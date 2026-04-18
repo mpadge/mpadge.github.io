@@ -35,3 +35,28 @@ $(document).foundation();
         }
     });
 }());
+
+// Smart sticky nav: hide on scroll down, reveal on scroll up
+(function () {
+    var stickyBar = document.querySelector('[data-sticky-container] .top-bar');
+    var lastScrollY = window.scrollY;
+    var ticking = false;
+
+    window.addEventListener('scroll', function () {
+        if (!ticking) {
+            window.requestAnimationFrame(function () {
+                var currentScrollY = window.scrollY;
+                if (stickyBar) {
+                    if (currentScrollY > lastScrollY && stickyBar.classList.contains('is-stuck')) {
+                        stickyBar.classList.add('nav-hidden');
+                    } else if (currentScrollY < lastScrollY) {
+                        stickyBar.classList.remove('nav-hidden');
+                    }
+                }
+                lastScrollY = currentScrollY;
+                ticking = false;
+            });
+            ticking = true;
+        }
+    });
+}());

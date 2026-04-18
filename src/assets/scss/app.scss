@@ -100,6 +100,15 @@
     display: none;
 }
 
+// Smart sticky nav slide
+[data-sticky-container] .top-bar {
+    transition: transform 0.3s ease;
+}
+
+[data-sticky-container] .top-bar.nav-hidden {
+    transform: translateY(-100%);
+}
+
 // Dark mode toggle button
 .theme-toggle-btn {
     background: none;
