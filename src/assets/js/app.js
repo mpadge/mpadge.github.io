@@ -19,7 +19,8 @@ $(document).foundation();
 // Dark mode toggle
 (function () {
     var stored = localStorage.getItem('theme');
-    if (stored === 'dark') {
+    var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (stored === 'dark' || (!stored && prefersDark)) {
         document.documentElement.setAttribute('data-theme', 'dark');
     }
 
