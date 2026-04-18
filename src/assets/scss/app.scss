@@ -101,7 +101,7 @@
 }
 
 // Dark mode toggle button
-#theme-toggle {
+.theme-toggle-btn {
     background: none;
     border: none;
     cursor: pointer;
@@ -207,7 +207,7 @@
     color: var(--icon-color);
 }
 
-[data-theme="dark"] #theme-toggle i {
+[data-theme="dark"] .theme-toggle-btn i {
     color: var(--toggle-icon-color);
 }
 

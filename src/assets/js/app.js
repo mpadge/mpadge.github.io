@@ -24,7 +24,7 @@ $(document).foundation();
         document.documentElement.setAttribute('data-theme', 'dark');
     }
 
-    $(document).on('click', '#theme-toggle', function () {
+    $(document).on('click', '.theme-toggle-btn', function () {
         var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
         if (isDark) {
             document.documentElement.removeAttribute('data-theme');
