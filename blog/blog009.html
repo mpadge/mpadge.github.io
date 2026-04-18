@@ -21,7 +21,7 @@ href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/atom-one-light
 <script>hljs.initHighlightingOnLoad();</script>
 
 <div data-sticky-container>
-    <div class="top-bar" data-sticky data-options="marginTop:0;" style="width:100%;">
+    <div class="top-bar" data-sticky data-sticky-on="small" data-options="marginTop:0;" style="width:100%;">
         <div class="top-bar-left">
             <ul class="dropdown menu" data-dropdown-menu>
                 <li><a href="../#">home</a></li>
@@ -30,22 +30,36 @@ href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/atom-one-light
                 <li><a href="../privacy.html">privacy</a> </li>
             </ul>
         </div>
-        <div class="top-bar-right">
+        <div class="top-bar-right hide-for-small-only">
             <ul class="dropdown menu" data-dropdown-menu>
                 <li><a target="_blank" rel="noopener noreferrer"
-                                       href="https://github.com/mpadge">
-                        <i class="fi-social-github" aria-hidden="true">&nbsp;</i></a></li>
+                    href="https://github.com/mpadge">
+                    <i class="fi-social-github" aria-hidden="true">&nbsp;</i></a></li>
                 <li><a target="_blank" rel="me noopener noreferrer"
-                                        href="https://nerdculture.de/@mpadge">
-                        <img class="fi-social-mastodon" src="../assets/foundation-icons/svgs/fi-social-mastodon.svg" alt="Mastodon"></a></li>
-                <li><button id="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">
-                        <i class="fi-contrast" aria-hidden="true"></i>
-                    </button></li>
+                    href="https://nerdculture.de/@mpadge">
+                    <img class="fi-social-mastodon" src="../assets/foundation-icons/svgs/fi-social-mastodon.svg" alt="Mastodon"></a></li>
+                <li><button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle dark mode" title="Toggle dark mode">
+                    <i class="fi-contrast" aria-hidden="true"></i>
+                </button></li>
             </ul>
         </div>
     </div>
 </div>
-
+<div class="top-bar show-for-small-only">
+    <div class="top-bar-right">
+        <ul class="dropdown menu" data-dropdown-menu>
+            <li><a target="_blank" rel="noopener noreferrer"
+                href="https://github.com/mpadge">
+                <i class="fi-social-github" aria-hidden="true">&nbsp;</i></a></li>
+            <li><a target="_blank" rel="me noopener noreferrer"
+                href="https://nerdculture.de/@mpadge">
+                <img class="fi-social-mastodon" src="../assets/foundation-icons/svgs/fi-social-mastodon.svg" alt="Mastodon"></a></li>
+            <li><button class="theme-toggle-btn" aria-label="Toggle dark mode" title="Toggle dark mode">
+                <i class="fi-contrast" aria-hidden="true"></i>
+            </button></li>
+        </ul>
+    </div>
+</div>
 <div class="blogClass">
 <div class="grid-container">
 <div class="grid-x grid-padding-x">

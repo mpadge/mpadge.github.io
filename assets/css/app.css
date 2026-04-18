@@ -7783,7 +7783,19 @@ html.is-reveal-open body {
   display: none;
 }
 
-#theme-toggle {
+[data-sticky-container] .top-bar {
+  -webkit-transition: -webkit-transform 0.3s ease;
+  transition: -webkit-transform 0.3s ease;
+  transition: transform 0.3s ease;
+  transition: transform 0.3s ease, -webkit-transform 0.3s ease;
+}
+
+[data-sticky-container] .top-bar.nav-hidden {
+  -webkit-transform: translateY(-100%);
+          transform: translateY(-100%);
+}
+
+.theme-toggle-btn {
   background: none;
   border: none;
   cursor: pointer;
@@ -7796,12 +7808,12 @@ html.is-reveal-open body {
           align-items: center;
   height: 100%;
 }
-#theme-toggle i {
+.theme-toggle-btn i {
   font-size: 30px;
   color: #222222;
   line-height: 1;
 }
-#theme-toggle:focus {
+.theme-toggle-btn:focus {
   outline: none;
 }
 
@@ -7895,7 +7907,7 @@ html.is-reveal-open body {
   color: var(--icon-color);
 }
 
-[data-theme=dark] #theme-toggle i {
+[data-theme=dark] .theme-toggle-btn i {
   color: var(--toggle-icon-color);
 }
 
