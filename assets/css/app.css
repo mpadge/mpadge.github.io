@@ -7782,4 +7782,181 @@ html.is-reveal-open body {
 #code .code-item:nth-child(n+7) {
   display: none;
 }
+
+#theme-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.7rem 1rem;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  height: 100%;
+}
+#theme-toggle i {
+  font-size: 30px;
+  color: #222222;
+  line-height: 1;
+}
+#theme-toggle:focus {
+  outline: none;
+}
+
+.top-bar-right .dropdown.menu > li:last-child {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+:root {
+  --bg-color: #ffffff;
+  --text-color: #0a0a0a;
+  --top-bar-bg: #ffffff;
+  --top-bar-link: #444444;
+  --top-bar-link-hover: #000000;
+  --card-bg: #ffffff;
+  --callout-bg: #e6e6e6;
+  --code-bg: #fafafa;
+  --icon-color: #222222;
+  --toggle-icon-color: #222222;
+}
+
+[data-theme=dark] {
+  --bg-color: #1a1a1a;
+  --text-color: #e0e0e0;
+  --top-bar-bg: #111111;
+  --top-bar-link: #cccccc;
+  --top-bar-link-hover: #ffffff;
+  --card-bg: #222222;
+  --callout-bg: transparent;
+  --code-bg: #2d2d2d;
+  --icon-color: #cccccc;
+  --toggle-icon-color: #cccccc;
+}
+
+[data-theme=dark] body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+[data-theme=dark] .backgroundClass {
+  background: -webkit-gradient(linear, left top, left bottom, from(rgba(26, 26, 26, 0.85)), to(rgba(26, 26, 26, 0.85))), url(../img/london.png) center center fixed;
+  background: linear-gradient(rgba(26, 26, 26, 0.85), rgba(26, 26, 26, 0.85)), url(../img/london.png) center center fixed;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+[data-theme=dark] .top-bar {
+  background-color: var(--top-bar-bg);
+  border-bottom: 1px solid #333333;
+}
+
+[data-theme=dark] .top-bar ul,
+[data-theme=dark] .top-bar .dropdown.menu {
+  background-color: var(--top-bar-bg);
+}
+
+[data-theme=dark] .top-bar a,
+[data-theme=dark] .dropdown.menu a {
+  color: var(--top-bar-link);
+}
+
+[data-theme=dark] .top-bar a:hover,
+[data-theme=dark] .dropdown.menu a:hover {
+  color: var(--top-bar-link-hover);
+  background-color: #2a2a2a;
+}
+
+[data-theme=dark] .callout {
+  background-color: var(--callout-bg);
+  border-color: #333333;
+  color: var(--text-color);
+}
+
+[data-theme=dark] .card {
+  background-color: var(--card-bg);
+  border-color: #333333;
+  color: var(--text-color);
+}
+
+[data-theme=dark] pre,
+[data-theme=dark] code {
+  background-color: var(--code-bg);
+  color: var(--text-color);
+}
+
+[data-theme=dark] .fi-social-github {
+  color: var(--icon-color);
+}
+
+[data-theme=dark] #theme-toggle i {
+  color: var(--toggle-icon-color);
+}
+
+[data-theme=dark] .fi-social-mastodon {
+  -webkit-filter: invert(0.8);
+          filter: invert(0.8);
+}
+
+[data-theme=dark] [style*="background-color:#ffffff"],
+[data-theme=dark] [style*="background-color:#fefefe"] {
+  background-color: #222222 !important;
+}
+
+[data-theme=dark] [style*="color:#262626"] {
+  color: var(--text-color) !important;
+}
+
+[data-theme=dark] [style*="color:#111111"] {
+  color: var(--text-color) !important;
+}
+
+[data-theme=dark] [style*="color:#888888"] {
+  color: #aaaaaa !important;
+}
+
+[data-theme=dark] .vertical.menu a {
+  color: var(--text-color) !important;
+  background-color: transparent;
+}
+
+[data-theme=dark] .vertical.menu a:hover {
+  background-color: #2a2a2a !important;
+}
+
+[data-theme=dark] .blogClass,
+[data-theme=dark] .blogClass p,
+[data-theme=dark] .blogClass li,
+[data-theme=dark] .sections,
+[data-theme=dark] .sections p,
+[data-theme=dark] .sections li {
+  color: var(--text-color);
+}
+
+[data-theme=dark] .blogClass h1,
+[data-theme=dark] .blogClass h2,
+[data-theme=dark] .blogClass h3,
+[data-theme=dark] .blogClass h4,
+[data-theme=dark] .sections h1,
+[data-theme=dark] .sections h2,
+[data-theme=dark] .sections h3,
+[data-theme=dark] .sections h4 {
+  color: var(--text-color);
+}
+
+[data-theme=dark] .blogClass a,
+[data-theme=dark] .sections a {
+  color: #7cb8e8;
+}
+
+[data-theme=dark] .sticky-container,
+[data-theme=dark] .sticky {
+  background-color: var(--bg-color);
+}
 /*# sourceMappingURL=app.css.map */
