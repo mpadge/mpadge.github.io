@@ -29,7 +29,7 @@ rm -r dist
 sed -i '1d' index.html
 
 echo -e "\033[0;32mUpdating git...\033[0m"
-git add index.html privacy.html feed.xml blog.html assets/ blog/ code/
+git add index.html privacy.html feed.xml assets/ blog/ code/
 git add -u
 git st
 git commit -am "New Blog Build (`date`)"
