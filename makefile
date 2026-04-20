@@ -20,7 +20,7 @@ code: ## Update the 'code' section from current r-univ pkgs list
 	Rscript 'tools/code-update.R'
 
 blog%: ## Render a blog post (usage: make blog001)
-	Rscript -e 'setwd("src/pages/blog"); source("../../../tools/blog/make_entry.R"); blog_render("blog$*")'
+	Rscript -e 'setwd("src/pages/blog"); rmarkdown::render("blog$*.Rmd", rmarkdown::md_document(variant = "gfm")); source("../../../tools/blog/update_main.R")'
 
 build: ## Build the project
 	yarn build
