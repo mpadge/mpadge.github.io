@@ -43,8 +43,8 @@ rbenchmark::benchmark (
 
 | test                | replications | elapsed | relative |
 |:--------------------|-------------:|--------:|---------:|
-| res \<- x + y       |          100 |    0.12 |     1.00 |
-| res \<- rowSums(xy) |          100 |    0.57 |     4.75 |
+| res <- x + y       |          100 |    0.12 |     1.00 |
+| res <- rowSums(xy) |          100 |    0.57 |     4.75 |
 
 Adding the two rows of a matrix takes 3-4 times longer than adding two
 otherwise equivalent vectors. And okay, that’s very likely something to
@@ -96,9 +96,9 @@ rbenchmark::benchmark (
 
 | test                | replications | elapsed | relative |
 |:--------------------|-------------:|--------:|---------:|
-| res \<- x + y       |          100 |   0.071 |    1.000 |
-| res \<- add(x, y)   |          100 |   0.075 |    1.056 |
-| res \<- rowSums(xy) |          100 |   0.573 |    8.070 |
+| res <- x + y       |          100 |   0.071 |    1.000 |
+| res <- add(x, y)   |          100 |   0.075 |    1.056 |
+| res <- rowSums(xy) |          100 |   0.573 |    8.070 |
 
 So our `add` function is broadly equivalent to R’s underlying code for
 vector addition, and correspondingly, considerably more efficient than
@@ -120,10 +120,10 @@ rbenchmark::benchmark (
 
 | test                          | replications | elapsed | relative |
 |:------------------------------|-------------:|--------:|---------:|
-| res \<- x + y                 |          100 |   0.078 |    1.000 |
-| res \<- add(x, y)             |          100 |   0.121 |    1.551 |
-| res \<- rowSums(xy)           |          100 |   0.529 |    6.782 |
-| res \<- xy\[, 1\] + xy\[, 2\] |          100 |   0.477 |    6.115 |
+| res <- x + y                 |          100 |   0.078 |    1.000 |
+| res <- add(x, y)             |          100 |   0.121 |    1.551 |
+| res <- rowSums(xy)           |          100 |   0.529 |    6.782 |
+| res <- xy\[, 1\] + xy\[, 2\] |          100 |   0.477 |    6.115 |
 
 And direct addition of two columns of a matrix, through indexing into
 those columns, is roughly as *inefficient* as `rowSums` itself, while
@@ -192,12 +192,12 @@ rbenchmark::benchmark (
 
 | test                          | replications | elapsed | relative |
 |:------------------------------|-------------:|--------:|---------:|
-| res \<- x + y                 |          100 |   0.071 |    1.029 |
-| res \<- add(x, y)             |          100 |   0.106 |    1.536 |
-| res \<- rowSums(xy)           |          100 |   0.518 |    7.507 |
-| res \<- xy\[, 1\] + xy\[, 2\] |          100 |   0.394 |    5.710 |
-| res \<- matadd(xy)            |          100 |   0.069 |    1.000 |
-| res \<- xy + xy               |          100 |   0.175 |    2.536 |
+| res <- x + y                 |          100 |   0.071 |    1.029 |
+| res <- add(x, y)             |          100 |   0.106 |    1.536 |
+| res <- rowSums(xy)           |          100 |   0.518 |    7.507 |
+| res <- xy\[, 1\] + xy\[, 2\] |          100 |   0.394 |    5.710 |
+| res <- matadd(xy)            |          100 |   0.069 |    1.000 |
+| res <- xy + xy               |          100 |   0.175 |    2.536 |
 
 That benchmark demonstrates that operations on matrix columns are only
 as efficient as equivalent operations on vectors when the matrices are
