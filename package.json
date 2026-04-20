@@ -54,7 +54,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://codeberg.org/mpadge/mpadge.git",
+    "url": "https://codeberg.org/mpadge/mpadge.git"
   },
   "bugs": {
     "url": "codeberg.org/mpadge/mpadge/issues",
