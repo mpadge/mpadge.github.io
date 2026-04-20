@@ -36,11 +36,11 @@ avatar as listed on the README. In comparison, this R package:
 2. Works locally without any bot integration
 3. Can add contributors to any file, not just the main README
 4. Offers a variety of formats for listing contributors:
-   (i) divided into sections by types of contributions, or as a single section
-   (ii) presented as full grids (like [the
-        original](https://github.com/all-contributors/all-contributors/blob/master/README.md#contributors-)),
-        numbered lists of github user names only, or single text strings of
-        comma-separated names.
+   - divided into sections by types of contributions, or as a single section
+   - presented as full grids (like [the
+   original](https://github.com/all-contributors/all-contributors/blob/master/README.md#contributors-)),
+   numbered lists of github user names only, or single text strings of
+   comma-separated names.
 
 ## Usage
 
