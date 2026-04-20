@@ -77,9 +77,9 @@ generate_rss_feed <- function (blog_data, all_content, output_file = "feed.xml")
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>mpadge blog</title>
-    <link>https://mpadge.github.io/blog</link>
+    <link>https://mpadge.eu/blog</link>
     <description>R, C++, spatial, open data</description>
-    <atom:link href="https://mpadge.github.io/feed.xml" rel="self" type="application/rss+xml"/>'
+    <atom:link href="https://mpadge.eu/feed.xml" rel="self" type="application/rss+xml"/>'
 
     # Add items for each blog post
     for (i in seq_len (nrow (blog_data)))
@@ -92,8 +92,8 @@ generate_rss_feed <- function (blog_data, all_content, output_file = "feed.xml")
 
         feed <- paste0 (feed, '\n    <item>
       <title>', b$title, '</title>
-      <link>https://mpadge.github.io/blog/', b$link, '</link>
-      <guid>https://mpadge.github.io/blog/', b$link, '</guid>
+      <link>https://mpadge.eu/blog/', b$link, '</link>
+      <guid>https://mpadge.eu/blog/', b$link, '</guid>
       <description>', b$description, '</description>
       <content:encoded><![CDATA[', content, ']]></content:encoded>
       <pubDate>', b$created, '</pubDate>

@@ -2,13 +2,13 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>mpadge blog</title>
-    <link>https://mpadge.github.io/blog</link>
+    <link>https://mpadge.eu/blog</link>
     <description>R, C++, spatial, open data</description>
-    <atom:link href="https://mpadge.github.io/feed.xml" rel="self" type="application/rss+xml"/>
+    <atom:link href="https://mpadge.eu/feed.xml" rel="self" type="application/rss+xml"/>
     <item>
       <title>Debugging C++ code in R with a single command</title>
-      <link>https://mpadge.github.io/blog/blog012.html</link>
-      <guid>https://mpadge.github.io/blog/blog012.html</guid>
+      <link>https://mpadge.eu/blog/blog012.html</link>
+      <guid>https://mpadge.eu/blog/blog012.html</guid>
       <description>There are several great references for how to debug C or C++ code in R, but descriptions of how to start a debugger are often not so informative. This post describes how to start a debugging session in R with a single command.</description>
       <content:encoded><![CDATA[
 
@@ -111,8 +111,8 @@ there.</p>
     </item>
     <item>
       <title>Timeout on parallel jobs in R</title>
-      <link>https://mpadge.github.io/blog/blog011.html</link>
-      <guid>https://mpadge.github.io/blog/blog011.html</guid>
+      <link>https://mpadge.eu/blog/blog011.html</link>
+      <guid>https://mpadge.eu/blog/blog011.html</guid>
       <description>Python's `multiprocessing` and `threading` libraries both have a timeout parameter for re-joining threads after they've finished. This provides an easy way to launch multi-threaded jobs while ensuing that no single thread exceeds a specified timeout. This post describes two ways to implement equivalent functionality in R.</description>
       <content:encoded><![CDATA[
 
@@ -316,8 +316,8 @@ demonstrated here within any <code>futureverse</code> packages.</p>
     </item>
     <item>
       <title>GitHub notifications from the terminal</title>
-      <link>https://mpadge.github.io/blog/blog010.html</link>
-      <guid>https://mpadge.github.io/blog/blog010.html</guid>
+      <link>https://mpadge.eu/blog/blog010.html</link>
+      <guid>https://mpadge.eu/blog/blog010.html</guid>
       <description>I work almost entirely from the terminal, and regret the few remaining tasks which still require me to venture elsewhere, such as a web browser. Until recently, one of my main reasons for constantly switching to my browser was to check my GitHub notifications. This post describes how I view my notifications within the terminal, including an option to mark them as "read" on GitHub.</description>
       <content:encoded><![CDATA[
 
@@ -383,8 +383,8 @@ that, and is aliased in the above shell script to
     </item>
     <item>
       <title>The allcontributors package</title>
-      <link>https://mpadge.github.io/blog/blog009.html</link>
-      <guid>https://mpadge.github.io/blog/blog009.html</guid>
+      <link>https://mpadge.eu/blog/blog009.html</link>
+      <guid>https://mpadge.eu/blog/blog009.html</guid>
       <description>An alternative implementation in R of the original 'allcontributors.org' to acknowledge all contributors in your 'README' (or elsewhere). The original is intended to help acknowledge all contributions including those beyond the contents of an actual repository, such as community or other or less-tangible organisational contributions. This version only acknowledges tangible contributions to a repository, but automates that task to a single function call, in the hope that such simplicity will spur greater usage.</description>
       <content:encoded><![CDATA[
 
@@ -471,8 +471,8 @@ vignette</a> which visually demonstrates the various formats in which an
     </item>
     <item>
       <title>The troubles with getting help files in R</title>
-      <link>https://mpadge.github.io/blog/blog008.html</link>
-      <guid>https://mpadge.github.io/blog/blog008.html</guid>
+      <link>https://mpadge.eu/blog/blog008.html</link>
+      <guid>https://mpadge.eu/blog/blog008.html</guid>
       <description>A primer on ways to extract the actual content of help files. Because one day people will hopefully start text-mining these things, and show us all sorts of things we never knew about the people who make R packages. When they do, this entry will hopefully help.</description>
       <content:encoded><![CDATA[
 
@@ -638,8 +638,8 @@ for parsing these objects.</p>
     </item>
     <item>
       <title>Using RcppParallel to aggregate to a vector</title>
-      <link>https://mpadge.github.io/blog/blog007.html</link>
-      <guid>https://mpadge.github.io/blog/blog007.html</guid>
+      <link>https://mpadge.eu/blog/blog007.html</link>
+      <guid>https://mpadge.eu/blog/blog007.html</guid>
       <description>This article was recently published in the Rcpp Gallery, and demonstrates using the RcppParallel package to aggregate to an output vector. It extends directly from previous demonstrations of single-valued aggregation, through providing necessary details to enable aggregation to a vector, or by extension, to any arbitrary form.</description>
       <content:encoded><![CDATA[
 
@@ -720,8 +720,8 @@ You can learn more about using RcppParallel at <a href="https://rcppcore.github.
     </item>
     <item>
       <title>Github 2FA, git push, and password entry</title>
-      <link>https://mpadge.github.io/blog/blog006.html</link>
-      <guid>https://mpadge.github.io/blog/blog006.html</guid>
+      <link>https://mpadge.eu/blog/blog006.html</link>
+      <guid>https://mpadge.eu/blog/blog006.html</guid>
       <description>Activating github two-factor authentication (2FA) offers an indubitable security boost, with one notable side effect--https authentication requires entering a Personal Access Token instead of password. This entry explains how I reconfigured my git push commands with 2FA to be able to enter my password once again, instead of a random 32-character token.</description>
       <content:encoded><![CDATA[
 
@@ -827,8 +827,8 @@ like i always liked to do.</p>
     </item>
     <item>
       <title>What are matrices in R?</title>
-      <link>https://mpadge.github.io/blog/blog005.html</link>
-      <guid>https://mpadge.github.io/blog/blog005.html</guid>
+      <link>https://mpadge.eu/blog/blog005.html</link>
+      <guid>https://mpadge.eu/blog/blog005.html</guid>
       <description>If everything in R is a vector, then what is a matrix? This entry will demonstrate that even matrices are vectors, and that processing of matrices can in certain circumstances be considerably more efficient if they are treated as simple vectors.</description>
       <content:encoded><![CDATA[
 
@@ -948,8 +948,8 @@ vectors, and should in many circumstances be treated as such.</p>
     </item>
     <item>
       <title>Calling external files from C in R</title>
-      <link>https://mpadge.github.io/blog/blog004.html</link>
-      <guid>https://mpadge.github.io/blog/blog004.html</guid>
+      <link>https://mpadge.eu/blog/blog004.html</link>
+      <guid>https://mpadge.eu/blog/blog004.html</guid>
       <description>I recently encountered a problem while bundling an old C library into a new R package. The library itself depends on, and includes, an external "dictionary" in plain text format used to construct a large lookup table. The creators of this library of course assume that this dictionary file will always reside in the same directory as the compiled object, and so can always be directly linked. The `src` directory of R packages is, however, only permitted to contain source code, which text files definitively are not. This blog entry is about where to put such files, and how to link them within the source code.</description>
       <content:encoded><![CDATA[
 
@@ -1023,8 +1023,8 @@ mailing list</a>.</p>
     </item>
     <item>
       <title>Caching via background R processes</title>
-      <link>https://mpadge.github.io/blog/blog003.html</link>
-      <guid>https://mpadge.github.io/blog/blog003.html</guid>
+      <link>https://mpadge.eu/blog/blog003.html</link>
+      <guid>https://mpadge.eu/blog/blog003.html</guid>
       <description>Caching is implemented because it saves time, generally by saving the results of one function call for subsequent reuse. Background processes are also commonly implemented as time-saving measures, through delegating long-running tasks to "somewhere else", allowing you to keep focussing on whatever (un)important things you were doing in the meantime. This blog entry describes how to combine the two to save double time through caching via background processes.</description>
       <content:encoded><![CDATA[
 
@@ -1235,8 +1235,8 @@ whether it has finished or not. 4. … use the cached result.</p>
     </item>
     <item>
       <title>C++ templates and Rcpp</title>
-      <link>https://mpadge.github.io/blog/blog002.html</link>
-      <guid>https://mpadge.github.io/blog/blog002.html</guid>
+      <link>https://mpadge.eu/blog/blog002.html</link>
+      <guid>https://mpadge.eu/blog/blog002.html</guid>
       <description>C++ templates are really useful. Templates allow you to code a function able to accept arguments of different types that can't necessarily be known until compile time. There is, however, no such thing as an Rcpp template -- all inputs and outputs must have defined types. This blog entry is about how to maximise the usefulness of C++ templates in an Rcpp context.</description>
       <content:encoded><![CDATA[
 
@@ -1467,8 +1467,8 @@ Rcpp Gallery post. </a>.</p>
     </item>
     <item>
       <title>how i made this site</title>
-      <link>https://mpadge.github.io/blog/blog001.html</link>
-      <guid>https://mpadge.github.io/blog/blog001.html</guid>
+      <link>https://mpadge.eu/blog/blog001.html</link>
+      <guid>https://mpadge.eu/blog/blog001.html</guid>
       <description>This site is built with zurb foundation, because i had read that it did everything that hugo could, but that final products were more lightweight and flexible. Plus i had no idea about it, and learning something new is sometimes worthwhile. I was also frustrated that standard hugo advice seemed to be, ''oh, just pick a template and off you go,'' yet there is surprisingly little advice on how to modify any given template, let alone how to start from scratch. It turned out that foundation at least made starting from scratch fairly easy, and so this entry is about that process.</description>
       <content:encoded><![CDATA[
 

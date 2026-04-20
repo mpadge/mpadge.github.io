@@ -1,3 +1,3 @@
-# mpadge.github.io
+# mpadge.eu
 
-Source for [personal blog](https://mpadge.github.io). See [this post](https://mpadge.github.io/blog/blog001.html) for details.
+Source for [personal blog](https://mpadge.eu). See [this post](https://mpadge.eu/blog/blog001.html) for details.
