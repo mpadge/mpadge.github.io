@@ -5,7 +5,7 @@
   "main": "gulpfile.babel.js",
   "scripts": {
     "start": "gulp",
-    "build": "gulp build --production",
+    "build": "NODE_NO_WARNINGS=1 gulp build --production",
     "test": "bash tests/integration.sh"
   },
   "author": "Mark Padgham",

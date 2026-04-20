@@ -105,7 +105,9 @@ function sassBuild() {
   .pipe(sourcemaps.init())
   .pipe(plumber())
   .pipe(sass({
-    includePaths: PATHS.sass
+    includePaths: PATHS.sass,
+    silenceDeprecations: ['legacy-js-api', 'import', 'global-builtin', 'color-functions', 'slash-div'],
+    quietDeps: true
   }).on('error', sass.logError))
   .pipe(postcss(postCssPlugins))
   .pipe(sourcemaps.write('.'))
