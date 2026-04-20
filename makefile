@@ -19,6 +19,9 @@ install: ## Install everything to run/build
 code: ## Update the 'code' section from current r-univ pkgs list
 	Rscript 'tools/code-update.R'
 
+update: ## Update blog index and RSS XML feed
+	Rscript -e 'source("tools/blog/update_main.R")'
+
 blog%: ## Render a blog post (usage: make blog001)
 	Rscript -e 'setwd("src/pages/blog"); rmarkdown::render("blog$*.Rmd", rmarkdown::md_document(variant = "gfm")); source("../../../tools/blog/update_main.R")'
 

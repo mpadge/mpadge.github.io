@@ -33,7 +33,7 @@ get_blog_content <- function (md_file)
     convert_md_to_html (md)
 }
 
-generate_rss_feed <- function (blog_data, output_file = "feed.xml")
+generate_rss_feed <- function (blog_data, blog_dir, output_file = "feed.xml")
 {
     blog_data <- blog_data [order (
         as.Date (blog_data$created, format = "%d %b %y"),
@@ -51,7 +51,7 @@ generate_rss_feed <- function (blog_data, output_file = "feed.xml")
     for (i in seq_len (nrow (blog_data)))
     {
         b       <- blog_data [i, ]
-        md_file <- paste0 (sub ("\\.html$", "", b$link), ".md")
+        md_file <- file.path (blog_dir, paste0 (sub ("\\.html$", "", b$link), ".md"))
         content <- if (file.exists (md_file)) get_blog_content (md_file) else ""
 
         feed <- paste0 (feed, '\n    <item>

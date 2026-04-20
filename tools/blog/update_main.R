@@ -1,18 +1,24 @@
-source ("../../../tools/blog/make_entry_xml.R")
+# Resolve project root from this script's own location, not from getwd(),
+# so the script works whether called from the project root or src/pages/blog/.
+script_dir    <- dirname (normalizePath (sys.frame (1)$ofile))
+project_root  <- normalizePath (file.path (script_dir, "..", ".."))
+blog_dir      <- file.path (project_root, "src", "pages", "blog")
+
+source (file.path (script_dir, "make_entry_xml.R"))
 
 update_main <- function (n = 6, sort_date = "created")
 {
-    flist <- order_blog_files (sort_date = sort_date)
-    fdat <- lapply (flist, function (i) get_one_blog_dat (i))
+    flist <- order_blog_files (blog_dir, sort_date = sort_date)
+    fdat  <- lapply (flist, get_one_blog_dat)
 
     # blog.yml: full list for the blog index page
-    res <- format_blog_yaml (fdat)
-    writeLines (res, file.path ("..", "..", "data", "blog.yml"))
+    writeLines (format_blog_yaml (fdat),
+                file.path (project_root, "src", "data", "blog.yml"))
 
     # blogshort.yml: limited to n most recent entries for the front page
     fdat_short <- if (n < length (fdat)) fdat [seq (n)] else fdat
-    res <- format_blog_yaml (fdat_short, add_blog_prefix = TRUE)
-    writeLines (res, file.path ("..", "..", "data", "blogshort.yml"))
+    writeLines (format_blog_yaml (fdat_short, add_blog_prefix = TRUE),
+                file.path (project_root, "src", "data", "blogshort.yml"))
 
     # feed.xml: RSS feed with full content from .md files
     blog_df <- data.frame (
@@ -22,7 +28,8 @@ update_main <- function (n = 6, sort_date = "created")
         created     = sapply (fdat, function (f) f$date_cre),
         stringsAsFactors = FALSE
     )
-    generate_rss_feed (blog_df, output_file = file.path ("..", "..", "feed.xml"))
+    generate_rss_feed (blog_df, blog_dir,
+                       output_file = file.path (project_root, "src", "feed.xml"))
 }
 
 format_blog_yaml <- function (fdat, add_blog_prefix = FALSE)
@@ -40,9 +47,9 @@ format_blog_yaml <- function (fdat, add_blog_prefix = FALSE)
     return (res)
 }
 
-order_blog_files <- function (sort_date = "modified")
+order_blog_files <- function (blog_dir, sort_date = "modified")
 {
-    lf <- list.files (".", pattern = "\\.Rmd$")
+    lf <- list.files (blog_dir, pattern = "\\.Rmd$", full.names = TRUE)
     if (sort_date == "modified")
         lf [order (file.info (lf)$mtime, decreasing = TRUE)]
     else {
@@ -53,9 +60,9 @@ order_blog_files <- function (sort_date = "modified")
 
 get_date <- function (rmd)
 {
-    x <- readLines (rmd)
+    x     <- readLines (rmd)
     index <- which (x == "---")
-    x <- x [(index [1] + 1):(index [2] - 1)]
+    x     <- x [(index [1] + 1):(index [2] - 1)]
     as.numeric (get_datestr (x))
 }
 
@@ -68,15 +75,15 @@ get_datestr <- function (x)
 
 get_one_blog_dat <- function (f)
 {
-    x <- readLines (f)
+    x     <- readLines (f)
     index <- which (x == "---")
-    x <- x [(index [1] + 1):(index [2] - 1)]
+    x     <- x [(index [1] + 1):(index [2] - 1)]
 
-    list (title    = get_title (x),
+    list (title       = get_title (x),
           description = get_descr (x),
-          date_mod = format (as.Date (file.info (f)$mtime), format = "%d %b %y"),
-          date_cre = format (get_datestr (x), format = "%d %b %y"),
-          link     = get_link (x))
+          date_mod    = format (as.Date (file.info (f)$mtime), format = "%d %b %y"),
+          date_cre    = format (get_datestr (x), format = "%d %b %y"),
+          link        = get_link (x))
 }
 
 get_title <- function (x)
@@ -87,7 +94,7 @@ get_title <- function (x)
 
 get_descr <- function (x)
 {
-    dst <- grep ("^description:", x)
+    dst  <- grep ("^description:", x)
     dend <- grep ("^[a-zA-Z]", x)
     dend <- min (dend [which (dend > dst)]) - 1
 
