@@ -22,6 +22,7 @@ mv dist/feed.xml .
 mv dist/assets .
 mv dist/blog .
 mv dist/code .
+mv dist/CNAME .
 rm -r dist
 
 # first line of index.html is blank, which mucks up github pages, so must be
@@ -29,7 +30,7 @@ rm -r dist
 sed -i '1d' index.html
 
 echo -e "\033[0;32mUpdating git...\033[0m"
-git add index.html privacy.html feed.xml assets/ blog/ code/
+git add index.html privacy.html feed.xml CNAME assets/ blog/ code/
 git add -u
 git st
 git commit -am "New Blog Build (`date`)"
