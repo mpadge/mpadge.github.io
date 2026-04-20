@@ -1,0 +1,225 @@
+# What are matrices in R?
+
+“R is a shockingly dreadful language for an exceptionally useful data
+analysis environment” (
+<a target="_blank" rel="noopener noreferrer" href="http://arrgh.tim-smith.us/">
+Tim Smith & Kevin Ushey </a>). One of the strangest manifestations of
+claims like these is that,
+<a target="_blank" rel="noopener noreferrer" href="https://www.noamross.net/blog/2014/4/16/vectorization-in-r--why.html">
+“Everything in R is a vector” </a>. The simple question that then arises
+is, What is a matrix? One commonly cited current repository of things R
+is Hadley Wickham’s book,
+<a target="_blank" rel="noopener noreferrer" href="http://adv-r.had.co.nz">
+Advanced R </a>, which has a section on
+<a target="_blank" rel="noopener noreferrer" href="http://adv-r.had.co.nz/Data-structures.html">
+Data Structures </a> which simply states that a matrix is the two
+dimensional equivalent of a vector, and that,
+<a target="_blank" rel="noopener noreferrer" href="http://adv-r.had.co.nz/Data-structures.html#matrices-and-arrays">
+“Adding a `dim` attribute to an atomic vector allows it to behave like a
+multi-dimensional array.” </a> The chapter linked to above goes on to
+say that, “Vectors are not the only 1-dimensional data structure. You
+can have matrices with a single row or single column, or arrays with a
+single dimension. They may print similarly, but will behave differently.
+The differences aren’t too important.” This blog entry will attempt to
+illustrate the kind of circumstances under which differences between
+vectors and matrices actually become quite important indeed.
+
+## An initial illustration
+
+Vectors do differ from matrices, as the following code clearly
+illustrates:
+
+``` r
+n <- 1e6
+x <- runif (n)
+y <- runif (n)
+xy <- cbind (x, y) # a matrix
+rbenchmark::benchmark (
+                       res <- x + y,
+                       res <- rowSums (xy),
+                       replications = 100,
+                       order = NULL) [, 1:4]
+```
+
+| test                | replications | elapsed | relative |
+|:--------------------|-------------:|--------:|---------:|
+| res \<- x + y       |          100 |    0.12 |     1.00 |
+| res \<- rowSums(xy) |          100 |    0.57 |     4.75 |
+
+Adding the two rows of a matrix takes 3-4 times longer than adding two
+otherwise equivalent vectors. And okay, that’s very likely something to
+do with the `rowSums` function rather than the matrix itself, but why
+should these two behave so differently? At that point, I must freely
+admit to being not sufficiently clever to have uncovered the actual
+reason in the
+<a target="_blank" rel="noopener noreferrer" href="https://github.com/wch/r-source/blob/trunk/src/main/array.c">
+underlying C source code. </a> The answer must lie somewhere in there,
+so any pointers would be greatly appreciated. Short of that, the
+following is a phenomenological explanation, derived through attempting
+to reconstruct in C code what `rowSums` is actually doing.
+
+Direct vector addition must work something like the following C code,
+written here in a form able to be directly parsed in R via the
+<a target="_blank" rel="noopener noreferrer" href="https://cran.r-project.org/package=inline">
+inline package </a>.
+
+``` r
+library (inline)
+add <- cfunction(c(a = "numeric", b = "numeric"), "
+                 int n = LENGTH (a);
+                 SEXP result = PROTECT (Rf_allocVector (REALSXP, n));
+                 double *ra, *rb, *rout;
+                 ra = REAL (a);
+                 rb = REAL (b);
+                 rout = REAL (result);
+                 for (int i = 0; i < n; i++)
+                     rout [i] = ra [i] + rb [i];
+                 UNPROTECT (1);
+
+                 return result;
+                 ")
+```
+
+That’s a simple C function to add two vectors and return the result,
+with most of the code providing the necessary scaffolding for an R
+function. The following benchmark compares that with the previous two
+equivalent functions.
+
+``` r
+rbenchmark::benchmark (
+                       res <- x + y,
+                       res <- add (x, y),
+                       res <- rowSums (xy),
+                       replications = 100,
+                       order = NULL) [, 1:4]
+```
+
+| test                | replications | elapsed | relative |
+|:--------------------|-------------:|--------:|---------:|
+| res \<- x + y       |          100 |   0.071 |    1.000 |
+| res \<- add(x, y)   |          100 |   0.075 |    1.056 |
+| res \<- rowSums(xy) |          100 |   0.573 |    8.070 |
+
+So our `add` function is broadly equivalent to R’s underlying code for
+vector addition, and correspondingly, considerably more efficient than
+`rowSums` applied to an equivalent matrix. This naturally fosters the
+question of whether the inefficiency arises in `rowSums` itself, or
+whether it is somehow something inherent to R’s internal representation
+of matrices and/or matrix operations? The following code provides an
+initial answer to that quesiton.
+
+``` r
+rbenchmark::benchmark (
+                       res <- x + y,
+                       res <- add (x, y),
+                       res <- rowSums (xy),
+                       res <- xy [, 1] + xy [, 2],
+                       replications = 100,
+                       order = NULL) [, 1:4]
+```
+
+| test                          | replications | elapsed | relative |
+|:------------------------------|-------------:|--------:|---------:|
+| res \<- x + y                 |          100 |   0.078 |    1.000 |
+| res \<- add(x, y)             |          100 |   0.121 |    1.551 |
+| res \<- rowSums(xy)           |          100 |   0.529 |    6.782 |
+| res \<- xy\[, 1\] + xy\[, 2\] |          100 |   0.477 |    6.115 |
+
+And direct addition of two columns of a matrix, through indexing into
+those columns, is roughly as *inefficient* as `rowSums` itself, while
+direct addition of the equivalent vectors remains 3-4 times more
+efficient.
+
+### How are matrices stored?
+
+So the reason for the relative inefficiency of `rowSums` is likely to
+extend directly from the column selection operation, `xy[, i]`. The
+reference manual for the C-level details of data storage and
+sub-selection in R is the online compendium,
+<a target="_blank" rel="noopener noreferrer" href="https://cran.r-project.org/doc/manuals/r-release/R-ints.html#SEXPs">
+R Internals </a>, yet even this has remarkably little to say in regard
+to how matrices are actually stored or manipulated. The key is a single
+incidental statement that,
+<a target="_blank" rel="noopener noreferrer" href="https://cran.r-project.org/doc/manuals/R-ints.html#Large-matrices">
+“Matrices are stored as vectors” </a>. The storage can then be
+understood through reading the details of vector storage, and then
+simply figuring out how the indexing of a matrix-as-vector is
+implemented. This can be easily discerned from direct conversion within
+R:
+
+``` r
+as.vector (cbind (1:5, 6:10))
+```
+
+    ##  [1]  1  2  3  4  5  6  7  8  9 10
+
+The columns of a matrix are directly concatenated within the vector
+object. This enables us to then re-write the above C code for vector
+addition to instead accept a matrix object, noting that the indices `i`
+and `n + i` respectively refer to the first and second columns of the
+matrix.
+
+``` r
+matadd <- cfunction(c(a = "numeric"), "
+                 int n = floor (LENGTH (a) / 2.0);
+                 SEXP result = PROTECT (Rf_allocVector (REALSXP, n));
+                 double *ra, *rout;
+                 ra = REAL (a);
+                 rout = REAL (result);
+                 for (int i = 0; i < n; i++)
+                     rout [i] = ra [i] + ra [n + i];
+                 UNPROTECT (1);
+
+                 return result;
+                 ")
+```
+
+Benchmarking that against the previous versions, and including an
+additional comparison of direct matrix addition, gives the following
+results.
+
+``` r
+rbenchmark::benchmark (
+                       res <- x + y,
+                       res <- add (x, y),
+                       res <- rowSums (xy),
+                       res <- xy [, 1] + xy [, 2],
+                       res <- matadd (xy),
+                       res <- xy + xy,
+                       replications = 100,
+                       order = NULL) [, 1:4]
+```
+
+| test                          | replications | elapsed | relative |
+|:------------------------------|-------------:|--------:|---------:|
+| res \<- x + y                 |          100 |   0.071 |    1.029 |
+| res \<- add(x, y)             |          100 |   0.106 |    1.536 |
+| res \<- rowSums(xy)           |          100 |   0.518 |    7.507 |
+| res \<- xy\[, 1\] + xy\[, 2\] |          100 |   0.394 |    5.710 |
+| res \<- matadd(xy)            |          100 |   0.069 |    1.000 |
+| res \<- xy + xy               |          100 |   0.175 |    2.536 |
+
+That benchmark demonstrates that operations on matrix columns are only
+as efficient as equivalent operations on vectors when the matrices are
+treated as singular vector objects. Direct addition of entire matrices
+(`xy + xy`) is also as efficient as vector addition, taking here around
+twice as long because twice as many values are being added.
+Inefficiencies arise in handling matrices only when extracting
+individual rows or columns – the `xy[, i]` operations, presumably
+because these operations involve creating an additional copy of the
+entire row or column.
+
+## Conclusion
+
+What the above code was intended to demonstrate was that matrices should
+only be considered to be **like** vectors in the sense of operations on
+the entire objects. Sub-setting or sub-selecting of matrices involves
+creating additional copies of the sub-set/sub-selected portions, and is
+comparably less efficient than equivalent vector operations. In
+particular, efficient C or C++ operations on matrices should index
+directly into the underlying vector object, rather than sub-setting
+particular rows or columns of the matrices.
+
+The assertion that everything in R is a vector hereby deepens: Even
+matrices in R are vectors, and should in many circumstances be treated
+as such.
