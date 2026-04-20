@@ -1,14 +1,14 @@
 {
-  "name": "foundation-zurb-template",
-  "version": "1.0.0",
-  "description": "Official Template for Foundation for Sites.",
+  "name": "mpadge-blog",
+  "version": "1.1.0",
+  "description": "Source code for 'mpadge.eu', based on Zurb Foundation Sites template.",
   "main": "gulpfile.babel.js",
   "scripts": {
     "start": "gulp",
     "build": "gulp build --production",
     "test": "bash tests/integration.sh"
   },
-  "author": "Foundation Yetinauts <contact@get.foundation> (https://get.foundation)",
+  "author": "Mark Padgham",
   "license": "MIT",
   "dependencies": {
     "foundation-sites": "latest",
@@ -54,11 +54,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/zurb/foundation-zurb-template.git"
+    "url": "https://codeberg.org/mpadge/mpadge.git",
   },
   "bugs": {
-    "url": "https://github.com/zurb/foundation-sites/issues",
-    "email": "foundation@zurb.com"
+    "url": "codeberg.org/mpadge/mpadge/issues",
+    "email": "mark.padgham@email.com"
   },
   "private": true,
   "browserslist": [
