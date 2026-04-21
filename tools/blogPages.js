@@ -1,8 +1,24 @@
 import panini   from 'panini';
 import through2 from 'through2';
+import path     from 'path';
+import fs       from 'fs';
+import yaml     from 'js-yaml';
 
 export function blogPages(PATHS) {
   const marked = require('marked');
+
+  // Build slug → created map from blog.yml
+  function loadDateMap() {
+    const raw = fs.readFileSync('src/data/blog.yml', 'utf8');
+    const entries = yaml.load(raw);
+    const map = {};
+    for (const entry of entries) {
+      if (entry && entry.link && entry.created) {
+        map[entry.link] = entry.created;
+      }
+    }
+    return map;
+  }
 
   function slugify(text) {
     return text.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-');
@@ -40,7 +56,7 @@ export function blogPages(PATHS) {
     return { content, sidenotesHtml };
   }
 
-  function buildPage(mdContent) {
+  function buildPage(mdContent, dateStr) {
     const { content, sidenotesHtml } = processFootnotes(mdContent);
 
     const headings = [];
@@ -52,7 +68,10 @@ export function blogPages(PATHS) {
       return `<section id="${id}" data-magellan-target="${id}"><h${level}>${text}</h${level}></section>\n`;
     };
 
-    const html = marked(content, { renderer }).replace(/\{\{/g, '\\{{');
+    const rawHtml = marked(content, { renderer }).replace(/\{\{/g, '\\{{');
+    const html = dateStr
+      ? rawHtml.replace('</section>', `</section>\n<p class="blog-date">${dateStr}</p>`)
+      : rawHtml;
 
     const navItems = headings.map(h =>
       `<li><a href="#${h.id}" style="color:#111111">${h.text}</a></li>`
@@ -77,10 +96,16 @@ export function blogPages(PATHS) {
       '{{> footer}}\n';
   }
 
+  const dateMap = loadDateMap();
+
   return require('gulp').src('src/pages/blog/*.md', { base: 'src/pages/' })
     .pipe(through2.obj(function(file, enc, cb) {
       if (file.isBuffer()) {
-        file.contents = Buffer.from(buildPage(file.contents.toString(enc)));
+        const slug = path.basename(file.path)
+          .replace(/\.md$/, '.html')
+          .replace(/^\d{4}-\d{2}-\d{2}-/, '');
+        const dateStr = dateMap[slug] || '';
+        file.contents = Buffer.from(buildPage(file.contents.toString(enc), dateStr));
         file.path = file.path.replace(/\.md$/, '.html')
                               .replace(/([\\/])\d{4}-\d{2}-\d{2}-/, '$1');
       }

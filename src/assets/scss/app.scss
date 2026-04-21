@@ -285,6 +285,18 @@
     background-color: var(--bg-color);
 }
 
+// Blog post date line (appears beneath the title h1)
+.blog-date {
+    color: #888888;
+    font-size: 0.85em;
+    margin-top: -0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+[data-theme="dark"] .sections p.blog-date {
+    color: #888888;
+}
+
 // Sidenotes
 .sidenote-ref {
     cursor: pointer;
