@@ -81,7 +81,8 @@ export function blogPages(PATHS) {
     .pipe(through2.obj(function(file, enc, cb) {
       if (file.isBuffer()) {
         file.contents = Buffer.from(buildPage(file.contents.toString(enc)));
-        file.path = file.path.replace(/\.md$/, '.html');
+        file.path = file.path.replace(/\.md$/, '.html')
+                              .replace(/([\\/])\d{4}-\d{2}-\d{2}-/, '$1');
       }
       cb(null, file);
     }))
