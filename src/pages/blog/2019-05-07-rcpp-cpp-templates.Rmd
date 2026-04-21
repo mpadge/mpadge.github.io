@@ -7,7 +7,7 @@ description: C++ templates are really useful. Templates allow you to code
     blog entry is about how to maximise the usefulness of C++ templates in an
     Rcpp context.
 date: 7 May 2019
-link: blog002.html
+link: rcpp-cpp-templates.html
 ---
 
 # C++ templates and Rcpp

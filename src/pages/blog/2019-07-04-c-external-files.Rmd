@@ -10,7 +10,7 @@ description: I recently encountered a problem while bundling an old C library
     definitively are not. This blog entry is about where to put such files,
     and how to link them within the source code.
 date: 4 July 2019
-link: blog004.html
+link: c-external-files.html
 ---
 
 # Calling external files from C in R
