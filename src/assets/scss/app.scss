@@ -144,7 +144,7 @@
     --top-bar-link-hover: #000000;
     --card-bg: #ffffff;
     --callout-bg: #e6e6e6;
-    --code-bg: #fafafa;
+    --code-bg: #f0f0f0;
     --icon-color: #222222;
     --toggle-icon-color: #222222;
 }
@@ -206,9 +206,15 @@
     color: var(--text-color);
 }
 
+code, pre {
+    background-color: var(--code-bg);
+    border-width: 0.5px;
+}
+
 [data-theme="dark"] pre,
 [data-theme="dark"] code {
     background-color: var(--code-bg);
+    border-color: #444444;
     color: var(--text-color);
 }
 
