@@ -71,8 +71,15 @@ get_date <- function (rmd)
 get_datestr <- function (x)
 {
     date_ln <- x [grep ("^date:", x)]
-    as.Date (strsplit (date_ln, "date: ") [[1]] [2],
-             tryFormats = c ("%d/%m/%Y", "%d %b %Y", "%d %B %Y"))
+    as.Date (
+        strsplit (date_ln, "date: ") [[1]] [2],
+        tryFormats = c (
+            "%d/%m/%Y",
+            "%d %b %Y",
+            "%d %B %Y",
+            "%Y-%m-%d"
+        )
+    )
 }
 
 get_one_blog_dat <- function (f)
