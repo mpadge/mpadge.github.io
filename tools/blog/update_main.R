@@ -1,10 +1,10 @@
-# Resolve project root from this script's own location, not from getwd(),
-# so the script works whether called from the project root or src/pages/blog/.
-script_dir    <- dirname (normalizePath (sys.frame (1)$ofile))
-project_root  <- normalizePath (file.path (script_dir, "..", ".."))
-blog_dir      <- file.path (project_root, "src", "pages", "blog")
+root_files <- c ("package.json", "gulpfile.babel.js")
+if (!all (file.exists (root_files)))
+    stop ("Must be run from the project root. Use 'make update' or 'make blog'.")
 
-source (file.path (script_dir, "make_entry_xml.R"))
+blog_dir <- "src/pages/blog"
+
+source ("tools/blog/make_entry_xml.R")
 
 update_main <- function (n = 6, sort_date = "created")
 {
@@ -13,12 +13,12 @@ update_main <- function (n = 6, sort_date = "created")
 
     # blog.yml: full list for the blog index page
     writeLines (format_blog_yaml (fdat),
-                file.path (project_root, "src", "data", "blog.yml"))
+                "src/data/blog.yml")
 
     # blogshort.yml: limited to n most recent entries for the front page
     fdat_short <- if (n < length (fdat)) fdat [seq (n)] else fdat
     writeLines (format_blog_yaml (fdat_short, add_blog_prefix = TRUE),
-                file.path (project_root, "src", "data", "blogshort.yml"))
+                "src/data/blogshort.yml")
 
     # feed.xml: RSS feed with full content from .md files
     blog_df <- data.frame (
@@ -29,7 +29,7 @@ update_main <- function (n = 6, sort_date = "created")
         stringsAsFactors = FALSE
     )
     generate_rss_feed (blog_df, blog_dir,
-                       output_file = file.path (project_root, "src", "feed.xml"))
+                       output_file = "src/feed.xml")
 }
 
 format_blog_yaml <- function (fdat, add_blog_prefix = FALSE)
