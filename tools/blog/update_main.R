@@ -12,13 +12,15 @@ update_main <- function (n = 6, sort_date = "created")
     fdat  <- lapply (flist, get_one_blog_dat)
 
     # blog.yml: full list for the blog index page
-    writeLines (format_blog_yaml (fdat),
-                "src/data/blog.yml")
+    f_out <- "src/data/blog.yml"
+    writeLines (format_blog_yaml (fdat), f_out)
+    cli::cli_alert_success("Updated {f_out}")
 
     # blogshort.yml: limited to n most recent entries for the front page
     fdat_short <- if (n < length (fdat)) fdat [seq (n)] else fdat
-    writeLines (format_blog_yaml (fdat_short, add_blog_prefix = TRUE),
-                "src/data/blogshort.yml")
+    f_out <- "src/data/blogshort.yml"
+    writeLines (format_blog_yaml (fdat_short, add_blog_prefix = TRUE), f_out)
+    cli::cli_alert_success("Updated {f_out}")
 
     # feed.xml: RSS feed with full content from .md files
     blog_df <- data.frame (
@@ -28,8 +30,9 @@ update_main <- function (n = 6, sort_date = "created")
         created     = sapply (fdat, function (f) f$date_cre),
         stringsAsFactors = FALSE
     )
-    generate_rss_feed (blog_df, blog_dir,
-                       output_file = "src/feed.xml")
+    f_out <- "src/feed.xml"
+    generate_rss_feed (blog_df, blog_dir, output_file = f_out)
+    cli::cli_alert_success("Updated {f_out}")
 }
 
 format_blog_yaml <- function (fdat, add_blog_prefix = FALSE)
