@@ -42,7 +42,7 @@ test_result $? "JavaScript file generated"
 test_result $? "Foundation icons directory exists"
 
 # ----- Test: Blog posts are generated
-BLOG_COUNT=$(find "$DIST_DIR/blog" -name "blog*.html" | wc -l)
+BLOG_COUNT=$(find "$DIST_DIR/blog" -name "*.html" ! -name "index.html" | wc -l)
 [ "$BLOG_COUNT" -ge 10 ]
 test_result $? "Blog posts generated ($BLOG_COUNT found)"
 

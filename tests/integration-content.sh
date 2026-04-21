@@ -38,7 +38,7 @@ grep -q 'href.*privacy' "$DIST_DIR/index.html"
 test_result $? "index.html has privacy link"
 
 # ----- Test: Blog index has blog posts
-grep -q 'blog.*html' "$DIST_DIR/blog/index.html"
+grep -q '\.html' "$DIST_DIR/blog/index.html"
 test_result $? "blog/index.html references blog posts"
 
 # ----- Test: CSS and JS files are linked

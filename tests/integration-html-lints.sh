@@ -80,7 +80,8 @@ if [ -z "$DUPLICATE_IDS" ]; then DUPLICATE_IDS=0; fi
 test_result $? "No duplicate HTML IDs in index.html"
 
 # ----- Test: Proper section closing tags
-grep -q "</section>" "$DIST_DIR/blog/blog001.html"
+FIRST_BLOG=$(find "$DIST_DIR/blog" -name "*.html" ! -name "index.html" | sort | head -1)
+grep -q "</section>" "$FIRST_BLOG"
 test_result $? "Blog posts have proper section closing tags"
 
 # ----- Test: HTML structure validation with tidy
@@ -89,7 +90,7 @@ if command -v tidy &> /dev/null; then
     test_result $? "index.html passes HTML structure validation"
 
     # For blog posts, check all files for warnings but ignore utterances script attributes (intentional)
-    BLOG_FILES=$(find "$DIST_DIR/blog" -name "blog*.html" -type f | sort)
+    BLOG_FILES=$(find "$DIST_DIR/blog" -name "*.html" ! -name "index.html" -type f | sort)
     TOTAL_BLOG_WARNINGS=0
     for BLOG_FILE in $BLOG_FILES; do
         BLOG_WARNINGS=$(tidy -q "$BLOG_FILE" 2>&1 | head -20 | grep -i "warning" | grep -v "proprietary attribute" | wc -l)
