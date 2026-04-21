@@ -285,3 +285,103 @@
     background-color: var(--bg-color);
 }
 
+// Sidenotes
+.sidenote-ref {
+    cursor: pointer;
+    color: #888888;
+    font-size: 0.72em;
+    font-weight: bold;
+    vertical-align: super;
+    padding: 0 1px;
+    line-height: 0;
+
+    &:hover {
+        color: #333333;
+    }
+}
+
+#sidenotes-panel {
+    display: none;
+    padding-top: 1rem;
+    padding-left: 0.75rem;
+    position: sticky;
+    top: 5rem;
+    align-self: flex-start;
+
+    @media print, screen and (min-width: 640px) {
+        display: block;
+    }
+}
+
+#sidenote-popup {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    max-width: min(320px, calc(100vw - 16px));
+    font-size: 0.85em;
+    color: #555555;
+    line-height: 1.45;
+    padding: 0.5em 0.75em;
+    background: #f8f8f8;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    pointer-events: none;
+
+    &.active {
+        display: block;
+    }
+
+    .sidenote-num {
+        font-weight: bold;
+        color: #888888;
+    }
+}
+
+[data-theme="dark"] #sidenote-popup {
+    background: #2a2a2a;
+    border-color: #444444;
+    color: #cccccc;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+
+    .sidenote-num {
+        color: #aaaaaa;
+    }
+}
+
+.sidenote {
+    display: none;
+    font-size: 0.82em;
+    color: #555555;
+    line-height: 1.45;
+    padding: 0.4em 0.6em;
+    border-left: 2px solid #bbbbbb;
+    margin-bottom: 0.5em;
+
+    &.active {
+        display: block;
+    }
+
+    .sidenote-num {
+        font-weight: bold;
+        color: #888888;
+    }
+}
+
+[data-theme="dark"] .sidenote-ref {
+    color: #aaaaaa;
+
+    &:hover {
+        color: #eeeeee;
+    }
+}
+
+[data-theme="dark"] .sidenote {
+    color: #cccccc;
+    border-left-color: #555555;
+
+    .sidenote-num {
+        color: #aaaaaa;
+    }
+}
+

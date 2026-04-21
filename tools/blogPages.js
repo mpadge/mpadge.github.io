@@ -8,7 +8,41 @@ export function blogPages(PATHS) {
     return text.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-');
   }
 
+  function processFootnotes(mdContent) {
+    const definitions = {};
+    const referenceOrder = [];
+
+    // Extract [^label]: content definitions (single-line)
+    const defRegex = /^\[\^([^\]]+)\]:\s*(.+)$/gm;
+    let match;
+    while ((match = defRegex.exec(mdContent)) !== null) {
+      definitions[match[1]] = match[2].trim();
+    }
+
+    // Remove definition lines from content
+    let content = mdContent.replace(/^\[\^[^\]]+\]:\s*.+\n?/gm, '');
+
+    // Replace [^label] references with numbered markers in order of appearance
+    content = content.replace(/\[\^([^\]]+)\]/g, (full, label) => {
+      if (!definitions[label]) return full;
+      if (!referenceOrder.includes(label)) {
+        referenceOrder.push(label);
+      }
+      const num = referenceOrder.indexOf(label) + 1;
+      return `<sup class="sidenote-ref" data-sn="${num}">${num}</sup>`;
+    });
+
+    const sidenotesHtml = referenceOrder.map((label, i) => {
+      const num = i + 1;
+      return `<div class="sidenote" id="sn-${num}"><span class="sidenote-num">${num}.</span> ${definitions[label]}</div>`;
+    }).join('\n');
+
+    return { content, sidenotesHtml };
+  }
+
   function buildPage(mdContent) {
+    const { content, sidenotesHtml } = processFootnotes(mdContent);
+
     const headings = [];
     const renderer = new marked.Renderer();
 
@@ -18,7 +52,7 @@ export function blogPages(PATHS) {
       return `<section id="${id}" data-magellan-target="${id}"><h${level}>${text}</h${level}></section>\n`;
     };
 
-    const html = marked(mdContent, { renderer }).replace(/\{\{/g, '\\{{');
+    const html = marked(content, { renderer }).replace(/\{\{/g, '\\{{');
 
     const navItems = headings.map(h =>
       `<li><a href="#${h.id}" style="color:#111111">${h.text}</a></li>`
@@ -32,10 +66,13 @@ export function blogPages(PATHS) {
       '<ul class="vertical menu" data-magellan>\n' +
       navItems + '\n' +
       '</ul>\n</div>\n</nav>\n</div>\n' +
-      '<div id="blog-content" class="cell medium-10 large-10">\n' +
+      '<div id="blog-content" class="cell medium-8 large-8">\n' +
       '<div class="sections">\n' +
       html + '\n' +
       '</div>\n</div>\n' +
+      '<div id="sidenotes-panel" class="cell medium-2 large-2">\n' +
+      sidenotesHtml + '\n' +
+      '</div>\n' +
       '{{> blog_entry_footer}}\n' +
       '{{> footer}}\n';
   }

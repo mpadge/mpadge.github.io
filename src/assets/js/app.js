@@ -36,6 +36,91 @@ $(document).foundation();
     });
 }());
 
+// Sidenotes: hover/click shows note in right panel (wide) or popup above ref (narrow)
+(function () {
+    var MEDIUM_BP = 640;
+    var refs = document.querySelectorAll('.sidenote-ref');
+    var notes = document.querySelectorAll('.sidenote');
+    var hideTimer = null;
+
+    // --- wide-screen: right panel ---
+    function showNote(num) {
+        if (hideTimer) { clearTimeout(hideTimer); hideTimer = null; }
+        notes.forEach(function (n) { n.classList.remove('active'); });
+        var note = document.getElementById('sn-' + num);
+        if (note) { note.classList.add('active'); }
+    }
+
+    function scheduleHide() {
+        hideTimer = setTimeout(function () {
+            if (!document.querySelector('.sidenote:hover')) {
+                notes.forEach(function (n) { n.classList.remove('active'); });
+            }
+            hideTimer = null;
+        }, 150);
+    }
+
+    // --- narrow-screen: floating popup ---
+    var popup = document.createElement('div');
+    popup.id = 'sidenote-popup';
+    document.body.appendChild(popup);
+
+    var activeRef = null;
+
+    function showPopup(ref) {
+        var note = document.getElementById('sn-' + ref.dataset.sn);
+        if (!note) return;
+        popup.innerHTML = note.innerHTML;
+        popup.classList.add('active');
+        // Position above the ref; measure after showing off-screen
+        var rect = ref.getBoundingClientRect();
+        var pw = popup.offsetWidth;
+        var ph = popup.offsetHeight;
+        var left = rect.left + rect.width / 2 - pw / 2;
+        left = Math.max(8, Math.min(left, window.innerWidth - pw - 8));
+        var top = rect.top - ph - 8;
+        if (top < 8) { top = rect.bottom + 8; } // flip below if too close to top
+        popup.style.left = left + 'px';
+        popup.style.top = top + 'px';
+        activeRef = ref;
+    }
+
+    function hidePopup() {
+        popup.classList.remove('active');
+        activeRef = null;
+    }
+
+    document.addEventListener('click', function (e) {
+        if (window.innerWidth >= MEDIUM_BP) return;
+        var ref = e.target.closest('.sidenote-ref');
+        if (ref) {
+            e.preventDefault();
+            if (activeRef === ref) { hidePopup(); } else { showPopup(ref); }
+            return;
+        }
+        if (!popup.contains(e.target)) { hidePopup(); }
+    });
+
+    // --- wide-screen hover wiring ---
+    refs.forEach(function (ref) {
+        ref.addEventListener('mouseenter', function () {
+            if (window.innerWidth < MEDIUM_BP) return;
+            showNote(ref.dataset.sn);
+        });
+        ref.addEventListener('mouseleave', function () {
+            if (window.innerWidth < MEDIUM_BP) return;
+            scheduleHide();
+        });
+    });
+
+    notes.forEach(function (note) {
+        note.addEventListener('mouseenter', function () {
+            if (hideTimer) { clearTimeout(hideTimer); hideTimer = null; }
+        });
+        note.addEventListener('mouseleave', scheduleHide);
+    });
+}());
+
 // Smart sticky nav: hide on scroll down, reveal on scroll up
 (function () {
     var stickyBar = document.querySelector('[data-sticky-container] .top-bar');
