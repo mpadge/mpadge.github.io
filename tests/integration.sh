@@ -39,11 +39,17 @@ echo "Linting HTML files..."
 bash "$SCRIPT_DIR/integration-html-lints.sh" "$PROJECT_ROOT" 2>&1 | grep -v "^================================" | grep -v "^Test Results" | grep -v "^Passed:" | grep -v "^Failed:" | grep -v "^All tests"
 echo
 
+# Run data/front-matter tests
+echo "Testing data and front-matter..."
+bash "$SCRIPT_DIR/integration-data.sh" "$PROJECT_ROOT" 2>&1 | grep -v "^================================" | grep -v "^Test Results" | grep -v "^Passed:" | grep -v "^Failed:" | grep -v "^All tests"
+echo
+
 # Run all tests again to get final count
 TEMP_OUTPUT=$(mktemp)
 bash "$SCRIPT_DIR/integration-structure.sh" "$PROJECT_ROOT" 2>&1 | grep "✓\|✗" > "$TEMP_OUTPUT"
 bash "$SCRIPT_DIR/integration-content.sh" "$PROJECT_ROOT" 2>&1 | grep "✓\|✗" >> "$TEMP_OUTPUT"
 bash "$SCRIPT_DIR/integration-html-lints.sh" "$PROJECT_ROOT" 2>&1 | grep "✓\|✗" >> "$TEMP_OUTPUT"
+bash "$SCRIPT_DIR/integration-data.sh" "$PROJECT_ROOT" 2>&1 | grep "✓\|✗" >> "$TEMP_OUTPUT"
 
 TESTS_PASSED=$(grep "✓" "$TEMP_OUTPUT" 2>/dev/null | wc -l)
 TESTS_FAILED=$(grep "✗" "$TEMP_OUTPUT" 2>/dev/null | wc -l)
