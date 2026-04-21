@@ -38,12 +38,15 @@ done
 [ "$MISSING_FIELDS" -eq 0 ]
 test_result $? "All Rmd files have title, date, and link fields"
 
-# Date fields are parseable (DD/MM/YYYY or D/DD Month/Mon YYYY formats)
+# Date fields are parseable — accepted formats:
+DATE_DMY='^[0-9]{1,2}/[0-9]{2}/[0-9]{4}$'          # DD/MM/YYYY  e.g. 06/05/2019
+DATE_WORD='^[0-9]{1,2} [A-Za-z]+ [0-9]{4}$'         # D Mon YYYY  e.g. 7 May 2019
+DATE_ISO='^[0-9]{4}-[0-9]{2}-[0-9]{2}$'             # YYYY-MM-DD  e.g. 2026-04-21
 INVALID_DATES=0
 for f in $RMD_FILES; do
     block=$(awk '/^---$/{n++; if(n==2) exit} n==1' "$f")
     date_val=$(echo "$block" | grep '^date:' | sed 's/^date: *//')
-    echo "$date_val" | grep -qE '^[0-9]{1,2}/[0-9]{2}/[0-9]{4}$|^[0-9]{1,2} [A-Za-z]+ [0-9]{4}$' \
+    echo "$date_val" | grep -qE "${DATE_DMY}|${DATE_WORD}|${DATE_ISO}" \
         || INVALID_DATES=$((INVALID_DATES + 1))
 done
 [ "$INVALID_DATES" -eq 0 ]
