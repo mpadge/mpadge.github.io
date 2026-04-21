@@ -38,10 +38,12 @@ format_blog_yaml <- function (fdat, add_blog_prefix = FALSE)
     for (f in fdat)
     {
         link <- if (add_blog_prefix) paste0 ("blog/", f$link) else f$link
+        upd <- if (!is.null (f$date_upd)) paste0 ("    updated: ", f$date_upd) else NULL
         res <- c (res, "-",
                   paste0 ("    title: ", f$title),
                   paste0 ("    description: ", f$description),
                   paste0 ("    created: ", f$date_cre),
+                  upd,
                   paste0 ("    link: ", link))
     }
     return (res)
@@ -83,6 +85,7 @@ get_one_blog_dat <- function (f)
           description = get_descr (x),
           date_mod    = format (as.Date (file.info (f)$mtime), format = "%d %b %y"),
           date_cre    = format (get_datestr (x), format = "%d %b %y"),
+          date_upd    = get_updated (x),
           link        = get_link (x))
 }
 
@@ -105,6 +108,15 @@ get_descr <- function (x)
         x <- strsplit (x [dst], "^description: ") [[1]] [2]
 
     paste0 (trimws (x), collapse = " ")
+}
+
+get_updated <- function (x)
+{
+    idx <- grep ("^updated:", x)
+    if (length (idx) == 0) return (NULL)
+    d <- strsplit (x [idx], "updated: ") [[1]] [2]
+    format (as.Date (d, tryFormats = c ("%d/%m/%Y", "%d %b %Y", "%d %B %Y")),
+            format = "%d %b %y")
 }
 
 get_link <- function (x)

@@ -13,8 +13,8 @@ export function blogPages(PATHS) {
     const entries = yaml.load(raw);
     const map = {};
     for (const entry of entries) {
-      if (entry && entry.link && entry.created) {
-        map[entry.link] = entry.created;
+      if (entry && entry.link) {
+        map[entry.link] = { created: entry.created || '', updated: entry.updated || '' };
       }
     }
     return map;
@@ -56,7 +56,7 @@ export function blogPages(PATHS) {
     return { content, sidenotesHtml };
   }
 
-  function buildPage(mdContent, dateStr) {
+  function buildPage(mdContent, dateStr, updatedStr) {
     const { content, sidenotesHtml } = processFootnotes(mdContent);
 
     const headings = [];
@@ -69,8 +69,12 @@ export function blogPages(PATHS) {
     };
 
     const rawHtml = marked(content, { renderer }).replace(/\{\{/g, '\\{{');
-    const html = dateStr
-      ? rawHtml.replace('</section>', `</section>\n<p class="blog-date">${dateStr}</p>`)
+    const dateLine = [
+      dateStr,
+      updatedStr ? `<span class="blog-updated">&#x27F6; ${updatedStr} (updated)</span>` : ''
+    ].filter(Boolean).join(' ');
+    const html = dateLine
+      ? rawHtml.replace('</section>', `</section>\n<p class="blog-date">${dateLine}</p>`)
       : rawHtml;
 
     const navItems = headings.map(h =>
@@ -104,8 +108,10 @@ export function blogPages(PATHS) {
         const slug = path.basename(file.path)
           .replace(/\.md$/, '.html')
           .replace(/^\d{4}-\d{2}-\d{2}-/, '');
-        const dateStr = dateMap[slug] || '';
-        file.contents = Buffer.from(buildPage(file.contents.toString(enc), dateStr));
+        const meta = dateMap[slug] || {};
+        const dateStr = meta.created || '';
+        const updatedStr = meta.updated || '';
+        file.contents = Buffer.from(buildPage(file.contents.toString(enc), dateStr, updatedStr));
         file.path = file.path.replace(/\.md$/, '.html')
                               .replace(/([\\/])\d{4}-\d{2}-\d{2}-/, '$1');
       }
