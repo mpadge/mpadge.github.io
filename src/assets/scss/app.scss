@@ -95,6 +95,11 @@
     height: 30px;
 }
 
+.fi-social-codeberg {
+    width: 28px;
+    height: 28px;
+}
+
 // Show only the first 6 code items
 #code .code-item:nth-child(n+7) {
     display: none;
@@ -227,6 +232,10 @@ code, pre {
 }
 
 [data-theme="dark"] .fi-social-mastodon {
+    filter: invert(0.8);
+}
+
+[data-theme="dark"] .fi-social-codeberg {
     filter: invert(0.8);
 }
 
