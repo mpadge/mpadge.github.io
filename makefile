@@ -19,6 +19,9 @@ install: ## Install everything to run/build
 code: ## Update the 'code' section from current r-univ pkgs list
 	Rscript 'tools/code-update.R'
 
+rss: ## Update RSS XML feed
+	Rscript 'tools/blog/make_rss.R'
+
 update: ## Update blog index and RSS XML feed
 	Rscript -e 'source("tools/blog/update_main.R")'
 
