@@ -100,6 +100,11 @@
     height: 28px;
 }
 
+.fi-rss {
+    font-size: 30px;
+    color: #222222;
+}
+
 // Show only the first 6 code items
 #code .code-item:nth-child(n+7) {
     display: none;
@@ -223,7 +228,8 @@ code, pre {
     color: var(--text-color);
 }
 
-[data-theme="dark"] .fi-social-github {
+[data-theme="dark"] .fi-social-github,
+[data-theme="dark"] .fi-rss {
     color: var(--icon-color);
 }
 
