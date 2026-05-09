@@ -1,3 +1,5 @@
+source ("tools/blog/utils.R")
+
 read_md_content <- function (md_file)
 {
     x <- readLines (md_file)
@@ -33,9 +35,9 @@ get_blog_content <- function (md_file)
     convert_md_to_html (md)
 }
 
-format_rfc822_date <- function (iso_date)
+format_rfc822_date <- function (date_str)
 {
-    format (as.Date (iso_date), "%a, %d %b %Y 00:00:00 +0000")
+    format (parse_date (date_str), "%a, %d %b %Y 00:00:00 +0000")
 }
 
 generate_rss_feed <- function (blog_data, blog_dir, output_file = "feed.xml")
