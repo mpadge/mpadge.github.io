@@ -140,6 +140,34 @@
         background-color: var(--top-bar-bg);
         border-bottom: 1px solid #e0e0e0;
     }
+
+    .title-bar-right .menu {
+        flex-wrap: nowrap;
+
+        li > a,
+        li > button {
+            padding: 0 clamp(3px, 1.5vw, 8px);
+        }
+
+        .fi-social-github,
+        .fi-rss {
+            font-size: clamp(20px, 5.5vw, 28px);
+        }
+
+        .fi-social-mastodon,
+        .fi-social-codeberg {
+            width: clamp(20px, 5.5vw, 28px);
+            height: clamp(20px, 5.5vw, 28px);
+        }
+
+        .theme-toggle-btn {
+            padding: 0 clamp(3px, 1.5vw, 8px);
+
+            i {
+                font-size: clamp(20px, 5.5vw, 28px);
+            }
+        }
+    }
 }
 
 [data-theme="dark"] .mobile-header {
