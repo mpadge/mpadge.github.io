@@ -119,6 +119,36 @@
     transform: translateY(-100%);
 }
 
+// Mobile title bar
+.mobile-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+
+    .title-bar {
+        background-color: var(--top-bar-bg);
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    // Hamburger lines: Foundation defaults to white, override to match nav link color
+    .menu-icon::after {
+        background: var(--top-bar-link);
+        box-shadow: 0 7px 0 var(--top-bar-link), 0 14px 0 var(--top-bar-link);
+    }
+
+    #mobile-nav {
+        background-color: var(--top-bar-bg);
+        border-bottom: 1px solid #e0e0e0;
+    }
+}
+
+[data-theme="dark"] .mobile-header {
+    .title-bar,
+    #mobile-nav {
+        border-bottom-color: #333333;
+    }
+}
+
 // Dark mode toggle button
 .theme-toggle-btn {
     background: none;
