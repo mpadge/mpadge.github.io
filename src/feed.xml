@@ -6,14 +6,6 @@
     <description>Opinions on technology in the world, on open-source software, on cities, and sometimes on bicycles.</description>
     <atom:link href="https://mpadge.eu/feed.xml" rel="self" type="application/rss+xml"/>
     <item>
-      <title>Centrality, reversibility, and leaving GitHub</title>
-      <link>https://mpadge.eu/blog/centrality-reversibility.html</link>
-      <guid>https://mpadge.eu/blog/centrality-reversibility.html</guid>
-      <description>Centrality, reversibility, and leaving GitHub</description>
-      <content:encoded><![CDATA[]]></content:encoded>
-      <pubDate>Thu, 21 May 26 00:00:00 +0000</pubDate>
-    </item>
-    <item>
       <title>Debugging C++ code in R with a single command</title>
       <link>https://mpadge.eu/blog/r-cpp-debugging.html</link>
       <guid>https://mpadge.eu/blog/r-cpp-debugging.html</guid>
