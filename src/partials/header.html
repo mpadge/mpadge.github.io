@@ -1,14 +1,15 @@
-<div data-sticky-container>
+<div class="hide-for-small-only" data-sticky-container>
     <div class="top-bar" data-sticky data-sticky-on="small" data-options="marginTop:0;" style="width:100%;">
         <div class="top-bar-left">
             <ul class="dropdown menu" data-dropdown-menu>
-                <li><a href="{{root}}#">home</a></li>
+                <li><a href="/">home</a></li>
                 <li><a href="{{root}}blog">blog</a></li>
-                <li><a href="{{root}}code">code</a> </li>
-                <li><a href="{{root}}privacy.html">privacy</a> </li>
+                <li><a href="{{root}}code">code</a></li>
+                <li><a href="{{root}}about.html">about</a></li>
+                <li><a href="{{root}}privacy.html">privacy</a></li>
             </ul>
         </div>
-        <div class="top-bar-right hide-for-small-only">
+        <div class="top-bar-right">
             <ul class="dropdown menu" data-dropdown-menu>
                 <li><a target="_blank" rel="noopener noreferrer"
                     href="https://codeberg.org/mpadge">
@@ -27,22 +28,40 @@
         </div>
     </div>
 </div>
-<div class="top-bar show-for-small-only">
-    <div class="top-bar-right">
-        <ul class="dropdown menu" data-dropdown-menu>
-            <li><a target="_blank" rel="noopener noreferrer"
-                href="https://github.com/mpadge">
-                <i class="fi-social-github" aria-hidden="true">&nbsp;</i></a></li>
-            <li><a target="_blank" rel="me noopener noreferrer"
-                href="https://nerdculture.de/@mpadge">
-                <img class="fi-social-mastodon" src="{{root}}assets/foundation-icons/svgs/fi-social-mastodon.svg" alt="Mastodon"></a></li>
-            <li><a target="_blank" rel="noopener noreferrer"
-                href="https://codeberg.org/mpadge">
-                <img class="fi-social-codeberg" src="{{root}}assets/foundation-icons/svgs/fi-social-codeberg.svg" alt="Codeberg"></a></li>
-            <li><a href="{{root}}feed.xml" aria-label="RSS feed">
-                <i class="fi-rss" aria-hidden="true">&nbsp;</i></a></li>
-            <li><button class="theme-toggle-btn" aria-label="Toggle dark mode" title="Toggle dark mode">
-                <i class="fi-contrast" aria-hidden="true">&nbsp;</i></button></li>
+
+<div class="show-for-small-only mobile-header">
+    <div class="title-bar">
+        <div class="title-bar-left">
+            <button class="menu-icon" type="button" data-toggle="mobile-nav"
+                aria-expanded="false" aria-controls="mobile-nav">
+                <span class="show-for-sr">Menu</span>
+            </button>
+        </div>
+        <div class="title-bar-right">
+            <ul class="menu">
+                <li><a target="_blank" rel="noopener noreferrer"
+                    href="https://codeberg.org/mpadge">
+                    <img class="fi-social-codeberg" src="{{root}}assets/foundation-icons/svgs/fi-social-codeberg.svg" alt="Codeberg"></a></li>
+                <li><a target="_blank" rel="noopener noreferrer"
+                    href="https://github.com/mpadge">
+                    <i class="fi-social-github" aria-hidden="true">&nbsp;</i></a></li>
+                <li><a target="_blank" rel="me noopener noreferrer"
+                    href="https://nerdculture.de/@mpadge">
+                    <img class="fi-social-mastodon" src="{{root}}assets/foundation-icons/svgs/fi-social-mastodon.svg" alt="Mastodon"></a></li>
+                <li><a href="{{root}}feed.xml" aria-label="RSS feed">
+                    <i class="fi-rss" aria-hidden="true">&nbsp;</i></a></li>
+                <li><button class="theme-toggle-btn" aria-label="Toggle dark mode" title="Toggle dark mode">
+                    <i class="fi-contrast" aria-hidden="true">&nbsp;</i></button></li>
+            </ul>
+        </div>
+    </div>
+    <div id="mobile-nav" class="hide" data-toggler="hide">
+        <ul class="vertical menu">
+            <li><a href="/">home</a></li>
+            <li><a href="{{root}}blog">blog</a></li>
+            <li><a href="{{root}}code">code</a></li>
+            <li><a href="{{root}}about.html">about</a></li>
+            <li><a href="{{root}}privacy.html">privacy</a></li>
         </ul>
     </div>
 </div>

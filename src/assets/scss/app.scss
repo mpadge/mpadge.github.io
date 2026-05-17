@@ -119,6 +119,64 @@
     transform: translateY(-100%);
 }
 
+// Mobile title bar
+.mobile-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+
+    .title-bar {
+        background-color: var(--top-bar-bg);
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    // Hamburger lines: Foundation defaults to white, override to match nav link color
+    .menu-icon::after {
+        background: var(--top-bar-link);
+        box-shadow: 0 7px 0 var(--top-bar-link), 0 14px 0 var(--top-bar-link);
+    }
+
+    #mobile-nav {
+        background-color: var(--top-bar-bg);
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    .title-bar-right .menu {
+        flex-wrap: nowrap;
+
+        li > a,
+        li > button {
+            padding: 0 clamp(3px, 1.5vw, 8px);
+        }
+
+        .fi-social-github,
+        .fi-rss {
+            font-size: clamp(20px, 5.5vw, 28px);
+        }
+
+        .fi-social-mastodon,
+        .fi-social-codeberg {
+            width: clamp(20px, 5.5vw, 28px);
+            height: clamp(20px, 5.5vw, 28px);
+        }
+
+        .theme-toggle-btn {
+            padding: 0 clamp(3px, 1.5vw, 8px);
+
+            i {
+                font-size: clamp(20px, 5.5vw, 28px);
+            }
+        }
+    }
+}
+
+[data-theme="dark"] .mobile-header {
+    .title-bar,
+    #mobile-nav {
+        border-bottom-color: #333333;
+    }
+}
+
 // Dark mode toggle button
 .theme-toggle-btn {
     background: none;
