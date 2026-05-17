@@ -50,9 +50,9 @@ generate_rss_feed <- function (blog_data, blog_dir, output_file = "feed.xml")
     feed <- '<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
-    <title>mpadge blog</title>
+    <title>Mark Padgham\'s curated opinions</title>
     <link>https://mpadge.eu/blog</link>
-    <description>R, C++, spatial, open data</description>
+    <description>Opinions on technology in the world, on open-source software, on cities, and sometimes on bicycles.</description>
     <atom:link href="https://mpadge.eu/feed.xml" rel="self" type="application/rss+xml"/>'
 
     for (i in seq_len (nrow (blog_data)))
