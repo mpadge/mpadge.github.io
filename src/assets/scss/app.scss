@@ -85,6 +85,17 @@
     margin-right: 50px;
 }
 
+.pageClass{
+    margin-top: 0px;
+    padding-left: 50px;
+    padding-right: 50px;
+    background: linear-gradient(rgba(255,255,255,0.5), rgba(255,255,255,0.5)), url(../img/london.png) center center fixed;
+    background-repeat: no-repeat;
+    background-size: cover;
+    min-height: 100vh;
+    z-index: 0;
+}
+
 .fi-social-github {
     font-size: 30px;
     color: #222222;
@@ -241,6 +252,12 @@
     background-size: cover;
 }
 
+[data-theme="dark"] .pageClass {
+    background: linear-gradient(rgba(26,26,26,0.85), rgba(26,26,26,0.85)), url(../img/london.png) center center fixed;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
 [data-theme="dark"] .top-bar {
     background-color: var(--top-bar-bg);
     border-bottom: 1px solid #333333;
@@ -336,6 +353,9 @@ code, pre {
 [data-theme="dark"] .blogClass,
 [data-theme="dark"] .blogClass p,
 [data-theme="dark"] .blogClass li,
+[data-theme="dark"] .pageClass,
+[data-theme="dark"] .pageClass p,
+[data-theme="dark"] .pageClass li,
 [data-theme="dark"] .sections,
 [data-theme="dark"] .sections p,
 [data-theme="dark"] .sections li {
@@ -346,6 +366,10 @@ code, pre {
 [data-theme="dark"] .blogClass h2,
 [data-theme="dark"] .blogClass h3,
 [data-theme="dark"] .blogClass h4,
+[data-theme="dark"] .pageClass h1,
+[data-theme="dark"] .pageClass h2,
+[data-theme="dark"] .pageClass h3,
+[data-theme="dark"] .pageClass h4,
 [data-theme="dark"] .sections h1,
 [data-theme="dark"] .sections h2,
 [data-theme="dark"] .sections h3,
@@ -354,6 +378,7 @@ code, pre {
 }
 
 [data-theme="dark"] .blogClass a,
+[data-theme="dark"] .pageClass a,
 [data-theme="dark"] .sections a {
     color: #7cb8e8;
 }
