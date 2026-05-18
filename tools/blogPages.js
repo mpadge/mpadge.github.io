@@ -28,15 +28,15 @@ export function blogPages(PATHS) {
     const definitions = {};
     const referenceOrder = [];
 
-    // Extract [^label]: content definitions (single-line)
-    const defRegex = /^\[\^([^\]]+)\]:\s*(.+)$/gm;
+    // Extract [^label]: content definitions (single or multi-line; continuation lines are indented)
+    const defRegex = /^\[\^([^\]]+)\]:\s*(.+(?:\n[ \t]+.+)*)$/gm;
     let match;
     while ((match = defRegex.exec(mdContent)) !== null) {
-      definitions[match[1]] = match[2].trim();
+      definitions[match[1]] = match[2].replace(/\n[ \t]+/g, ' ').trim();
     }
 
-    // Remove definition lines from content
-    let content = mdContent.replace(/^\[\^[^\]]+\]:\s*.+\n?/gm, '');
+    // Remove definition lines (including indented continuation lines) from content
+    let content = mdContent.replace(/^\[\^[^\]]+\]:\s*.+(?:\n[ \t]+.+)*\n?/gm, '');
 
     // Replace [^label] references with numbered markers in order of appearance
     content = content.replace(/\[\^([^\]]+)\]/g, (full, label) => {
