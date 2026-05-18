@@ -34,8 +34,11 @@ test_result $? "index.html has blog link"
 grep -q 'href.*code' "$DIST_DIR/index.html"
 test_result $? "index.html has code link"
 
-grep -q 'href.*privacy' "$DIST_DIR/index.html"
+grep -q 'href.*privacy' "$DIST_DIR/privacy/index.html"
 test_result $? "index.html has privacy link"
+
+grep -q 'href.*about' "$DIST_DIR/about/index.html"
+test_result $? "index.html has about link"
 
 # ----- Test: Blog index has blog posts
 grep -q '\.html' "$DIST_DIR/blog/index.html"

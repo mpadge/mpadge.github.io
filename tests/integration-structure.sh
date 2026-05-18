@@ -15,8 +15,11 @@ test_result $? "dist/ directory created"
 [ -f "$DIST_DIR/index.html" ]
 test_result $? "index.html exists"
 
-[ -f "$DIST_DIR/privacy.html" ]
-test_result $? "privacy.html exists"
+[ -f "$DIST_DIR/privacy/index.html" ]
+test_result $? "privacy/index.html exists"
+
+[ -f "$DIST_DIR/about/index.html" ]
+test_result $? "about/index.html exists"
 
 [ -f "$DIST_DIR/feed.xml" ]
 test_result $? "feed.xml exists"
