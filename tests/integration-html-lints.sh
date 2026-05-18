@@ -89,11 +89,10 @@ if command -v tidy &> /dev/null; then
     tidy -q "$DIST_DIR/index.html" > /dev/null 2>&1
     test_result $? "index.html passes HTML structure validation"
 
-    # For blog posts, check all files for warnings but ignore utterances script attributes (intentional)
     BLOG_FILES=$(find "$DIST_DIR/blog" -name "*.html" ! -name "index.html" -type f | sort)
     TOTAL_BLOG_WARNINGS=0
     for BLOG_FILE in $BLOG_FILES; do
-        BLOG_WARNINGS=$(tidy -q "$BLOG_FILE" 2>&1 | head -20 | grep -i "warning" | grep -v "proprietary attribute" | wc -l)
+        BLOG_WARNINGS=$(tidy -q "$BLOG_FILE" 2>&1 | head -20 | grep -i "warning" | wc -l)
         TOTAL_BLOG_WARNINGS=$((TOTAL_BLOG_WARNINGS + BLOG_WARNINGS))
     done
 
