@@ -31,12 +31,10 @@
     }
 
     function render(replies, rootId, rootUrl) {
-        var direct = replies.filter(function (r) { return r.in_reply_to_id === rootId; });
-
         var section = document.getElementById('mastodon-comments-section');
         if (!section) return;
 
-        if (direct.length === 0) {
+        if (replies.length === 0) {
             section.innerHTML =
                 '<p class="mastodon-no-comments">No replies yet. ' +
                 '<a href="' + escapeHtml(rootUrl) + '" target="_blank" rel="noopener noreferrer">Reply on Mastodon</a>' +
@@ -44,10 +42,19 @@
             return;
         }
 
+        // Build depth map: descendants arrive parent-before-child so one pass suffices
+        var depthMap = {};
+        depthMap[rootId] = 0;
+        replies.forEach(function (r) {
+            var parentDepth = depthMap[r.in_reply_to_id];
+            depthMap[r.id] = (parentDepth !== undefined ? parentDepth : 0) + 1;
+        });
+
         var html = '<h3 class="mastodon-comments-heading">Replies</h3>';
         html += '<ul class="mastodon-comments-list">';
 
-        direct.forEach(function (reply) {
+        replies.forEach(function (reply) {
+            var depth = Math.min(depthMap[reply.id] || 1, 4);
             var acct = reply.account;
             var avatar = acct.avatar_static || acct.avatar || '';
             var displayName = escapeHtml(acct.display_name || acct.username);
@@ -57,7 +64,7 @@
             var time = relativeTime(reply.created_at);
             var content = reply.content;
 
-            html += '<li class="mastodon-comment">';
+            html += '<li class="mastodon-comment" data-depth="' + depth + '">';
             html +=   '<div class="mastodon-comment-header">';
             html +=     '<a href="' + profileUrl + '" target="_blank" rel="noopener noreferrer" class="mastodon-avatar-link">';
             html +=       '<img src="' + escapeHtml(avatar) + '" alt="" class="mastodon-avatar" width="40" height="40">';

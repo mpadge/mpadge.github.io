@@ -43,6 +43,10 @@
     border: 1px solid #e6e6e6;
     border-radius: 4px;
     background: #fafafa;
+
+    &[data-depth="2"] { margin-left: 1.5rem; }
+    &[data-depth="3"] { margin-left: 3rem; }
+    &[data-depth="4"] { margin-left: 4rem; }
 }
 
 [data-theme="dark"] .mastodon-comment {
