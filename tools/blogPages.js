@@ -14,7 +14,7 @@ export function blogPages(PATHS) {
     const map = {};
     for (const entry of entries) {
       if (entry && entry.link) {
-        map[entry.link] = { created: entry.created || '', updated: entry.updated || '' };
+        map[entry.link] = { created: entry.created || '', updated: entry.updated || '', mastodon: entry.mastodon || '' };
       }
     }
     return map;
@@ -56,7 +56,7 @@ export function blogPages(PATHS) {
     return { content, sidenotesHtml };
   }
 
-  function buildPage(mdContent, dateStr, updatedStr) {
+  function buildPage(mdContent, dateStr, updatedStr, mastodonUrl) {
     const { content, sidenotesHtml } = processFootnotes(mdContent);
 
     const headings = [];
@@ -96,6 +96,7 @@ export function blogPages(PATHS) {
       '<div id="sidenotes-panel" class="cell medium-2 large-2">\n' +
       sidenotesHtml + '\n' +
       '</div>\n' +
+      `<div id="mastodon-comments" data-mastodon-url="${mastodonUrl || ''}"></div>\n` +
       '{{> blog_entry_footer}}\n' +
       '{{> footer}}\n';
   }
@@ -111,7 +112,8 @@ export function blogPages(PATHS) {
         const meta = dateMap[slug] || {};
         const dateStr = meta.created || '';
         const updatedStr = meta.updated || '';
-        file.contents = Buffer.from(buildPage(file.contents.toString(enc), dateStr, updatedStr));
+        const mastodonUrl = meta.mastodon || '';
+        file.contents = Buffer.from(buildPage(file.contents.toString(enc), dateStr, updatedStr, mastodonUrl));
         file.path = file.path.replace(/\.md$/, '.html')
                               .replace(/([\\/])\d{4}-\d{2}-\d{2}-/, '$1');
       }
