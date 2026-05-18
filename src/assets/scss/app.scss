@@ -405,15 +405,15 @@ code, pre {
 // Sidenotes
 .sidenote-ref {
     cursor: pointer;
-    color: #888888;
-    font-size: 0.72em;
+    color: #5588aa;
+    font-size: 0.82em;
     font-weight: bold;
     vertical-align: super;
     padding: 0 1px;
     line-height: 0;
 
     &:hover {
-        color: #333333;
+        color: #336688;
     }
 }
 
@@ -486,10 +486,10 @@ code, pre {
 }
 
 [data-theme="dark"] .sidenote-ref {
-    color: #aaaaaa;
+    color: #88bbdd;
 
     &:hover {
-        color: #eeeeee;
+        color: #aad4ee;
     }
 }
 
