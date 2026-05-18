@@ -2,6 +2,7 @@
     title: Debugging C++ code in R with a single command
     description: There are several great references for how to debug C or C++ code in R, but descriptions of how to start a debugger are often not so informative. This post describes how to start a debugging session in R with a single command.
     created: 30 Aug 22
+    mastodon: https://nerdculture.de/@mpadge/115486319282477466
     link: blog/r-cpp-debugging.html
 -
     title: Timeout on parallel jobs in R

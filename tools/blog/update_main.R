@@ -42,11 +42,13 @@ format_blog_yaml <- function (fdat, add_blog_prefix = FALSE)
     {
         link <- if (add_blog_prefix) paste0 ("blog/", f$link) else f$link
         upd <- if (!is.null (f$date_upd)) paste0 ("    updated: ", f$date_upd) else NULL
+        mst <- if (!is.null (f$mastodon)) paste0 ("    mastodon: ", f$mastodon) else NULL
         res <- c (res, "-",
                   paste0 ("    title: ", f$title),
                   paste0 ("    description: ", f$description),
                   paste0 ("    created: ", f$date_cre),
                   upd,
+                  mst,
                   paste0 ("    link: ", link))
     }
     return (res)
@@ -88,6 +90,7 @@ get_one_blog_dat <- function (f)
           date_mod    = format (as.Date (file.info (f)$mtime), format = "%d %b %y"),
           date_cre    = format (get_datestr (x), format = "%d %b %y"),
           date_upd    = get_updated (x),
+          mastodon    = get_mastodon (x),
           link        = get_link (x))
 }
 
@@ -119,6 +122,13 @@ get_updated <- function (x)
     d <- strsplit (x [idx], "updated: ") [[1]] [2]
     format (as.Date (d, tryFormats = c ("%d/%m/%Y", "%d %b %Y", "%d %B %Y")),
             format = "%d %b %y")
+}
+
+get_mastodon <- function (x)
+{
+    idx <- grep ("^mastodon:", x)
+    if (length (idx) == 0) return (NULL)
+    trimws (strsplit (x [idx], "mastodon: ") [[1]] [2])
 }
 
 get_link <- function (x)
