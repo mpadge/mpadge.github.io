@@ -1,0 +1,157 @@
+#mastodon-comments-section {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e0e0e0;
+}
+
+[data-theme="dark"] #mastodon-comments-section {
+    border-top-color: #333333;
+}
+
+.mastodon-comments-heading {
+    font-size: 1.1rem;
+    color: #444444;
+    margin-bottom: 1.25rem;
+}
+
+[data-theme="dark"] .mastodon-comments-heading {
+    color: #cccccc;
+}
+
+.mastodon-no-comments {
+    color: #888888;
+    font-size: 0.9rem;
+
+    a {
+        color: #6364ff;
+    }
+}
+
+[data-theme="dark"] .mastodon-no-comments {
+    color: #aaaaaa;
+}
+
+.mastodon-comments-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.mastodon-comment {
+    margin-bottom: 1.25rem;
+    padding: 0.85rem 1rem;
+    border: 1px solid #e6e6e6;
+    border-radius: 4px;
+    background: #fafafa;
+}
+
+[data-theme="dark"] .mastodon-comment {
+    border-color: #333333;
+    background: #222222;
+}
+
+.mastodon-comment-header {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.6rem;
+}
+
+.mastodon-avatar-link {
+    flex-shrink: 0;
+}
+
+.mastodon-avatar {
+    border-radius: 50%;
+    display: block;
+}
+
+.mastodon-comment-meta {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    min-width: 0;
+}
+
+.mastodon-display-name {
+    font-weight: bold;
+    font-size: 0.9rem;
+    color: #222222;
+    text-decoration: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
+[data-theme="dark"] .mastodon-display-name {
+    color: #e0e0e0;
+}
+
+.mastodon-handle {
+    font-size: 0.8rem;
+    color: #888888;
+}
+
+[data-theme="dark"] .mastodon-handle {
+    color: #aaaaaa;
+}
+
+.mastodon-timestamp {
+    font-size: 0.8rem;
+    color: #888888;
+    text-decoration: none;
+    white-space: nowrap;
+    margin-left: auto;
+
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
+[data-theme="dark"] .mastodon-timestamp {
+    color: #aaaaaa;
+}
+
+.mastodon-comment-content {
+    font-size: 0.9rem;
+    color: #333333;
+    line-height: 1.55;
+
+    p {
+        margin-bottom: 0.4rem;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+
+    a {
+        color: #6364ff;
+    }
+}
+
+[data-theme="dark"] .mastodon-comment-content {
+    color: #cccccc;
+
+    a {
+        color: #7cb8e8;
+    }
+}
+
+.mastodon-reply-link {
+    margin-top: 1rem;
+    font-size: 0.85rem;
+
+    a {
+        color: #6364ff;
+    }
+}
+
+[data-theme="dark"] .mastodon-reply-link a {
+    color: #7cb8e8;
+}

@@ -25,3 +25,4 @@ PATHS:
   # Paths to JavaScript entry points for webpack to bundle modules
   entries:
     - "src/assets/js/app.js"
+    - "src/assets/js/mastodon-comments.js"
