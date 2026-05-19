@@ -68,6 +68,20 @@ export function blogPages(PATHS) {
       return `<section id="${id}" data-magellan-target="${id}"><h${level}>${text}</h${level}></section>\n`;
     };
 
+    renderer.hr = function() {
+      return `<div class="blog-divider" aria-hidden="true">` +
+        `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 24">` +
+        `<g fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">` +
+        `<path d="M24,12 C20,5 11,5 9,10 C7,15 11,19 17,17 C22,15 23,11 19,9"/>` +
+        `<path d="M24,12 C32,4 48,20 56,12 C64,4 80,20 88,12 C96,4 112,20 120,12 C128,4 144,20 152,12 C160,4 176,20 184,12"/>` +
+        `<line x1="184" y1="12" x2="193" y2="12"/>` +
+        `<polygon points="200,6 207,12 200,18 193,12" fill="currentColor" stroke="none"/>` +
+        `<line x1="207" y1="12" x2="216" y2="12"/>` +
+        `<path d="M216,12 C224,4 240,20 248,12 C256,4 272,20 280,12 C288,4 304,20 312,12 C320,4 336,20 344,12 C352,4 368,20 376,12"/>` +
+        `<path d="M376,12 C380,5 389,5 391,10 C393,15 389,19 383,17 C378,15 377,11 381,9"/>` +
+        `</g></svg></div>\n`;
+    };
+
     const rawHtml = marked(content, { renderer }).replace(/\{\{/g, '\\{{');
     const dateLine = [
       dateStr,

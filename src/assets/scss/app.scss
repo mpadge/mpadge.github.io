@@ -402,6 +402,24 @@ code, pre {
     color: #888888;
 }
 
+// Blog divider
+.blog-divider {
+    text-align: center;
+    margin: 2rem 0;
+    line-height: 0;
+
+    svg {
+        width: 100%;
+        max-width: 480px;
+        height: auto;
+        color: #bbbbbb;
+    }
+}
+
+[data-theme="dark"] .blog-divider svg {
+    color: #575757;
+}
+
 // Sidenotes
 .sidenote-ref {
     cursor: pointer;
