@@ -523,3 +523,20 @@ code, pre {
     }
 }
 
+.info-block {
+    margin: 1.5rem 0;
+    padding: 0.7em 1em 0.7em 1.1em;
+    background: #f0f4f8;
+    border-left: 3px solid #5588aa;
+    border-radius: 0 4px 4px 0;
+    font-size: 0.88em;
+    color: #444444;
+    line-height: 1.6;
+}
+
+[data-theme="dark"] .info-block {
+    background: #1c2630;
+    border-left-color: #88bbdd;
+    color: #bbbbbb;
+}
+
