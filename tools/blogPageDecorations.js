@@ -16,13 +16,23 @@ export const ASTERISM_HTML =
 
 export const DIVIDER_HTML =
   `<div class="blog-divider" aria-hidden="true">` +
-  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 24">` +
+  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 28">` +
   `<g fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">` +
-  `<path d="M24,12 C20,5 11,5 9,10 C7,15 11,19 17,17 C22,15 23,11 19,9"/>` +
-  `<path d="M24,12 C32,4 48,20 56,12 C64,4 80,20 88,12 C96,4 112,20 120,12 C128,4 144,20 152,12 C160,4 176,20 184,12"/>` +
-  `<line x1="184" y1="12" x2="193" y2="12"/>` +
-  `<polygon points="200,6 207,12 200,18 193,12" fill="currentColor" stroke="none"/>` +
-  `<line x1="207" y1="12" x2="216" y2="12"/>` +
-  `<path d="M216,12 C224,4 240,20 248,12 C256,4 272,20 280,12 C288,4 304,20 312,12 C320,4 336,20 344,12 C352,4 368,20 376,12"/>` +
-  `<path d="M376,12 C380,5 389,5 391,10 C393,15 389,19 383,17 C378,15 377,11 381,9"/>` +
+  // centre lines and diamond
+  `<line x1="90" y1="14" x2="193" y2="14"/>` +
+  `<line x1="207" y1="14" x2="310" y2="14"/>` +
+  `<path d="M193,14 L200,7 L207,14 L200,21 Z"/>` +
+  `<circle cx="200" cy="14" r="1.5" fill="currentColor" stroke="none"/>` +
+  // left petals — three closed outlines from base (70,14)
+  `<path d="M70,14 C65,10 62,5 65,3 C69,1 74,6 72,11 Z"/>` +
+  `<path d="M70,14 C58,11 44,7 38,7 C32,7 32,13 38,15 C44,17 58,16 70,14 Z"/>` +
+  `<path d="M70,14 C58,17 44,21 38,21 C32,21 32,15 38,13 C44,11 58,12 70,14 Z"/>` +
+  // left tendril — sweeps far left around all petals, spirals back with small reverse curl
+  `<path d="M64,16 C48,23 26,26 12,22 C2,18 2,12 6,8 C10,4 22,2 38,5 C54,8 68,12 72,14 C76,16 82,14 84,11 C86,8 84,8 82,10 C80,12 82,14 90,14"/>` +
+  // right petals — exact x-mirror (x → 400−x) of left
+  `<path d="M330,14 C335,10 338,5 335,3 C331,1 326,6 328,11 Z"/>` +
+  `<path d="M330,14 C342,11 356,7 362,7 C368,7 368,13 362,15 C356,17 342,16 330,14 Z"/>` +
+  `<path d="M330,14 C342,17 356,21 362,21 C368,21 368,15 362,13 C356,11 342,12 330,14 Z"/>` +
+  // right tendril — mirror of left
+  `<path d="M336,16 C352,23 374,26 388,22 C398,18 398,12 394,8 C390,4 378,2 362,5 C346,8 332,12 328,14 C324,16 318,14 316,11 C314,8 316,8 318,10 C320,12 318,14 310,14"/>` +
   `</g></svg></div>\n`;
