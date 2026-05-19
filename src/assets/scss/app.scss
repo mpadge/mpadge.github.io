@@ -524,6 +524,7 @@ code, pre {
 }
 
 .info-block {
+    position: relative;
     margin: 1.5rem 0;
     padding: 0.7em 1em 0.7em 1.1em;
     background: #f0f4f8;
@@ -532,11 +533,25 @@ code, pre {
     font-size: 0.88em;
     color: #444444;
     line-height: 1.6;
+
+    svg.info-corner {
+        position: absolute;
+        top: -8px;
+        left: -5px;
+        width: 22px;
+        height: 22px;
+        pointer-events: none;
+        color: #5588aa;
+    }
 }
 
 [data-theme="dark"] .info-block {
     background: #1c2630;
     border-left-color: #88bbdd;
     color: #bbbbbb;
+
+    svg.info-corner {
+        color: #88bbdd;
+    }
 }
 

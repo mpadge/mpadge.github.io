@@ -3,7 +3,8 @@ import through2            from 'through2';
 import path                from 'path';
 import fs                  from 'fs';
 import yaml                from 'js-yaml';
-import { ASTERISM_HTML,
+import { INFO_CORNER_SVG,
+         ASTERISM_HTML,
          DIVIDER_HTML }    from './blogPageDecorations.js';
 
 export function blogPages(PATHS) {
@@ -69,6 +70,9 @@ export function blogPages(PATHS) {
       if (html.includes('use-dropcap')) {
         nextDropcap = true;
         return '';
+      }
+      if (html.includes('info-block')) {
+        return html.replace(/(<div[^>]*class="info-block"[^>]*>)/, '$1' + INFO_CORNER_SVG);
       }
       return html;
     };

@@ -1,3 +1,13 @@
+// Corner ornament for .info-block — two petals (right + down) and a curl,
+// mirroring the closed petal outlines and tendril of the hr divider ends.
+export const INFO_CORNER_SVG =
+  `<svg class="info-corner" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" aria-hidden="true">` +
+  `<g fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round">` +
+  `<path d="M8,8 C12,5 19,4 24,5 C28,7 27,10 23,11 C18,12 12,10 8,8 Z"/>` +
+  `<path d="M8,8 C5,12 4,19 5,24 C7,28 10,27 11,23 C12,18 10,12 8,8 Z"/>` +
+  `<path d="M8,8 C5,5 2,3 4,5 C6,7 9,9 8,8"/>` +
+  `</g></svg>`;
+
 export const ASTERISM_HTML =
   `<div class="asterism" aria-hidden="true">` +
   `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 80">` +
