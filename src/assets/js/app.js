@@ -38,10 +38,11 @@ $(document).foundation();
 
 // Sidenotes: hover/click shows note in right panel (wide) or popup above ref (narrow)
 (function () {
-    var MEDIUM_BP = 640;
+    var MEDIUM_BP = 1100;
     var refs = document.querySelectorAll('.sidenote-ref');
     var notes = document.querySelectorAll('.sidenote');
     var hideTimer = null;
+    var popupHideTimer = null;
 
     // --- wide-screen: right panel ---
     function showNote(num) {
@@ -68,19 +69,20 @@ $(document).foundation();
     var activeRef = null;
 
     function showPopup(ref) {
+        if (popupHideTimer) { clearTimeout(popupHideTimer); popupHideTimer = null; }
         var note = document.getElementById('sn-' + ref.dataset.sn);
         if (!note) return;
         popup.innerHTML = note.innerHTML;
+        popup.style.top = '-9999px';
         popup.classList.add('active');
-        // Position above the ref; measure after showing off-screen
-        var rect = ref.getBoundingClientRect();
-        var pw = popup.offsetWidth;
+        var margin = 16;
+        var vh = window.innerHeight;
         var ph = popup.offsetHeight;
-        var left = rect.left + rect.width / 2 - pw / 2;
-        left = Math.max(8, Math.min(left, window.innerWidth - pw - 8));
-        var top = rect.top - ph - 8;
-        if (top < 8) { top = rect.bottom + 8; } // flip below if too close to top
-        popup.style.left = left + 'px';
+        var rect = ref.getBoundingClientRect();
+        popup.style.left = margin + 'px';
+        var top = rect.top - 20;
+        top = Math.min(top, vh - ph - margin);
+        top = Math.max(margin, top);
         popup.style.top = top + 'px';
         activeRef = ref;
     }
@@ -90,6 +92,19 @@ $(document).foundation();
         activeRef = null;
     }
 
+    function scheduleHidePopup() {
+        popupHideTimer = setTimeout(function () { hidePopup(); popupHideTimer = null; }, 150);
+    }
+
+    function cancelHidePopup() {
+        if (popupHideTimer) { clearTimeout(popupHideTimer); popupHideTimer = null; }
+    }
+
+    // Popup stays open while the user hovers over it
+    popup.addEventListener('mouseenter', cancelHidePopup);
+    popup.addEventListener('mouseleave', scheduleHidePopup);
+
+    // Touch fallback: click toggles popup on devices with no hover
     document.addEventListener('click', function (e) {
         if (window.innerWidth >= MEDIUM_BP) return;
         var ref = e.target.closest('.sidenote-ref');
@@ -101,15 +116,15 @@ $(document).foundation();
         if (!popup.contains(e.target)) { hidePopup(); }
     });
 
-    // --- wide-screen hover wiring ---
+    // --- hover wiring for both wide and narrow ---
     refs.forEach(function (ref) {
         ref.addEventListener('mouseenter', function () {
-            if (window.innerWidth < MEDIUM_BP) return;
-            showNote(ref.dataset.sn);
+            if (window.innerWidth >= MEDIUM_BP) { showNote(ref.dataset.sn); }
+            else { showPopup(ref); }
         });
         ref.addEventListener('mouseleave', function () {
-            if (window.innerWidth < MEDIUM_BP) return;
-            scheduleHide();
+            if (window.innerWidth >= MEDIUM_BP) { scheduleHide(); }
+            else { scheduleHidePopup(); }
         });
     });
 

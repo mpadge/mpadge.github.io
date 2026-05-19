@@ -444,7 +444,7 @@ code, pre {
     top: 5rem;
     align-self: flex-start;
 
-    @media print, screen and (min-width: 640px) {
+    @media print, screen and (min-width: 1100px) {
         display: block;
     }
 }
@@ -453,7 +453,10 @@ code, pre {
     display: none;
     position: fixed;
     z-index: 9999;
-    max-width: min(320px, calc(100vw - 16px));
+    width: calc(100vw - 32px);
+    max-height: 60vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     font-size: 0.85em;
     color: #555555;
     line-height: 1.45;
@@ -461,8 +464,7 @@ code, pre {
     background: #f8f8f8;
     border: 1px solid #cccccc;
     border-radius: 4px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-    pointer-events: none;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.22);
 
     &.active {
         display: block;
