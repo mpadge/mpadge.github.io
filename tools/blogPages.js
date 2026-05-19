@@ -60,7 +60,28 @@ export function blogPages(PATHS) {
     const { content, sidenotesHtml } = processFootnotes(mdContent);
 
     const headings = [];
+    let nextDropcap = false;
     const renderer = new marked.Renderer();
+
+    renderer.html = function(html) {
+      if (/<div class="use-dropcap"><\/div>/.test(html)) {
+        nextDropcap = true;
+        return '';
+      }
+      return html;
+    };
+
+    renderer.paragraph = function(text) {
+      if (nextDropcap) {
+        nextDropcap = false;
+        const letter = text.charAt(0);
+        const upper = letter.toUpperCase();
+        if (/[A-Z]/.test(upper)) {
+          return `<p><span class="dropcap dropcap-${upper}">${letter}</span>${text.slice(1)}</p>\n`;
+        }
+      }
+      return `<p>${text}</p>\n`;
+    };
 
     renderer.heading = function(text, level) {
       const id = slugify(text);

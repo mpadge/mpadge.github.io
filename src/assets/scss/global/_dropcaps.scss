@@ -1,0 +1,27 @@
+// Deutsche Zierschrift dropcap fonts — one file per letter
+@each $letter in A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z {
+  @font-face {
+    font-family: 'DZ-#{$letter}';
+    src: url('../fonts/gwern-deutsche-zierschrift/DeutscheZierschrift-#{$letter}.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+  }
+}
+
+.dropcap {
+  float: left;
+  font-size: 8em;
+  line-height: 0.75;
+  padding-right: 0.05em;
+  margin-top: 0.04em;
+  margin-bottom: -0.05em;
+  color: inherit;
+}
+
+// Letter-specific font families
+@each $letter in A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z {
+  .dropcap-#{$letter} {
+    font-family: 'DZ-#{$letter}', serif;
+  }
+}
