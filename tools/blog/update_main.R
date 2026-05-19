@@ -43,12 +43,14 @@ format_blog_yaml <- function (fdat, add_blog_prefix = FALSE)
         link <- if (add_blog_prefix) paste0 ("blog/", f$link) else f$link
         upd <- if (!is.null (f$date_upd)) paste0 ("    updated: ", f$date_upd) else NULL
         mst <- if (!is.null (f$mastodon)) paste0 ("    mastodon: ", f$mastodon) else NULL
+        tgs <- if (!is.null (f$tags)) paste0 ("    tags: ", f$tags) else NULL
         res <- c (res, "-",
                   paste0 ("    title: ", f$title),
                   paste0 ("    description: ", f$description),
                   paste0 ("    created: ", f$date_cre),
                   upd,
                   mst,
+                  tgs,
                   paste0 ("    link: ", link))
     }
     return (res)
@@ -91,6 +93,7 @@ get_one_blog_dat <- function (f)
           date_cre    = format (get_datestr (x), format = "%d %b %y"),
           date_upd    = get_updated (x),
           mastodon    = get_mastodon (x),
+          tags        = get_tags (x),
           link        = get_link (x))
 }
 
@@ -129,6 +132,13 @@ get_mastodon <- function (x)
     idx <- grep ("^mastodon:", x)
     if (length (idx) == 0) return (NULL)
     trimws (strsplit (x [idx], "mastodon: ") [[1]] [2])
+}
+
+get_tags <- function (x)
+{
+    idx <- grep ("^tags:", x)
+    if (length (idx) == 0) return (NULL)
+    trimws (strsplit (x [idx], "tags: ") [[1]] [2])
 }
 
 get_link <- function (x)

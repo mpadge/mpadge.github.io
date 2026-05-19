@@ -163,6 +163,54 @@ $(document).foundation();
     setTimeout(updateProgress, 300);
 }());
 
+// Tag filter for blog index
+(function () {
+    var filterBar = document.getElementById('tag-filter');
+    if (!filterBar) return;
+
+    var entries = Array.from(document.querySelectorAll('.blog-entry'));
+    if (!entries.length) return;
+
+    var tagSet = {};
+    entries.forEach(function (el) {
+        (el.dataset.tags || '').split(',').forEach(function (t) {
+            t = t.trim();
+            if (t) tagSet[t] = true;
+        });
+    });
+    var tags = Object.keys(tagSet).sort();
+    if (!tags.length) return;
+
+    function makeBtn(label, tag) {
+        var btn = document.createElement('button');
+        btn.className = 'tag-filter-btn' + (tag === null ? ' active' : '');
+        btn.textContent = label;
+        btn.dataset.tag = tag === null ? '' : tag;
+        return btn;
+    }
+
+    filterBar.appendChild(makeBtn('all', null));
+    tags.forEach(function (t) { filterBar.appendChild(makeBtn(t, t)); });
+
+    filterBar.addEventListener('click', function (e) {
+        var btn = e.target.closest('.tag-filter-btn');
+        if (!btn) return;
+        filterBar.querySelectorAll('.tag-filter-btn').forEach(function (b) {
+            b.classList.remove('active');
+        });
+        btn.classList.add('active');
+        var activeTag = btn.dataset.tag;
+        entries.forEach(function (el) {
+            if (!activeTag) {
+                el.style.display = '';
+            } else {
+                var entryTags = (el.dataset.tags || '').split(',').map(function (t) { return t.trim(); });
+                el.style.display = entryTags.indexOf(activeTag) !== -1 ? '' : 'none';
+            }
+        });
+    });
+}());
+
 // Smart sticky nav: hide on scroll down, reveal on scroll up
 (function () {
     var stickyBar = document.querySelector('[data-sticky-container] .top-bar');
