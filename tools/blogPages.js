@@ -95,7 +95,7 @@ export function blogPages(PATHS) {
 
     renderer.heading = function(text, level) {
       const id = slugify(text);
-      headings.push({ id, text });
+      headings.push({ id, text, level });
       return `<section id="${id}" data-magellan-target="${id}"><h${level}>${text}</h${level}></section>\n`;
     };
 
@@ -110,9 +110,11 @@ export function blogPages(PATHS) {
       ? rawHtml.replace('</section>', `</section>\n<p class="blog-date">${dateLine}</p>`)
       : rawHtml;
 
-    const navItems = headings.map(h =>
-      `<li><a href="#${h.id}" style="color:#111111">${h.text}</a></li>`
-    ).join('\n');
+    const navItems = headings.map(h => {
+      const indent = h.level === 3 ? '0.5rem' : h.level >= 4 ? '1.0rem' : '0';
+      const size = h.level === 3 ? '0.9em' : h.level >= 4 ? '0.8em' : '1em';
+      return `<li><a href="#${h.id}" style="color:#111111;font-size:${size};padding-left:${indent}">${h.text}</a></li>`;
+    }).join('\n');
 
     return '{{> header}}\n' +
       '{{> blog_entry_header}}\n' +
