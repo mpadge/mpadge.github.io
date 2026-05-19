@@ -19,6 +19,15 @@
   color: inherit;
 }
 
+.asterism {
+  text-align: center;
+  margin: 2rem 0;
+  svg {
+    width: 120px;
+    height: auto;
+  }
+}
+
 // Letter-specific font families
 @each $letter in A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z {
   .dropcap-#{$letter} {

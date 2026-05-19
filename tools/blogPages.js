@@ -4,6 +4,22 @@ import path     from 'path';
 import fs       from 'fs';
 import yaml     from 'js-yaml';
 
+const ASTERISM_HTML =
+  `<div class="asterism" aria-hidden="true">` +
+  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 80">` +
+  `<defs>` +
+  `<radialGradient id="dz-fill">` +
+  `<stop offset="0%" stop-color="currentColor" stop-opacity="0"/>` +
+  `<stop offset="65%" stop-color="currentColor" stop-opacity="0.1"/>` +
+  `<stop offset="100%" stop-color="currentColor" stop-opacity="0.32"/>` +
+  `</radialGradient>` +
+  `</defs>` +
+  `<g stroke="currentColor" stroke-width="1.3" stroke-linejoin="round">` +
+  `<path fill="url(#dz-fill)" d="M90,5 C94,14 94,14 103,18 C94,22 94,22 90,31 C86,22 86,22 77,18 C86,14 86,14 90,5 Z"/>` +
+  `<path fill="url(#dz-fill)" d="M52,47 C56,56 56,56 65,60 C56,64 56,64 52,73 C48,64 48,64 39,60 C48,56 48,56 52,47 Z"/>` +
+  `<path fill="url(#dz-fill)" d="M128,47 C132,56 132,56 141,60 C132,64 132,64 128,73 C124,64 124,64 115,60 C124,56 124,56 128,47 Z"/>` +
+  `</g></svg></div>\n`;
+
 export function blogPages(PATHS) {
   const marked = require('marked');
 
@@ -64,7 +80,7 @@ export function blogPages(PATHS) {
     const renderer = new marked.Renderer();
 
     renderer.html = function(html) {
-      if (/<div class="use-dropcap"><\/div>/.test(html)) {
+      if (html.includes('use-dropcap')) {
         nextDropcap = true;
         return '';
       }
@@ -72,6 +88,9 @@ export function blogPages(PATHS) {
     };
 
     renderer.paragraph = function(text) {
+      if (text.trim() === '&ast;' || text.trim() === '*') {
+        return ASTERISM_HTML;
+      }
       if (nextDropcap) {
         nextDropcap = false;
         const letter = text.charAt(0);
