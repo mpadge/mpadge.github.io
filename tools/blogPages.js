@@ -5,7 +5,8 @@ import fs                  from 'fs';
 import yaml                from 'js-yaml';
 import { INFO_CORNER_SVG,
          ASTERISM_HTML,
-         DIVIDER_HTML }    from './blogPageDecorations.js';
+         DIVIDER_HTML,
+         PROGRESS_DIAMOND_SVG } from './blogPageDecorations.js';
 
 export function blogPages(PATHS) {
   const marked = require('marked');
@@ -118,9 +119,14 @@ export function blogPages(PATHS) {
       '<div class="cell medium-2 large-2 left">\n' +
       '<nav class="sticky-container" data-sticky-container>\n' +
       '<div class="sticky" data-sticky data-anchor="blog-content" data-sticky-on="medium" data-margin-top="5">\n' +
+      '<div class="progress-nav">\n' +
+      '<div class="progress-rail" id="progress-rail">\n' +
+      '<div class="progress-track"></div>\n' +
+      PROGRESS_DIAMOND_SVG + '\n' +
+      '</div>\n' +
       '<ul class="vertical menu" data-magellan>\n' +
       navItems + '\n' +
-      '</ul>\n</div>\n</nav>\n</div>\n' +
+      '</ul>\n</div>\n</div>\n</nav>\n</div>\n' +
       '<div id="blog-content" class="cell medium-8 large-8">\n' +
       '<div class="sections">\n' +
       html + '\n' +

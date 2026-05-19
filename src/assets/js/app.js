@@ -136,6 +136,33 @@ $(document).foundation();
     });
 }());
 
+// Reading progress diamond
+(function () {
+    var rail = document.getElementById('progress-rail');
+    if (!rail) return;
+    var diamond = rail.querySelector('.progress-diamond');
+    var content = document.getElementById('blog-content');
+    if (!diamond || !content) return;
+
+    function updateProgress() {
+        // Measure live — Foundation sticky changes layout after init
+        var navList = rail.parentElement && rail.parentElement.querySelector('ul');
+        var railH = navList ? navList.getBoundingClientRect().height : rail.getBoundingClientRect().height;
+        if (!railH) return;
+        var dH = 14;
+        var contentTop = content.getBoundingClientRect().top + window.scrollY;
+        var contentH = content.offsetHeight;
+        var totalScroll = contentTop + contentH - window.innerHeight;
+        var progress = Math.min(1, Math.max(0, window.scrollY / totalScroll));
+        diamond.style.top = (progress * (railH - dH)) + 'px';
+    }
+
+    window.addEventListener('scroll', updateProgress, { passive: true });
+    window.addEventListener('resize', updateProgress, { passive: true });
+    // Defer first measurement until Foundation has initialised
+    setTimeout(updateProgress, 300);
+}());
+
 // Smart sticky nav: hide on scroll down, reveal on scroll up
 (function () {
     var stickyBar = document.querySelector('[data-sticky-container] .top-bar');

@@ -1,3 +1,9 @@
+// Concave diamond for the reading progress indicator — same shape as the asterism diamonds.
+export const PROGRESS_DIAMOND_SVG =
+  `<svg class="progress-diamond" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14" aria-hidden="true">` +
+  `<path d="M7,1 C9,5 9,5 13,7 C9,9 9,9 7,13 C5,9 5,9 1,7 C5,5 5,5 7,1 Z" fill="currentColor" stroke="none"/>` +
+  `</svg>`;
+
 // Corner ornament for .info-block — two petals (right + down) and a curl,
 // mirroring the closed petal outlines and tendril of the hr divider ends.
 export const INFO_CORNER_SVG =

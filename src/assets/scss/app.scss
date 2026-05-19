@@ -545,6 +545,53 @@ code, pre {
     }
 }
 
+// Reading progress rail
+.progress-nav {
+    display: flex;
+    align-items: stretch;
+}
+
+.progress-rail {
+    display: none;
+    position: relative;
+    width: 14px;
+    flex-shrink: 0;
+    margin-right: 6px;
+
+    @media print, screen and (min-width: 640px) {
+        display: block;
+    }
+}
+
+.progress-track {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background-color: #cccccc;
+}
+
+.progress-diamond {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 0;
+    width: 14px;
+    height: 14px;
+    color: #5588aa;
+    transition: top 0.1s linear;
+}
+
+[data-theme="dark"] .progress-track {
+    background-color: #444444;
+}
+
+[data-theme="dark"] .progress-diamond {
+    color: #88bbdd;
+}
+
 [data-theme="dark"] .info-block {
     background: #1c2630;
     border-left-color: #88bbdd;
