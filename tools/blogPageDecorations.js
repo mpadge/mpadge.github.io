@@ -26,8 +26,11 @@ export const ASTERISM_HTML =
   `</defs>` +
   `<g stroke="currentColor" stroke-width="1.3" stroke-linejoin="round">` +
   `<path fill="url(#dz-fill)" d="M90,5 C94,14 94,14 103,18 C94,22 94,22 90,31 C86,22 86,22 77,18 C86,14 86,14 90,5 Z"/>` +
+  `<circle cx="90" cy="18" r="2" fill="currentColor" stroke="none"/>` +
   `<path fill="url(#dz-fill)" d="M52,47 C56,56 56,56 65,60 C56,64 56,64 52,73 C48,64 48,64 39,60 C48,56 48,56 52,47 Z"/>` +
+  `<circle cx="52" cy="60" r="2" fill="currentColor" stroke="none"/>` +
   `<path fill="url(#dz-fill)" d="M128,47 C132,56 132,56 141,60 C132,64 132,64 128,73 C124,64 124,64 115,60 C124,56 124,56 128,47 Z"/>` +
+  `<circle cx="128" cy="60" r="2" fill="currentColor" stroke="none"/>` +
   `</g></svg></div>\n`;
 
 export const DIVIDER_HTML =
@@ -37,7 +40,7 @@ export const DIVIDER_HTML =
   // centre lines and diamond
   `<line x1="90" y1="14" x2="193" y2="14"/>` +
   `<line x1="207" y1="14" x2="310" y2="14"/>` +
-  `<path d="M193,14 L200,7 L207,14 L200,21 Z"/>` +
+  `<path d="M193,14 C198,12 198,12 200,7 C202,12 202,12 207,14 C202,16 202,16 200,21 C198,16 198,16 193,14 Z"/>` +
   `<circle cx="200" cy="14" r="1.5" fill="currentColor" stroke="none"/>` +
   // left petals — three closed outlines from base (70,14)
   `<path d="M70,14 C65,10 62,5 65,3 C69,1 74,6 72,11 Z"/>` +
