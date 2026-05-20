@@ -60,7 +60,17 @@ export function blogPages(PATHS) {
     return { content, sidenotesHtml };
   }
 
-  function buildPage(mdContent, dateStr, updatedStr, mastodonUrl) {
+  function loadLinkSummaries(mdPath) {
+    const rmdPath = mdPath.replace(/\.md$/, '.Rmd');
+    if (!fs.existsSync(rmdPath)) return {};
+    const raw = fs.readFileSync(rmdPath, 'utf8');
+    const match = raw.match(/^---\n([\s\S]*?)\n---/);
+    if (!match) return {};
+    const fm = yaml.load(match[1]);
+    return (fm && fm.links) ? fm.links : {};
+  }
+
+  function buildPage(mdContent, dateStr, updatedStr, mastodonUrl, linkSummaries) {
     const { content, sidenotesHtml } = processFootnotes(mdContent);
 
     const headings = [];
@@ -100,6 +110,22 @@ export function blogPages(PATHS) {
     };
 
     renderer.hr = function() { return DIVIDER_HTML; };
+
+    renderer.link = function(href, title, text) {
+      const external = /^https?:\/\//.test(href);
+      const target = external ? ' target="_blank" rel="noopener noreferrer"' : '';
+      const raw = (linkSummaries[href] || title || '').trim();
+      if (raw) {
+        const html = marked(raw.replace(/\n/g, '  \n')).trim().replace(/^<p>/, '').replace(/<\/p>$/, '');
+        const attrVal = html
+          .replace(/&/g, '&amp;')
+          .replace(/"/g, '&quot;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;');
+        return `<a href="${href}"${target} data-summary="${attrVal}" class="has-popover">${text}</a>`;
+      }
+      return `<a href="${href}"${target}>${text}</a>`;
+    };
 
     const rawHtml = marked(content, { renderer }).replace(/\{\{/g, '\\{{');
     const dateLine = [
@@ -153,7 +179,8 @@ export function blogPages(PATHS) {
         const dateStr = meta.created || '';
         const updatedStr = meta.updated || '';
         const mastodonUrl = meta.mastodon || '';
-        file.contents = Buffer.from(buildPage(file.contents.toString(enc), dateStr, updatedStr, mastodonUrl));
+        const linkSummaries = loadLinkSummaries(file.path);
+        file.contents = Buffer.from(buildPage(file.contents.toString(enc), dateStr, updatedStr, mastodonUrl, linkSummaries));
         file.path = file.path.replace(/\.md$/, '.html')
                               .replace(/([\\/])\d{4}-\d{2}-\d{2}-/, '$1');
       }
