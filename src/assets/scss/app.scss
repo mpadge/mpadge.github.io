@@ -543,6 +543,74 @@ code, pre {
     }
 }
 
+// Summary block (opening abstract)
+.summary-block {
+    position: relative;
+    margin: 3rem 0 2.5rem;
+    padding: 1.8em 2.2em 1.5em;
+    font-size: 1em;
+    color: #333333;
+    line-height: 1.8;
+    background: #f2f2f2;
+    overflow: visible;
+
+    svg.summary-ornament {
+        position: absolute;
+        top: -14px;
+        left: 0;
+        width: 100%;
+        height: 28px;
+        color: #888888;
+        pointer-events: none;
+        overflow: visible;
+    }
+
+    svg.summary-corner-left,
+    svg.summary-corner-right {
+        position: absolute;
+        bottom: -10px;
+        width: 40%;
+        height: 20px;
+        color: #888888;
+        pointer-events: none;
+        overflow: visible;
+    }
+
+    svg.summary-corner-left { left: 0; }
+    svg.summary-corner-right { right: 0; }
+
+    svg.summary-side-left,
+    svg.summary-side-right {
+        position: absolute;
+        bottom: 0;
+        width: 20px;
+        height: 40%;
+        color: #888888;
+        pointer-events: none;
+        overflow: visible;
+    }
+
+    svg.summary-side-left { left: -10px; }
+    svg.summary-side-right { right: -10px; }
+
+    p:last-child {
+        margin-bottom: 0;
+    }
+}
+
+[data-theme="dark"] .summary-block {
+    background: #222222;
+    color: #cccccc;
+
+    svg.summary-ornament,
+    svg.summary-corner-left,
+    svg.summary-corner-right,
+    svg.summary-side-left,
+    svg.summary-side-right {
+        color: #555555;
+    }
+}
+
 // Conclusion block
 .conclusion-block {
     position: relative;

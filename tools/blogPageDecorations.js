@@ -14,18 +14,96 @@ export const INFO_CORNER_SVG =
   `<path d="M8,8 C5,5 2,3 4,5 C6,7 9,9 8,8"/>` +
   `</g></svg>`;
 
-// Stretched wire-frame for .conclusion-block: a thin border rect plus bold
-// corner L-brackets. Uses preserveAspectRatio="none" so it fills the element
-// regardless of size; vector-effect="non-scaling-stroke" keeps stroke widths
-// in screen pixels rather than scaling with the viewBox.
+export const SUMMARY_FRAME_SVG =
+  // ----- Top ornament: fixed 28px height, full width, straddles the top edge.
+  // y=14 is the centreline. Only the x-axis stretches with the block width;
+  // y coordinates map 1:1 to screen pixels.
+  // Elements (left→right): taper spike · bead pair · closed scroll (outer+inner) ·
+  //   centre diamond · closed scroll (inner+outer) · bead pair · taper spike.
+  `<svg class="summary-ornament" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 28" preserveAspectRatio="none" aria-hidden="true">` +
+  `<g stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">` +
+  // left taper spike — filled lens shape, tip at left edge, widens to 6 px at x=118
+  `<path fill="currentColor" stroke="none" d="M1,14 C80,13.4 108,12.2 118,11 L118,17 C108,15.8 80,14.6 1,14 Z"/>` +
+  // left bead pair
+  `<circle cx="124" cy="14" r="2.5" fill="none" stroke-width="1.2"/>` +
+  `<circle cx="133" cy="14" r="3.5" fill="none" stroke-width="1.2"/>` +
+  // left outer scroll — closed almond shape
+  `<path fill="none" stroke-width="1.2" d="M138,14 C142,6 160,4 174,8 C184,11 190,13.5 191,14 C190,14.5 184,17 174,20 C160,24 142,22 138,14 Z"/>` +
+  // left inner scroll — tighter nested outline
+  `<path fill="none" stroke-width="0.9" d="M142,14 C146,9 162,7.5 174,11 C183,13.5 190,14 191,14 C183,14.5 174,17 162,20.5 C146,20.5 142,14 Z"/>` +
+  // centre diamond + filled dot
+  `<path fill="none" stroke-width="1.3" d="M200,5 L207,14 L200,23 L193,14 Z"/>` +
+  `<circle cx="200" cy="14" r="2" fill="currentColor" stroke="none"/>` +
+  // right inner scroll (mirror)
+  `<path fill="none" stroke-width="0.9" d="M258,14 C254,9 238,7.5 226,11 C217,13.5 210,14 209,14 C217,14.5 226,17 238,20.5 C254,20.5 258,14 Z"/>` +
+  // right outer scroll (mirror)
+  `<path fill="none" stroke-width="1.2" d="M262,14 C258,6 240,4 226,8 C216,11 210,13.5 209,14 C210,14.5 216,17 226,20 C240,24 258,22 262,14 Z"/>` +
+  // right bead pair (mirror)
+  `<circle cx="267" cy="14" r="3.5" fill="none" stroke-width="1.2"/>` +
+  `<circle cx="276" cy="14" r="2.5" fill="none" stroke-width="1.2"/>` +
+  // right taper spike (mirror)
+  `<path fill="currentColor" stroke="none" d="M399,14 C320,13.4 292,12.2 282,11 L282,17 C292,15.8 320,14.6 399,14 Z"/>` +
+  `</g></svg>` +
+
+  // ----- Bottom-left corner: diamond centre at left edge, beads, scrolls, spike trailing right.
+  // ViewBox 0 0 200 20; diamond centre at (0,10) = block's bottom-left corner.
+  `<svg class="summary-corner-left" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 20" preserveAspectRatio="none" aria-hidden="true">` +
+  `<g stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">` +
+  `<path fill="none" stroke-width="1.3" d="M0,4 L6,10 L0,16 L-6,10 Z"/>` +
+  `<circle cx="0" cy="10" r="1.5" fill="currentColor" stroke="none"/>` +
+  `<circle cx="13" cy="10" r="2.5" fill="none" stroke-width="1.2"/>` +
+  `<circle cx="20" cy="10" r="1.8" fill="none" stroke-width="1.2"/>` +
+  `<path fill="none" stroke-width="1.2" d="M24,10 C28,4 46,3 60,6 C70,8 76,9.5 77,10 C76,10.5 70,12 60,14 C46,17 28,16 24,10 Z"/>` +
+  `<path fill="none" stroke-width="0.9" d="M28,10 C32,6.5 48,5.5 60,7.9 C69,9.5 76,10 77,10 C69,10.5 60,12.5 48,14.5 C33,14.5 28.5,10.5 28,10 Z"/>` +
+  `<path fill="currentColor" stroke="none" d="M80,8 C130,8.7 162,9.4 199,10 C162,10.6 130,11.3 80,12 Z"/>` +
+  `</g></svg>` +
+
+  // ----- Bottom-right corner: mirror — spike from centre, scrolls, beads, diamond centre at right edge.
+  `<svg class="summary-corner-right" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 20" preserveAspectRatio="none" aria-hidden="true">` +
+  `<g stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">` +
+  `<path fill="currentColor" stroke="none" d="M120,8 C70,8.7 38,9.4 1,10 C38,10.6 70,11.3 120,12 Z"/>` +
+  `<path fill="none" stroke-width="0.9" d="M172,10 C168,6.5 152,5.5 140,7.9 C131,9.5 124,10 123,10 C131,10.5 140,12.5 152,14.5 C167,14.5 171.5,10.5 172,10 Z"/>` +
+  `<path fill="none" stroke-width="1.2" d="M176,10 C172,4 154,3 140,6 C130,8 124,9.5 123,10 C124,10.5 130,12 140,14 C154,17 172,16 176,10 Z"/>` +
+  `<circle cx="180" cy="10" r="1.8" fill="none" stroke-width="1.2"/>` +
+  `<circle cx="187" cy="10" r="2.5" fill="none" stroke-width="1.2"/>` +
+  `<path fill="none" stroke-width="1.3" d="M200,4 L206,10 L200,16 L194,10 Z"/>` +
+  `<circle cx="200" cy="10" r="1.5" fill="currentColor" stroke="none"/>` +
+  `</g></svg>` +
+
+  // ----- Left side: extends upward from bottom-left corner along the left edge.
+  // ViewBox 0 0 20 200; diamond centre at (10,200) = block's bottom-left corner.
+  // Spike (y=0..109) stretches with block height; scroll/beads/diamond (y=109..207) fixed.
+  `<svg class="summary-side-left" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 200" preserveAspectRatio="none" aria-hidden="true">` +
+  `<g stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">` +
+  `<path fill="currentColor" stroke="none" d="M8,109 C8.7,72 9.3,42 10,1 C10.7,42 11.3,72 12,109 Z"/>` +
+  `<path fill="none" stroke-width="1.2" d="M10,117 C4,120 2,138 5,148 C7,155 9,161 10,163 C11,161 13,155 15,148 C18,138 16,120 10,117 Z"/>` +
+  `<path fill="none" stroke-width="0.9" d="M10,121 C6,124 5,140 7,149 C9,155 10,163 10,163 C10,163 11,155 13,149 C15,140 14,124 10,121 Z"/>` +
+  `<circle cx="10" cy="178" r="1.8" fill="none" stroke-width="1.2"/>` +
+  `<circle cx="10" cy="187" r="2.5" fill="none" stroke-width="1.2"/>` +
+  `<path fill="none" stroke-width="1.3" d="M10,193 L17,200 L10,207 L3,200 Z"/>` +
+  `<circle cx="10" cy="200" r="1.5" fill="currentColor" stroke="none"/>` +
+  `</g></svg>` +
+
+  // ----- Right side: symmetric content (left/right identical around x=10), positioned at right edge.
+  `<svg class="summary-side-right" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 200" preserveAspectRatio="none" aria-hidden="true">` +
+  `<g stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">` +
+  `<path fill="currentColor" stroke="none" d="M8,109 C8.7,72 9.3,42 10,1 C10.7,42 11.3,72 12,109 Z"/>` +
+  `<path fill="none" stroke-width="1.2" d="M10,117 C4,120 2,138 5,148 C7,155 9,161 10,163 C11,161 13,155 15,148 C18,138 16,120 10,117 Z"/>` +
+  `<path fill="none" stroke-width="0.9" d="M10,121 C6,124 5,140 7,149 C9,155 10,163 10,163 C10,163 11,155 13,149 C15,140 14,124 10,121 Z"/>` +
+  `<circle cx="10" cy="178" r="1.8" fill="none" stroke-width="1.2"/>` +
+  `<circle cx="10" cy="187" r="2.5" fill="none" stroke-width="1.2"/>` +
+  `<path fill="none" stroke-width="1.3" d="M10,193 L17,200 L10,207 L3,200 Z"/>` +
+  `<circle cx="10" cy="200" r="1.5" fill="currentColor" stroke="none"/>` +
+  `</g></svg>`;
+
 export const CONCLUSION_FRAME_SVG =
   `<svg class="conclusion-frame" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">` +
   `<g fill="none" stroke="currentColor" vector-effect="non-scaling-stroke">` +
   `<rect x="0" y="0" width="100" height="100" stroke-width="0.7" opacity="0.5"/>` +
-  `<polyline points="0,13 0,0 13,0"     stroke-width="1.8" stroke-linecap="square"/>` +
-  `<polyline points="87,0 100,0 100,13"  stroke-width="1.8" stroke-linecap="square"/>` +
+  `<polyline points="0,13 0,0 13,0"         stroke-width="1.8" stroke-linecap="square"/>` +
+  `<polyline points="87,0 100,0 100,13"     stroke-width="1.8" stroke-linecap="square"/>` +
   `<polyline points="100,87 100,100 87,100" stroke-width="1.8" stroke-linecap="square"/>` +
-  `<polyline points="13,100 0,100 0,87"  stroke-width="1.8" stroke-linecap="square"/>` +
+  `<polyline points="13,100 0,100 0,87"     stroke-width="1.8" stroke-linecap="square"/>` +
   `</g></svg>`;
 
 export const ASTERISM_HTML =
