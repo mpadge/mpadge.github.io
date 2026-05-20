@@ -565,6 +565,34 @@ code, pre {
         overflow: visible;
     }
 
+    svg.summary-corner-left,
+    svg.summary-corner-right {
+        position: absolute;
+        bottom: -10px;
+        width: 40%;
+        height: 20px;
+        color: #888888;
+        pointer-events: none;
+        overflow: visible;
+    }
+
+    svg.summary-corner-left { left: 0; }
+    svg.summary-corner-right { right: 0; }
+
+    svg.summary-side-left,
+    svg.summary-side-right {
+        position: absolute;
+        bottom: 0;
+        width: 20px;
+        height: 40%;
+        color: #888888;
+        pointer-events: none;
+        overflow: visible;
+    }
+
+    svg.summary-side-left { left: -10px; }
+    svg.summary-side-right { right: -10px; }
+
     p:last-child {
         margin-bottom: 0;
     }
@@ -574,7 +602,11 @@ code, pre {
     background: #222222;
     color: #cccccc;
 
-    svg.summary-ornament {
+    svg.summary-ornament,
+    svg.summary-corner-left,
+    svg.summary-corner-right,
+    svg.summary-side-left,
+    svg.summary-side-right {
         color: #555555;
     }
 }
