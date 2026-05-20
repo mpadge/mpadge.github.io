@@ -587,15 +587,17 @@ code, pre {
     position: fixed;
     z-index: 9998;
     max-width: 320px;
+    max-height: 60vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     font-size: 0.85em;
     color: #555555;
-    line-height: 1.5;
-    padding: 0.55em 0.8em;
+    line-height: 1.45;
+    padding: 0.5em 0.75em;
     background: #f8f8f8;
     border: 1px solid #cccccc;
     border-radius: 4px;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.18);
-    pointer-events: auto;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.22);
 
     &.active {
         display: block;
@@ -603,7 +605,7 @@ code, pre {
 
     .link-popover-text {
         display: block;
-        margin-bottom: 0.45em;
+        margin-bottom: 0.4em;
     }
 
     .link-popover-visit {
@@ -622,7 +624,7 @@ code, pre {
     background: #2a2a2a;
     border-color: #444444;
     color: #cccccc;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.45);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.4);
 
     .link-popover-visit {
         color: #88bbdd;
