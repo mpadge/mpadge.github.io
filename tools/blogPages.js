@@ -112,6 +112,8 @@ export function blogPages(PATHS) {
     renderer.hr = function() { return DIVIDER_HTML; };
 
     renderer.link = function(href, title, text) {
+      const external = /^https?:\/\//.test(href);
+      const target = external ? ' target="_blank" rel="noopener noreferrer"' : '';
       const raw = (linkSummaries[href] || title || '').trim();
       if (raw) {
         const html = marked(raw).trim().replace(/^<p>/, '').replace(/<\/p>$/, '');
@@ -120,9 +122,9 @@ export function blogPages(PATHS) {
           .replace(/"/g, '&quot;')
           .replace(/</g, '&lt;')
           .replace(/>/g, '&gt;');
-        return `<a href="${href}" data-summary="${attrVal}" class="has-popover">${text}</a>`;
+        return `<a href="${href}"${target} data-summary="${attrVal}" class="has-popover">${text}</a>`;
       }
-      return `<a href="${href}">${text}</a>`;
+      return `<a href="${href}"${target}>${text}</a>`;
     };
 
     const rawHtml = marked(content, { renderer }).replace(/\{\{/g, '\\{{');

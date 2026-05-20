@@ -148,9 +148,11 @@ $(document).foundation();
     function show(link) {
         if (hideTimer) { clearTimeout(hideTimer); hideTimer = null; }
         var summary = link.dataset.summary;
+        var isExternal = /^https?:\/\//.test(link.getAttribute('href'));
+        var visitTarget = isExternal ? ' target="_blank" rel="noopener noreferrer"' : '';
         popover.innerHTML =
             '<span class="link-popover-text">' + summary + '</span>' +
-            '<a class="link-popover-visit" href="' + link.href + '">Visit &#x2192;</a>';
+            '<a class="link-popover-visit" href="' + link.href + '"' + visitTarget + '>Visit &#x2192;</a>';
         popover.style.top = '-9999px';
         popover.classList.add('active');
 
