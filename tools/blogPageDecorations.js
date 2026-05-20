@@ -15,13 +15,34 @@ export const INFO_CORNER_SVG =
   `</g></svg>`;
 
 export const SUMMARY_FRAME_SVG =
-  `<svg class="summary-frame" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">` +
-  `<g fill="none" stroke="currentColor" vector-effect="non-scaling-stroke">` +
-  `<rect x="0" y="0" width="100" height="100" stroke-width="0.7" opacity="0.5"/>` +
-  `<polyline points="0,13 0,0 13,0"         stroke-width="1.8" stroke-linecap="square"/>` +
-  `<polyline points="87,0 100,0 100,13"     stroke-width="1.8" stroke-linecap="square"/>` +
-  `<polyline points="100,87 100,100 87,100" stroke-width="1.8" stroke-linecap="square"/>` +
-  `<polyline points="13,100 0,100 0,87"     stroke-width="1.8" stroke-linecap="square"/>` +
+  // Top ornament: fixed 28px height, full width, straddles the top edge.
+  // y=14 is the centreline. Only the x-axis stretches with the block width;
+  // y coordinates map 1:1 to screen pixels.
+  // Elements (left→right): taper spike · bead pair · closed scroll (outer+inner) ·
+  //   centre diamond · closed scroll (inner+outer) · bead pair · taper spike.
+  `<svg class="summary-ornament" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 28" preserveAspectRatio="none" aria-hidden="true">` +
+  `<g stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">` +
+  // left taper spike — filled lens shape, tip at left edge, widens to 6 px at x=118
+  `<path fill="currentColor" stroke="none" d="M1,14 C80,13.4 108,12.2 118,11 L118,17 C108,15.8 80,14.6 1,14 Z"/>` +
+  // left bead pair
+  `<circle cx="124" cy="14" r="2.5" fill="none" stroke-width="1.2"/>` +
+  `<circle cx="133" cy="14" r="3.5" fill="none" stroke-width="1.2"/>` +
+  // left outer scroll — closed almond shape
+  `<path fill="none" stroke-width="1.2" d="M138,14 C142,6 160,4 174,8 C184,11 190,13.5 191,14 C190,14.5 184,17 174,20 C160,24 142,22 138,14 Z"/>` +
+  // left inner scroll — tighter nested outline
+  `<path fill="none" stroke-width="0.9" d="M142,14 C146,9 162,7.5 174,11 C183,13.5 190,14 191,14 C183,14.5 174,17 162,20.5 C146,20.5 142,14 Z"/>` +
+  // centre diamond + filled dot
+  `<path fill="none" stroke-width="1.3" d="M200,5 L207,14 L200,23 L193,14 Z"/>` +
+  `<circle cx="200" cy="14" r="2" fill="currentColor" stroke="none"/>` +
+  // right inner scroll (mirror)
+  `<path fill="none" stroke-width="0.9" d="M258,14 C254,9 238,7.5 226,11 C217,13.5 210,14 209,14 C217,14.5 226,17 238,20.5 C254,20.5 258,14 Z"/>` +
+  // right outer scroll (mirror)
+  `<path fill="none" stroke-width="1.2" d="M262,14 C258,6 240,4 226,8 C216,11 210,13.5 209,14 C210,14.5 216,17 226,20 C240,24 258,22 262,14 Z"/>` +
+  // right bead pair (mirror)
+  `<circle cx="267" cy="14" r="3.5" fill="none" stroke-width="1.2"/>` +
+  `<circle cx="276" cy="14" r="2.5" fill="none" stroke-width="1.2"/>` +
+  // right taper spike (mirror)
+  `<path fill="currentColor" stroke="none" d="M399,14 C320,13.4 292,12.2 282,11 L282,17 C292,15.8 320,14.6 399,14 Z"/>` +
   `</g></svg>`;
 
 export const CONCLUSION_FRAME_SVG =
