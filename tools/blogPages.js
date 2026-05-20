@@ -60,7 +60,17 @@ export function blogPages(PATHS) {
     return { content, sidenotesHtml };
   }
 
-  function buildPage(mdContent, dateStr, updatedStr, mastodonUrl) {
+  function loadLinkSummaries(mdPath) {
+    const rmdPath = mdPath.replace(/\.md$/, '.Rmd');
+    if (!fs.existsSync(rmdPath)) return {};
+    const raw = fs.readFileSync(rmdPath, 'utf8');
+    const match = raw.match(/^---\n([\s\S]*?)\n---/);
+    if (!match) return {};
+    const fm = yaml.load(match[1]);
+    return (fm && fm.links) ? fm.links : {};
+  }
+
+  function buildPage(mdContent, dateStr, updatedStr, mastodonUrl, linkSummaries) {
     const { content, sidenotesHtml } = processFootnotes(mdContent);
 
     const headings = [];
@@ -102,8 +112,9 @@ export function blogPages(PATHS) {
     renderer.hr = function() { return DIVIDER_HTML; };
 
     renderer.link = function(href, title, text) {
-      if (title) {
-        const escaped = title.replace(/"/g, '&quot;');
+      const summary = (linkSummaries[href] || title || '').trim();
+      if (summary) {
+        const escaped = summary.replace(/"/g, '&quot;');
         return `<a href="${href}" data-summary="${escaped}" class="has-popover">${text}</a>`;
       }
       return `<a href="${href}">${text}</a>`;
@@ -161,7 +172,8 @@ export function blogPages(PATHS) {
         const dateStr = meta.created || '';
         const updatedStr = meta.updated || '';
         const mastodonUrl = meta.mastodon || '';
-        file.contents = Buffer.from(buildPage(file.contents.toString(enc), dateStr, updatedStr, mastodonUrl));
+        const linkSummaries = loadLinkSummaries(file.path);
+        file.contents = Buffer.from(buildPage(file.contents.toString(enc), dateStr, updatedStr, mastodonUrl, linkSummaries));
         file.path = file.path.replace(/\.md$/, '.html')
                               .replace(/([\\/])\d{4}-\d{2}-\d{2}-/, '$1');
       }
