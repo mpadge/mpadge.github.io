@@ -116,7 +116,7 @@ export function blogPages(PATHS) {
       const target = external ? ' target="_blank" rel="noopener noreferrer"' : '';
       const raw = (linkSummaries[href] || title || '').trim();
       if (raw) {
-        const html = marked(raw).trim().replace(/^<p>/, '').replace(/<\/p>$/, '');
+        const html = marked(raw.replace(/\n/g, '  \n')).trim().replace(/^<p>/, '').replace(/<\/p>$/, '');
         const attrVal = html
           .replace(/&/g, '&amp;')
           .replace(/"/g, '&quot;')
