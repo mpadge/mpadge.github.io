@@ -4,6 +4,33 @@ description: Centralisation, reversibility, and restarting
 date: 20/05/2026
 tags: ai, github
 link: centralisation-reversibility.html
+links:
+  "https://arxiv.org/abs/2503.13395": >
+    '_Causal Emergence 2.0: Quantifying emergent complexity_',
+    paper by Erik Hoel on arxiv.org (2025).
+  "https://en.wikipedia.org/wiki/Centre_national_d%27%C3%A9tudes_des_t%C3%A9l%C3%A9communications": >
+    _Centre national d'études des télécommunications_, the French research centre
+    established in 1944 (Wikipedia page).
+  "https://scholarship.law.columbia.edu/books/176/": >
+    '_The Master Switch: The Rise and Fall of Information Empires_',
+    a book by Tim Wu (2010).
+  "https://github.com/features/actions": >
+    '_Automate your workflow from idea to production_' - web page for GitHub Actions.
+  "https://direct.mit.edu/books/monograph/1856/Design-Rules-Volume-1The-Power-of-Modularity": >
+    '_Design Rules Volume 1: The Power of Modularity_', a book by
+    Carliss Y. Baldwin and Kim B. Clark (2000).
+  "https://arxiv.org/abs/2507.09599": >
+    '_Complexity and Coupling: A Functional Domain Approach_',
+    paper by Aydin Homay on arxiv.org (2025).
+  "https://codeberg.org/mpadge/mpadge/src/branch/source/statichost.yml": |
+    Interface between source for this site at codeberg.org/mpadge/mpadge and web hosting service at statichost.eu. The 3 lines are:
+    `image: node:22`
+    `command: npm install -g gulp-cli && yarn install && yarn build`
+    `public: dist`
+  "https://ropensci.org/blog/2025/12/17/beyond-github/": >
+    rOpenSci post on decentralised code hosting and alternatives to GitHub.
+  "https://codeberg.org/mpadge/mpadge": "This site's source repository on Codeberg."
+  "http://statichost.eu": "EU-based static site hosting service used to build and serve this site."
 ---
 
 # Centralisation, reversibility, and restarting
