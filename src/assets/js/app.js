@@ -144,6 +144,8 @@ $(document).foundation();
 
     var showTimer = null;
     var hideTimer = null;
+    var activeTouch = null;
+    var canHover = window.matchMedia('(hover: hover)').matches;
 
     function show(link) {
         if (hideTimer) { clearTimeout(hideTimer); hideTimer = null; }
@@ -176,6 +178,7 @@ $(document).foundation();
 
     function hide() {
         popover.classList.remove('active');
+        activeTouch = null;
     }
 
     function scheduleHide() {
@@ -185,12 +188,14 @@ $(document).foundation();
         }, 150);
     }
 
+    // --- hover (mouse) ---
     popover.addEventListener('mouseenter', function () {
         if (hideTimer) { clearTimeout(hideTimer); hideTimer = null; }
     });
     popover.addEventListener('mouseleave', scheduleHide);
 
     document.addEventListener('mouseover', function (e) {
+        if (!canHover) return;
         var link = e.target.closest('a.has-popover');
         if (link) {
             if (showTimer) { clearTimeout(showTimer); showTimer = null; }
@@ -199,11 +204,26 @@ $(document).foundation();
     });
 
     document.addEventListener('mouseout', function (e) {
+        if (!canHover) return;
         var link = e.target.closest('a.has-popover');
         if (link) {
             if (showTimer) { clearTimeout(showTimer); showTimer = null; }
             scheduleHide();
         }
+    });
+
+    // --- touch: first tap shows popover, second tap on same link navigates ---
+    document.addEventListener('click', function (e) {
+        if (canHover) return;
+        var link = e.target.closest('a.has-popover');
+        if (link) {
+            if (activeTouch === link) { return; }  // second tap: let href fire
+            e.preventDefault();
+            activeTouch = link;
+            show(link);
+            return;
+        }
+        if (!popover.contains(e.target)) { hide(); }
     });
 }());
 
