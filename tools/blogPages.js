@@ -112,10 +112,15 @@ export function blogPages(PATHS) {
     renderer.hr = function() { return DIVIDER_HTML; };
 
     renderer.link = function(href, title, text) {
-      const summary = (linkSummaries[href] || title || '').trim();
-      if (summary) {
-        const escaped = summary.replace(/"/g, '&quot;');
-        return `<a href="${href}" data-summary="${escaped}" class="has-popover">${text}</a>`;
+      const raw = (linkSummaries[href] || title || '').trim();
+      if (raw) {
+        const html = marked(raw).trim().replace(/^<p>/, '').replace(/<\/p>$/, '');
+        const attrVal = html
+          .replace(/&/g, '&amp;')
+          .replace(/"/g, '&quot;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;');
+        return `<a href="${href}" data-summary="${attrVal}" class="has-popover">${text}</a>`;
       }
       return `<a href="${href}">${text}</a>`;
     };
