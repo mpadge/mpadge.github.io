@@ -543,6 +543,40 @@ code, pre {
     }
 }
 
+// Summary block (opening abstract)
+.summary-block {
+    position: relative;
+    margin: 2rem 0 2.5rem;
+    padding: 1.5em 2.2em;
+    font-size: 1em;
+    color: #333333;
+    line-height: 1.8;
+    background: #f2f2f2;
+
+    svg.summary-frame {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        color: #888888;
+        pointer-events: none;
+        overflow: visible;
+    }
+
+    p:last-child {
+        margin-bottom: 0;
+    }
+}
+
+[data-theme="dark"] .summary-block {
+    background: #222222;
+    color: #cccccc;
+
+    svg.summary-frame {
+        color: #555555;
+    }
+}
+
 // Conclusion block
 .conclusion-block {
     position: relative;

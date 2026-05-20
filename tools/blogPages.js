@@ -4,6 +4,7 @@ import path                from 'path';
 import fs                  from 'fs';
 import yaml                from 'js-yaml';
 import { INFO_CORNER_SVG,
+         SUMMARY_FRAME_SVG,
          CONCLUSION_FRAME_SVG,
          ASTERISM_HTML,
          DIVIDER_HTML,
@@ -85,6 +86,9 @@ export function blogPages(PATHS) {
       }
       if (html.includes('info-block')) {
         return html.replace(/(<div[^>]*class="info-block"[^>]*>)/, '$1' + INFO_CORNER_SVG);
+      }
+      if (html.includes('summary-block')) {
+        return html.replace(/(<div[^>]*class="summary-block"[^>]*>)/, '$1' + SUMMARY_FRAME_SVG);
       }
       if (html.includes('conclusion-block')) {
         return html.replace(/(<div[^>]*class="conclusion-block"[^>]*>)/, '$1' + CONCLUSION_FRAME_SVG);
