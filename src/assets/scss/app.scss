@@ -543,6 +543,39 @@ code, pre {
     }
 }
 
+// Conclusion block
+.conclusion-block {
+    position: relative;
+    margin: 2.5rem 0;
+    padding: 1.5em 2.2em;
+    font-style: italic;
+    font-size: 1em;
+    color: #333333;
+    line-height: 1.8;
+
+    svg.conclusion-frame {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        color: #888888;
+        pointer-events: none;
+        overflow: visible;
+    }
+
+    p:last-child {
+        margin-bottom: 0;
+    }
+}
+
+[data-theme="dark"] .conclusion-block {
+    color: #cccccc;
+
+    svg.conclusion-frame {
+        color: #555555;
+    }
+}
+
 // Tag filter buttons on blog index
 #tag-filter {
     gap: 0.4em;
