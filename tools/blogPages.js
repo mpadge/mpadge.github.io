@@ -101,6 +101,14 @@ export function blogPages(PATHS) {
 
     renderer.hr = function() { return DIVIDER_HTML; };
 
+    renderer.link = function(href, title, text) {
+      if (title) {
+        const escaped = title.replace(/"/g, '&quot;');
+        return `<a href="${href}" data-summary="${escaped}" class="has-popover">${text}</a>`;
+      }
+      return `<a href="${href}">${text}</a>`;
+    };
+
     const rawHtml = marked(content, { renderer }).replace(/\{\{/g, '\\{{');
     const dateLine = [
       dateStr,

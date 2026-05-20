@@ -581,6 +581,58 @@ code, pre {
     }
 }
 
+// Link summary popovers
+#link-popover {
+    display: none;
+    position: fixed;
+    z-index: 9998;
+    max-width: 320px;
+    font-size: 0.85em;
+    color: #555555;
+    line-height: 1.5;
+    padding: 0.55em 0.8em;
+    background: #f8f8f8;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+    pointer-events: auto;
+
+    &.active {
+        display: block;
+    }
+
+    .link-popover-text {
+        display: block;
+        margin-bottom: 0.45em;
+    }
+
+    .link-popover-visit {
+        display: inline-block;
+        font-size: 0.88em;
+        color: #5588aa;
+        text-decoration: none;
+
+        &:hover {
+            color: #336688;
+        }
+    }
+}
+
+[data-theme="dark"] #link-popover {
+    background: #2a2a2a;
+    border-color: #444444;
+    color: #cccccc;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.45);
+
+    .link-popover-visit {
+        color: #88bbdd;
+
+        &:hover {
+            color: #aad4ee;
+        }
+    }
+}
+
 // Reading progress rail
 .progress-nav {
     display: flex;

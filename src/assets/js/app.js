@@ -136,6 +136,75 @@ $(document).foundation();
     });
 }());
 
+// Link summary popovers: hover over [text](url "summary") links
+(function () {
+    var popover = document.createElement('div');
+    popover.id = 'link-popover';
+    document.body.appendChild(popover);
+
+    var showTimer = null;
+    var hideTimer = null;
+
+    function show(link) {
+        if (hideTimer) { clearTimeout(hideTimer); hideTimer = null; }
+        var summary = link.dataset.summary;
+        popover.innerHTML =
+            '<span class="link-popover-text">' + summary + '</span>' +
+            '<a class="link-popover-visit" href="' + link.href + '">Visit &#x2192;</a>';
+        popover.style.top = '-9999px';
+        popover.classList.add('active');
+
+        var margin = 12;
+        var rect = link.getBoundingClientRect();
+        var pw = popover.offsetWidth;
+        var ph = popover.offsetHeight;
+        var vw = window.innerWidth;
+        var vh = window.innerHeight;
+
+        var left = rect.left;
+        if (left + pw > vw - margin) { left = vw - pw - margin; }
+        if (left < margin) { left = margin; }
+
+        var top = rect.bottom + 6;
+        if (rect.bottom + ph + 6 > vh) { top = rect.top - ph - 6; }
+
+        popover.style.left = left + 'px';
+        popover.style.top = top + 'px';
+    }
+
+    function hide() {
+        popover.classList.remove('active');
+    }
+
+    function scheduleHide() {
+        hideTimer = setTimeout(function () {
+            if (!popover.matches(':hover')) { hide(); }
+            hideTimer = null;
+        }, 150);
+    }
+
+    popover.addEventListener('mouseenter', function () {
+        if (hideTimer) { clearTimeout(hideTimer); hideTimer = null; }
+    });
+    popover.addEventListener('mouseleave', scheduleHide);
+
+    document.addEventListener('mouseover', function (e) {
+        var link = e.target.closest('a.has-popover');
+        if (link) {
+            if (showTimer) { clearTimeout(showTimer); showTimer = null; }
+            showTimer = setTimeout(function () { show(link); showTimer = null; }, 250);
+        }
+    });
+
+    document.addEventListener('mouseout', function (e) {
+        var link = e.target.closest('a.has-popover');
+        if (link) {
+            if (showTimer) { clearTimeout(showTimer); showTimer = null; }
+            scheduleHide();
+        }
+    });
+}());
+
 // Reading progress diamond
 (function () {
     var rail = document.getElementById('progress-rail');
