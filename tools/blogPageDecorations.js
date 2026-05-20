@@ -14,6 +14,20 @@ export const INFO_CORNER_SVG =
   `<path d="M8,8 C5,5 2,3 4,5 C6,7 9,9 8,8"/>` +
   `</g></svg>`;
 
+// Stretched wire-frame for .conclusion-block: a thin border rect plus bold
+// corner L-brackets. Uses preserveAspectRatio="none" so it fills the element
+// regardless of size; vector-effect="non-scaling-stroke" keeps stroke widths
+// in screen pixels rather than scaling with the viewBox.
+export const CONCLUSION_FRAME_SVG =
+  `<svg class="conclusion-frame" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">` +
+  `<g fill="none" stroke="currentColor" vector-effect="non-scaling-stroke">` +
+  `<rect x="0" y="0" width="100" height="100" stroke-width="0.7" opacity="0.5"/>` +
+  `<polyline points="0,13 0,0 13,0"     stroke-width="1.8" stroke-linecap="square"/>` +
+  `<polyline points="87,0 100,0 100,13"  stroke-width="1.8" stroke-linecap="square"/>` +
+  `<polyline points="100,87 100,100 87,100" stroke-width="1.8" stroke-linecap="square"/>` +
+  `<polyline points="13,100 0,100 0,87"  stroke-width="1.8" stroke-linecap="square"/>` +
+  `</g></svg>`;
+
 export const ASTERISM_HTML =
   `<div class="asterism" aria-hidden="true">` +
   `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 80">` +
