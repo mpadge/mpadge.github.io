@@ -351,9 +351,11 @@ much as possible. And it should also be evident from the generality of much of
 what I've written here that I also believe in the general applicability of that
 conclusion:
 
-> It's not your bits and pieces, your software, your inputs and outputs, that
-> bind you to any one centralised place like GitHub, it's the interfaces that
-> are forced upon you when you use that centralised place to connect those bits
-> and pieces. Decentralisation allows you to simplify your interfaces. And that
-> in turn is one of the best ways to ensure reversibility. 
+<div class="conclusion-block">
+It's not your bits and pieces, your software, your inputs and outputs, that
+bind you to any one centralised place like GitHub, it's the interfaces that
+are forced upon you when you use that centralised place to connect those bits
+and pieces. Decentralisation allows you to simplify your interfaces. And that
+in turn is one of the best ways to ensure reversibility.
+</div>
 
