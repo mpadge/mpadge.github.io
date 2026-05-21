@@ -644,6 +644,29 @@ code, pre {
     }
 }
 
+// Blog index entry callout corner decoration
+.blog-entry .callout {
+    position: relative;
+    overflow: visible;
+
+    svg.blog-entry-corner {
+        position: absolute;
+        top: -10px;
+        right: 0;
+        width: 60%;
+        height: 20px;
+        color: #888888;
+        pointer-events: none;
+        overflow: visible;
+    }
+}
+
+[data-theme="dark"] .blog-entry .callout {
+    svg.blog-entry-corner {
+        color: #555555;
+    }
+}
+
 // Tag filter buttons on blog index
 #tag-filter {
     gap: 0.4em;
