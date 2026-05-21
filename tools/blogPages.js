@@ -157,7 +157,7 @@ export function blogPages(PATHS) {
     }).join('\n');
 
     const pageTitle = extractTitle(mdContent);
-    const frontMatter = pageTitle ? `---\ntitle: "${pageTitle}"\n---\n` : '';
+    const frontMatter = pageTitle ? `---\ntitle: "${pageTitle}"\nsitetitle: mp\n---\n` : '';
 
     return frontMatter +
       '{{> header}}\n' +
