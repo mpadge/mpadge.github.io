@@ -429,6 +429,12 @@ code, pre {
     padding: 0 1px;
     line-height: 0;
 
+    &::before {
+        content: '◆';
+        font-size: 0.65em;
+        margin-right: 1px;
+    }
+
     &:hover {
         color: #336688;
     }
