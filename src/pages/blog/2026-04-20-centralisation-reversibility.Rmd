@@ -55,13 +55,10 @@ to keep those interfaces simple.
 
 <div class="use-dropcap"></div>
 
-This is a restart of a blog. My blog. It used to be a technical blog that
-nobody really read. Now it'll be something different. That nobody may still
-read. Or not.
-
-It used to be made in a fairly customised way, as described in one of the
-[earlier posts](/blog/making-this-site.html)[^customised], but other than that
-it was hosted, built, and deployed on GitHub. Your one-stop shop for all things
+This is a restart of a blog. My blog. It used to be made in a fairly customised
+way, as described in one of the [earlier
+posts](/blog/making-this-site.html)[^customised], but other than that it was
+hosted, built, and deployed on GitHub. Your one-stop shop for all things
 programmery. GitHub made stuff easy, which I guess they did as part of a
 general policy or business aim or whatever of bringing people ~~together~~ to
 them. When everybody is busy scurrying all over the place to assemble bits and
@@ -211,10 +208,11 @@ a process of centralisation, and centralisations of power are far less
 reversible that centralisations of technology.
 
 [^power]: From Alexis de Tocqueville's _Democracy in America_ (1835-1840) to
-Frederich Hakey's _The road to serfdom_ (1944). Although neither of these
-directly address irreversibility _per se_, they clearly posit increases in
-centralization as dangerously ineluctible forces. As do the counteless numbers
-of books they have directly inspired. 
+Frederich Hakey's anti-centralisation rant, _The road to serfdom_ (1944).
+Although neither of these directly address irreversibility _per se_, they
+clearly posit increases in centralization as dangerously ineluctible forces. As
+do the counteless numbers of books they have directly inspired, for better (in
+de Tocqueville's case) or worse (in Hayek's case).
 
 This suggests an immediate and glaring problem. Most technological developments
 are inherently reversible. And most people directly responsible for
@@ -269,12 +267,12 @@ machines which check whether updates break anything else within that code,
 within any other code which may depend on it, or literally any other arbitrary
 thing anyone can think of.
 
-In the spirit of our present times, they did this with an intentional aim to
-destroy a number of business which offered these continuous integration
-services that ~~GitHub~~ Microsoft did not initially offer. A few survived; a
-few didn't. And GitHub won. They went from just _hosting_ code and the social
-networks surrounding code development, to being the central place to host,
-check, publish, and deploy code.
+In the spirit of our present times, they did this with an intentional aim of
+~~destroying~~ outcompeting a number of business which offered these continuous
+integration services that ~~GitHub~~ Microsoft did not initially offer. A few
+survived; a few didn't. And GitHub won. They went from just _hosting_ code and
+the social networks surrounding code development, to being the central place to
+host, check, publish, and deploy code.
 
 That's a lot of moving pieces, many of which previously required people to
 program interfaces between GitHub and other services. Nobody has to do that any
@@ -288,9 +286,10 @@ So GitHub actively strove for centralisation. But this was arguably technical
 centralisation alone, much of which was and is technically and practically
 reversible. Perhaps the only aspect of GitHub that remains arguably
 irreversible is the original social network built long before Microsoft's
-acquisition. But Twitter has gone; Facebook is dead; and people can clearly up
-and move their social networks elsewhere. No developments pursued by Microsoft
-made any increase in GitHub's centralisation any less reversible.
+acquisition. But Twitter has gone; Facebook is effectively legacy software; and
+people can clearly up and move their social networks elsewhere. No developments
+pursued by Microsoft made any increase in GitHub's centralisation any less
+reversible.
 
 ### On centralisation and interfaces
 
