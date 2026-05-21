@@ -16,6 +16,16 @@ require('foundation-sites');
 
 $(document).foundation();
 
+// Open external links in a new tab
+(function () {
+    document.querySelectorAll('a[href^="http://"], a[href^="https://"]').forEach(function (a) {
+        if (!a.target) {
+            a.target = '_blank';
+            a.rel = 'noopener noreferrer';
+        }
+    });
+}());
+
 // Dark mode toggle
 (function () {
     var stored = localStorage.getItem('theme');
