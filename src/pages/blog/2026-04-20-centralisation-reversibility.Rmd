@@ -327,21 +327,24 @@ increasing interface complexity, but it doesn't even have any direct
 leadership[^leadership] at present, so that's unlikely to happen.
 
 <div class="info-block">
-In more general terms, I do suspect there is an
-avoidable relationship between increasing centralisation and the "thickness" of
-interfaces. Proopsed solutions like 
+Regardless of future trajectories of GitHub, I do suspect there is a general
+and avoidable relationship between increasing centralisation and the
+"thickness" of interfaces. Proopsed solutions like
 [modularity](https://direct.mit.edu/books/monograph/1856/Design-Rules-Volume-1The-Power-of-Modularity)
 may ameliorate some effects, but I would like to think that in any plausibly
 reversible system -- in this context, one in which reversibility is largely
 techincal only -- the inevitable [coupling](https://arxiv.org/abs/2507.09599)
-of centralisation and interface "thickness" is ultimately self-defeating.
+of centralisation and interface "thickness" should ultimately be
+self-defeating.
 </div>
 
 [^leadership]: No "CEO" as people love to say, and I'm really looking forward
 to a future time where we all laugh at how ridiculous all of these obfuscatory
 acronyms sound. "Boss" is a fabulous English word with a host of connotations,
-all of which are still eminently applicable. "CEO" is nothing other than a
-neologism with the sole intent of making it impossible to use it as a verb.
+all of which are still eminently applicable. All this talk of "C-levels" and
+"C-suites" is nothing other than neologism with the sole intent of making it
+impossible to use these acronyms as verbs. ''*I've been totally C-levelled
+around!*''
 
 &ast;
 
@@ -362,11 +365,13 @@ a webhook which triggers the build process over at
 [current home at Codeberg](https://codeberg.org/mpadge/mpadge) to anywhere
 else, and I can just as easily switch the build process from
 [statichost](http://statichost.eu) to anywhere else. If and when I move any
-parts, I'll likely need a new interface to connect those. That means that for
-me in this context, de-centralising should be about simplifying interfaces as
-much as possible. And it should also be evident from the generality of much of
-what I've written here that I also believe in the general applicability of that
-conclusion:
+parts, I'll likely need a new interface to connect those. But replacing those 3
+lines with some alternative interface is so easy it won't even be worth
+starting an AI coding agent for that job.
+
+De-centralising should be about simplifying interfaces as much as possible. And
+it should also be evident from the generality of much of what I've written here
+that I also believe in the general applicability of that conclusion:
 
 <div class="conclusion-block">
 It's not your bits and pieces, your software, your inputs and outputs, that
