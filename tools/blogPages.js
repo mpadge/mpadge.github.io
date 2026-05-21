@@ -73,6 +73,11 @@ export function blogPages(PATHS) {
     return (fm && fm.links) ? fm.links : {};
   }
 
+  function extractTitle(mdContent) {
+    const match = mdContent.match(/^#\s+(.+)$/m);
+    return match ? match[1].trim() : '';
+  }
+
   function buildPage(mdContent, dateStr, updatedStr, mastodonUrl, linkSummaries) {
     const { content, sidenotesHtml } = processFootnotes(mdContent);
 
@@ -151,7 +156,11 @@ export function blogPages(PATHS) {
       return `<li><a href="#${h.id}" style="color:#111111;font-size:${size};padding-left:${indent}">${h.text}</a></li>`;
     }).join('\n');
 
-    return '{{> header}}\n' +
+    const pageTitle = extractTitle(mdContent);
+    const frontMatter = pageTitle ? `---\ntitle: "${pageTitle}"\nsitetitle: mp\n---\n` : '';
+
+    return frontMatter +
+      '{{> header}}\n' +
       '{{> blog_entry_header}}\n' +
       '<div class="cell medium-2 large-2 left">\n' +
       '<nav class="sticky-container" data-sticky-container>\n' +
