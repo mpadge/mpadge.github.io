@@ -162,16 +162,21 @@ of ancillary and indubitably positive developments which could never had been
 predicted had the foreseen negative effects of centralisation been halted
 before they began.
 
-And yet there were, and still are, negative effects of that centralisation
-which deserve to be considered, and which can and should be taken as cautionary
-tales in considering any perceived centralisation of present-day technological
-developments. Purported positive effects are also easy to overstate. Regardless
-of the positive developments which emanated from Bell Labs, the modern smart
-phone was not invented by a telephone corporation. Even though it surely should
-have been if there were any truly positive relationship between scale and
-technological innovation[^innovation].
+And yet there were, and still are, negative effects of that
+centralisation[^centralisation] which deserve to be considered, and which can
+and should be taken as cautionary tales in considering any perceived
+centralisation of present-day technological developments. Purported positive
+effects are also easy to overstate. Regardless of the positive developments
+which emanated from Bell Labs, the modern smart phone was not invented by a
+telephone corporation. Even though it surely should have been if there were any
+truly positive relationship between scale and technological
+innovation[^innovation].
 
-[^innovation]: Continuing from the previous footnote, if economies of scale
+[^centralisation]: Starting points that many people are fond of citing range
+from Alexis de Tocqueville's _Democracy in America_ (1835-1840) to Frederich
+Hakey's anti-centralisation rant, _The road to serfdom_ (1944).
+
+[^innovation]: Continuing from two footnotes prior, if economies of scale
 really worked as proposed, then economies of innovation should also exist and
 work in the same way. Yet with innovation almost the exact opposite happens.
 Innovation may increase over enormous scales of entire urban conglomerates, but
@@ -207,12 +212,11 @@ bestows power on those who control it, that power will generally be used to
 a process of centralisation, and centralisations of power are far less
 reversible that centralisations of technology.
 
-[^power]: From Alexis de Tocqueville's _Democracy in America_ (1835-1840) to
-Frederich Hakey's anti-centralisation rant, _The road to serfdom_ (1944).
-Although neither of these directly address irreversibility _per se_, they
-clearly posit increases in centralization as dangerously ineluctible forces. As
-do the counteless numbers of books they have directly inspired, for better (in
-de Tocqueville's case) or worse (in Hayek's case).
+[^power]: Including the countless books inspired by de Tocqueville, Hayek, and
+the masses who came after, even if most of them consider irreversibility more
+through the effect of centralisation being ineluctable. More nuanced and
+contextually relevant consideration is given in Tim Wu's _The Master Switch:
+The Rise and Fall of Information Empires_, linked directly below.
 
 This suggests an immediate and glaring problem. Most technological developments
 are inherently reversible. And most people directly responsible for
