@@ -7,8 +7,22 @@
 <div class="grid-container">
 <div class="grid-x grid-padding-x">
 
-<div class="cell medium-11 large-11">
+<div class="cell medium-2 large-2 left">
+<nav class="sticky-container" data-sticky-container>
+<div class="sticky" data-sticky data-anchor="about-content" data-sticky-on="medium" data-margin-top="5">
+<ul class="vertical menu" data-magellan>
+<li><a href="#about-me" style="color:#111111;font-size:1em">About me</a></li>
+<li><a href="#work-with-me" style="color:#111111;font-size:1em">Work with me</a></li>
+<li><a href="#about-this-site" style="color:#111111;font-size:1em">About this site</a></li>
+</ul>
+</div>
+</nav>
+</div>
+
+<div id="about-content" class="cell medium-9 large-9">
 {{#markdown}}
+
+<section id="about-me" data-magellan-target="about-me">
 
 # About me
 
@@ -25,7 +39,11 @@ That also means that everything I have done is sucked up as training data for
 large language models, whether I want that or not. And I have opinions about
 that, as you can read about in [my blog pages]({{root}}/blog).
 
+</section>
+
 ---
+
+<section id="work-with-me" data-magellan-target="work-with-me">
 
 # Work with me
 
@@ -66,18 +84,30 @@ I have professional educational qualifications, and years of experience
 teaching software development and geographical analyses across ranges of
 abilities up to experienced post-graduate students.
 
+</section>
+
 ---
+
+<section id="about-this-site" data-magellan-target="about-this-site">
 
 # About this site and AI usage
 
 The site is build with [Foundation for
-Sites](https://get.foundation/sites/docs/). All text is entirely hand-typed,
-every single letter one-by-one by me. There is no AI involvement in generating
-any written words here. There has been some AI involvement in styling the new
-blog pages, including CSS tweaks -- my least favourite part of programming --
-and SVG decorations. The dropcaps are also at least partially AI generated,
-although by [gwern.net](https://gwern.net/dropcap). This site uses Gwern's
+Sites](https://get.foundation/sites.html), with source code available at
+[codeberg.org/mpadge/mpadge](https://codeberg.org/mpadge/mpadge). All text is
+entirely hand-typed, every single letter one-by-one by me. There is no AI
+involvement in generating any written words here. There has been some AI
+involvement in styling the new blog pages, including CSS tweaks -- my least
+favourite part of programming -- and SVG decorations. The dropcaps are also at
+least partially AI generated, although by
+[gwern.net](https://gwern.net/dropcap). This site uses Gwern's
 [Deutsche Zierrschrift dropcaps](https://gwern.net/dropcap#de-zs).
+
+All recent AI-assisted updates are only visible on blog pages from 2026
+onwards. The styling of all blog pages prior to 2026 reflects my original
+design, entirely devoid of AI influences.
+
+</section>
 
 {{/markdown}}
 </div>
