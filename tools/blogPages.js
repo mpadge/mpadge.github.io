@@ -56,7 +56,8 @@ export function blogPages(PATHS) {
 
     const sidenotesHtml = referenceOrder.map((label, i) => {
       const num = i + 1;
-      return `<div class="sidenote" id="sn-${num}"><span class="sidenote-num">${num}.</span> ${definitions[label]}</div>`;
+      const defHtml = marked(definitions[label].replace(/\n/g, '  \n')).trim().replace(/^<p>/, '').replace(/<\/p>$/, '');
+      return `<div class="sidenote" id="sn-${num}"><span class="sidenote-num">${num}.</span> ${defHtml}</div>`;
     }).join('\n');
 
     return { content, sidenotesHtml };
