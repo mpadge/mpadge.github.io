@@ -158,8 +158,10 @@ export function blogPages(PATHS) {
 
     const pageTitle = extractTitle(mdContent);
     const escapedDesc = description ? description.replace(/"/g, '&quot;') : '';
+    const imgMatch = mdContent.match(/!\[.*?\]\(([^)]+)\)/);
+    const ogImage = imgMatch ? imgMatch[1] : '';
     const frontMatter = pageTitle
-      ? `---\ntitle: "${pageTitle}"\nsitetitle: mp\n${escapedDesc ? `description: "${escapedDesc}"\n` : ''}${pageUrl ? `pageurl: "${pageUrl}"\n` : ''}---\n`
+      ? `---\ntitle: "${pageTitle}"\nsitetitle: mp\n${escapedDesc ? `description: "${escapedDesc}"\n` : ''}${pageUrl ? `pageurl: "${pageUrl}"\n` : ''}${ogImage ? `ogimage: "${ogImage}"\n` : ''}---\n`
       : '';
 
     return frontMatter +
