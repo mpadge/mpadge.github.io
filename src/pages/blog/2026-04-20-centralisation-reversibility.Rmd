@@ -364,11 +364,11 @@ with; one to actually run the build command; and one to tell it where to find
 the output.
 
 The input is the source code for this site, which is [held in many
-places](https://ropensci.org/blog/2025/12/17/beyond-github/). One of those has
-a webhook which triggers the build process over at
-[statichost.eu](http://statichost.eu). I can easly move that webhook from its
-[current home at Codeberg](https://codeberg.org/mpadge/mpadge) to anywhere
-else, and I can just as easily switch the build process from
+places](https://ropensci.org/blog/2025/12/17/beyond-github/). I've configured
+[one of those places](https://codeberg.org/mpadge/mpadge) with a webhook which
+triggers the build process over at [statichost.eu](http://statichost.eu). But I
+can also just trigger that locally, or move the webhook anywhere else, and I
+can just as easily switch the build process from
 [statichost](http://statichost.eu) to anywhere else. If and when I move any
 parts, I'll likely need a new interface to connect those. But replacing those 3
 lines with some alternative interface is so easy it won't even be worth
