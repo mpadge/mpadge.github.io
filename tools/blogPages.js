@@ -20,7 +20,7 @@ export function blogPages(PATHS) {
     const map = {};
     for (const entry of entries) {
       if (entry && entry.link) {
-        map[entry.link] = { created: entry.created || '', updated: entry.updated || '', mastodon: entry.mastodon || '' };
+        map[entry.link] = { created: entry.created || '', updated: entry.updated || '', mastodon: entry.mastodon || '', description: entry.description || '' };
       }
     }
     return map;
@@ -78,7 +78,7 @@ export function blogPages(PATHS) {
     return match ? match[1].trim() : '';
   }
 
-  function buildPage(mdContent, dateStr, updatedStr, mastodonUrl, linkSummaries) {
+  function buildPage(mdContent, dateStr, updatedStr, mastodonUrl, linkSummaries, description, pageUrl) {
     const { content, sidenotesHtml } = processFootnotes(mdContent);
 
     const headings = [];
@@ -157,7 +157,10 @@ export function blogPages(PATHS) {
     }).join('\n');
 
     const pageTitle = extractTitle(mdContent);
-    const frontMatter = pageTitle ? `---\ntitle: "${pageTitle}"\nsitetitle: mp\n---\n` : '';
+    const escapedDesc = description ? description.replace(/"/g, '&quot;') : '';
+    const frontMatter = pageTitle
+      ? `---\ntitle: "${pageTitle}"\nsitetitle: mp\n${escapedDesc ? `description: "${escapedDesc}"\n` : ''}${pageUrl ? `pageurl: "${pageUrl}"\n` : ''}---\n`
+      : '';
 
     return frontMatter +
       '{{> header}}\n' +
@@ -197,8 +200,10 @@ export function blogPages(PATHS) {
         const dateStr = meta.created || '';
         const updatedStr = meta.updated || '';
         const mastodonUrl = meta.mastodon || '';
+        const description = meta.description || '';
+        const pageUrl = `https://mpadge.eu/blog/${slug}`;
         const linkSummaries = loadLinkSummaries(file.path);
-        file.contents = Buffer.from(buildPage(file.contents.toString(enc), dateStr, updatedStr, mastodonUrl, linkSummaries));
+        file.contents = Buffer.from(buildPage(file.contents.toString(enc), dateStr, updatedStr, mastodonUrl, linkSummaries, description, pageUrl));
         file.path = file.path.replace(/\.md$/, '.html')
                               .replace(/([\\/])\d{4}-\d{2}-\d{2}-/, '$1');
       }
