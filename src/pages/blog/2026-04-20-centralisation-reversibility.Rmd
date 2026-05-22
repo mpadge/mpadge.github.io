@@ -9,7 +9,7 @@ description: "Technical progress tends toward centralisation: telephone
   work together. One of the best ways to ensure centralising tendencies can be
   reversed is to find ways to keep those interfaces simple."
 date: 22/05/2026
-tags: ai, github
+tags: github
 link: centralisation-reversibility.html
 links:
   "https://arxiv.org/abs/2503.13395": >
