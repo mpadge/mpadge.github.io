@@ -8,7 +8,7 @@ description: "Technical progress tends toward centralisation: telephone
   neither the technology nor the data but the interfaces imposed to make it all
   work together. One of the best ways to ensure centralising tendencies can be
   reversed is to find ways to keep those interfaces simple."
-date: 21/05/2026
+date: 22/05/2026
 tags: ai, github
 link: centralisation-reversibility.html
 links:
