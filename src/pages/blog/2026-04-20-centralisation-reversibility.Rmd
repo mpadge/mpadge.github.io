@@ -55,18 +55,18 @@ to keep those interfaces simple.
 
 <div class="use-dropcap"></div>
 
-This is a restart of a blog. My blog. It used to be made in a fairly customised
-way, as described in one of the [earlier
+This is a restart of a blog. It used to be made in a fairly customised way, as
+described in one of the [earlier
 posts](/blog/making-this-site.html)[^customised], but other than that it was
 hosted, built, and deployed on GitHub. Your one-stop shop for all things
-programmery. GitHub made stuff easy, which I guess they did as part of a
+programmery. GitHub made things easy, which I guess they did as part of a
 general policy or business aim or whatever of bringing people ~~together~~ to
 them. When everybody is busy scurrying all over the place to assemble bits and
 pieces from here and there, being a one-stop shop is a great way to become the
 go-to shop. 
 
 [^customised]: The way this site is now built has changed a lot since that
-original post, so much of it is now innacurate or just plain wrong.
+original post, so much of it is now inaccurate.
 
 And that would be an understandable aim for any business, and an understandable
 means of achieving it. Reduce friction by enabling people to do more and more
@@ -232,8 +232,8 @@ very generally wouldn't know how to do so anyway[^hierarchy].
 
 [^hierarchy]: There is possibly some kind of relationship between hierarchy and
 reversibility here, which I know others have thought about far more than I
-have. Things become less reversible at higher hierarchical levels. Every extra
-layer of management is an extra degree of irreversibility.
+have. Hierarchy entrenches institutional knowledge, so that every extra layer
+of management becomes an extra degree of irreversibility.
 
 So reversibility becomes disconnected from development. Perhaps even worse,
 recent technological developments often arise within systems which have greatly
@@ -262,14 +262,15 @@ programming. And they arguably did an okay job of that.
 The founders of GitHub had long realised that the truly irreversible aspect of
 centralisation for code hosting services was social. Social networks were
 universally considered until relatively recently as truly irreversible.
-Facebook blah blah. Microsoft extended GitHub well beyond the social network
-aspects alone, perhaps most notably through amassing an armada of computers
-that anybody could call upon to conduct the kinds of checks essential to modern
-software - the stuff which has come to be known as "continuous integration."
-Ever time code is updated on GitHub, it can be configured to trigger a host of
-machines which check whether updates break anything else within that code,
-within any other code which may depend on it, or literally any other arbitrary
-thing anyone can think of.
+Facebook has always assumed invincibility through irreversibility. But
+Microsoft extended GitHub well beyond the social network aspects alone, perhaps
+most notably through amassing an armada of computers that anybody could call
+upon to conduct the kinds of checks essential to modern software - the stuff
+which has come to be known as "continuous integration." Ever time code is
+updated on GitHub, it can be configured to trigger a host of machines which
+check whether updates break anything else within that code, within any other
+code which may depend on it, or literally any other arbitrary thing anyone can
+think of.
 
 In the spirit of our present times, they did this with an intentional aim of
 ~~destroying~~ outcompeting a number of business which offered these continuous
@@ -280,10 +281,10 @@ host, check, publish, and deploy code.
 
 That's a lot of moving pieces, many of which previously required people to
 program interfaces between GitHub and other services. Nobody has to do that any
-more (they get to laugh about GitHub actions instead). People of course can and
-still do implement interfaces between the distinct stops between developers
+more (they get to giggle about GitHub actions instead). People of course can
+and still do implement interfaces between the distinct stops between developers
 writing a line of code and people using some polished program or app. But
-GitHub made these processes so easy that many people no longer had to do such
+GitHub made these processes so easy that many people no longer have to do such
 things.
 
 So GitHub actively strove for centralisation. But this was arguably technical
@@ -345,7 +346,7 @@ self-defeating.
 [^leadership]: No "CEO" as people love to say, and I'm really looking forward
 to a future time where we all laugh at how ridiculous all of these obfuscatory
 acronyms sound. "Boss" is a fabulous English word with a host of connotations,
-all of which are still eminently applicable. All this talk of "C-levels" and
+many of which are still eminently applicable. All this talk of "C-levels" and
 "C-suites" is nothing other than neologism with the sole intent of making it
 impossible to use these acronyms as verbs. ''*I've been totally C-levelled
 around!*''
