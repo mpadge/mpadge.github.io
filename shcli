@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+
+# ----- https://www.statichost.eu/shcli
+set -euo pipefail
+
+# Check arguments
+if [ $# -ne 2 ]; then
+    echo "Usage: $0 <site-name> <directory>"
+    echo "Example: $0 my-site ./dist"
+    exit 1
+fi
+
+SITE_NAME="$1"
+DIRECTORY="$2"
+
+# Check if directory exists
+if [ ! -d "$DIRECTORY" ]; then
+    echo "Error: Directory '$DIRECTORY' does not exist"
+    exit 1
+fi
+
+# Check for API key
+if [ -z "${STATICHOST_APIKEY:-}" ]; then
+    echo "Error: STATICHOST_APIKEY environment variable is not set"
+    echo ""
+    echo "Please go to https://builder.statichost.eu/account to create an API token"
+    echo "Then set it as an environment variable, e.g.:"
+    echo "  export STATICHOST_APIKEY=your_token_here"
+    echo ""
+    echo "Or add it to your shell profile (~/.bashrc, ~/.zshrc, etc.)"
+    exit 1
+fi
+
+# Set builder hostname
+BUILDER_HOST="${STATICHOST_BUILDER:-https://builder.statichost.eu}"
+
+# Create temporary zip file
+TEMP_ZIP="$PWD/statichost.zip"
+trap "rm -f $TEMP_ZIP" EXIT
+
+echo "Zipping directory '$DIRECTORY'..."
+cd "$DIRECTORY"
+zip -qr "$TEMP_ZIP" .
+
+echo "Uploading to $BUILDER_HOST/$SITE_NAME/drop..."
+curl --fail-with-body \
+    -X POST "$BUILDER_HOST/$SITE_NAME/drop" \
+    -H "Authorization: Bearer $STATICHOST_APIKEY" \
+    -H "Content-Type: application/zip" \
+    -H "Accept: text/plain" \
+    --data-binary "@$TEMP_ZIP"
+
+echo ""
+echo "Upload complete!"
