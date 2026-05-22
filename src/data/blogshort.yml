@@ -2,6 +2,7 @@
     title: Centralisation, reversibility, and restarting
     description: "Technical progress tends toward centralisation: telephone multiplexing made calls easier and centralised the entire telephone industry; GitHub made coding easier and centralised the world of software development. Technical centralisation is mostly reversible. The economic and political centralisation that rides alongside it is not. The real binding force is neither the technology nor the data but the interfaces imposed to make it all work together. One of the best ways to ensure centralising tendencies can be reversed is to find ways to keep those interfaces simple."
     created: 22 May 26
+    mastodon: https://nerdculture.de/@mpadge/116617670993736398
     tags: github
     link: blog/centralisation-reversibility.html
 -

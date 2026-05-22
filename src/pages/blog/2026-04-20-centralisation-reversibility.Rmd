@@ -11,6 +11,7 @@ description: "Technical progress tends toward centralisation: telephone
 date: 22/05/2026
 tags: github
 link: centralisation-reversibility.html
+mastodon: https://nerdculture.de/@mpadge/116617670993736398
 links:
   "https://arxiv.org/abs/2503.13395": >
     '_Causal Emergence 2.0: Quantifying emergent complexity_',
