@@ -1,6 +1,6 @@
 #!/usr/bin/make
 
-.PHONY: help start serve install code blog% build test tidycheck deploy publish
+.PHONY: help start serve install code blog% build test tidycheck
 
 help: ## Show this help
 	@printf "Usage:\033[36m make [target]\033[0m\n"
@@ -34,10 +34,8 @@ build: ## Build the project
 test: ## Run tests
 	yarn test
 
+deploy: ## Publish the site on statichost.eu
+	@bash tools/deploy.sh
+
 tidycheck: ## Check HTML files with tidy and show warnings with context
 	bash tools/tidy-check.sh
-
-deploy: publish
-
-publish: ## Deploy the project (same as 'deploy')
-	bash tools/deploy-script.sh
