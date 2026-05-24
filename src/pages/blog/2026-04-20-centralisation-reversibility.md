@@ -59,8 +59,8 @@ the ends of cables. A “multiplex” was a way of combining many signals
 together within a single line. Instead of each call flowing along a
 dedicated line, a single line could be used to route multiple calls
 simultaneously. Multiplexing made far more efficient use of the scarce
-resource of telephone cables. It also needed de-muliplexers at the other
-end to extract only the desired part of a signal.
+resource of telephone cables. It also needed de-multiplexers at the
+other end to extract only the desired part of a signal.
 
 One effect of multiplexing was increased centralisation. Telephone
 switching systems were always hierarchical, and so always manifest their
@@ -218,7 +218,7 @@ depend on it, or literally any other arbitrary thing anyone can think
 of.
 
 In the spirit of our present times, they did this with an intentional
-aim of ~~destroying~~ outcompeting a number of business which offered
+aim of ~~destroying~~ out-competing a number of business which offered
 these continuous integration services that ~~GitHub~~ Microsoft did not
 initially offer. A few survived; a few didn’t. And GitHub won. They went
 from just *hosting* code and the social networks surrounding code
@@ -246,7 +246,7 @@ increase in GitHub’s centralisation any less reversible.
 
 The current state of GitHub shows one clear disadvantage of
 centralisation. Processes of connecting disparate pieces together in
-central congolmerations require interfaces between those pieces. And
+central conglomerations require interfaces between those pieces. And
 those interfaces become more complex as systems become more centralised.
 
 The end result in the case of GitHub is [GitHub
@@ -278,11 +278,11 @@ present, so that’s unlikely to happen.
 
 Regardless of future trajectories of GitHub, I do suspect there is a
 general and avoidable relationship between increasing centralisation and
-the “thickness” of interfaces. Proopsed solutions like
+the “thickness” of interfaces. Proposed solutions like
 [modularity](https://direct.mit.edu/books/monograph/1856/Design-Rules-Volume-1The-Power-of-Modularity)
 may ameliorate some effects, but I would like to think that in any
 plausibly reversible system – in this context, one in which
-reversibility is largely techincal only – the inevitable
+reversibility is largely technical only – the inevitable
 [coupling](https://arxiv.org/abs/2507.09599) of centralisation and
 interface “thickness” should ultimately be self-defeating.
 
@@ -343,7 +343,7 @@ centralisation.
 
 [^3]: Starting points that many people are fond of citing range from
     Alexis de Tocqueville’s *Democracy in America* (1835-1840) to
-    Frederich Hakey’s anti-centralisation rant, *The road to serfdom*
+    Frederich Hayek’s anti-centralisation rant, *The road to serfdom*
     (1944).
 
 [^4]: Continuing from two footnotes prior, if economies of scale really
