@@ -60,13 +60,16 @@ interfaces simple.
 
 This is a restart of a blog. It used to be made in a fairly customised
 way, as described in one of the [earlier
-posts](/blog/making-this-site.html)[^1], but other than that it was
+posts](/blog/making-this-site.html)[^customised], but other than that it was
 hosted, built, and deployed on GitHub. Your one-stop shop for all things
 programmery. GitHub made things easy, which I guess they did as part of
 a general policy or business aim or whatever of bringing people
 ~~together~~ to them. When everybody is busy scurrying all over the
 place to assemble bits and pieces from here and there, being a one-stop
 shop is a great way to become the go-to shop.
+
+[^customised]: The way this site is now built has changed a lot since that
+    original post, so much of it is now inaccurate.
 
 And that would be an understandable aim for any business, and an
 understandable means of achieving it. Reduce friction by enabling people
@@ -121,9 +124,16 @@ enough to do so. And so the technical advance of telephone multiplexers
 centralised the entire telephone system both technically and
 economically. And then further feedbacks between economics and politics
 led to additional political centralisation of telephone systems, and so
-on. Just one of many cases in which economies of scale[^2] combined with
+on. Just one of many cases in which economies of scale[^scale] combined with
 efficiencies of technical centralisation to become inextricably coupled
 with increased economic and political centralisation.
+
+[^scale]: Almost all so-called “economies of scale” can be more accurately
+    viewed as economies of centralisation. And yet generations of
+    economists still learn about “economies of scale” rather than
+    exploring the complexities of what really happens to produce an
+    effect that makes it seem like the clearly perversely simplistic
+    axiom “bigger is better.”
 
 ------------------------------------------------------------------------
 
@@ -166,14 +176,29 @@ which could never had been predicted had the foreseen negative effects
 of centralisation been halted before they began.
 
 And yet there were, and still are, negative effects of that
-centralisation[^3] which deserve to be considered, and which can and
+centralisation[^centralisation] which deserve to be considered, and which can and
 should be taken as cautionary tales in considering any perceived
 centralisation of present-day technological developments. Purported
 positive effects are also easy to overstate. Regardless of the positive
 developments which emanated from Bell Labs, the modern smart phone was
 not invented by a telephone corporation. Even though it surely should
 have been if there were any truly positive relationship between scale
-and technological innovation[^4].
+and technological innovation[^innovation].
+
+[^centralisation]: Starting points that many people are fond of citing range from
+    Alexis de Tocqueville’s *Democracy in America* (1835-1840) to
+    Frederich Hayek’s anti-centralisation rant, *The road to serfdom*
+    (1944).
+
+[^innovation]: Continuing from two footnotes prior, if economies of scale really
+    worked as proposed, then economies of innovation should also exist
+    and work in the same way. Yet with innovation almost the exact
+    opposite happens. Innovation may increase over enormous scales of
+    entire urban conglomerates, but where that does happen, it is
+    through much better understood mechanisms of network aggregation.
+    There has never been any economy of innovation within any single
+    organisation or company. Continued emphasis on “economies of scale”
+    is, in that context, wilful ignorance.
 
 Instead of progressive technological development from within
 increasingly centralised telephone corporations, the technology remained
@@ -182,7 +207,7 @@ economic and political power of increasingly monopolistic telcos
 arguably stifled innovation while extracting maximal acceptable revenue
 from “consumers” of these systems. Could this have been avoided?
 
-\*
+&ast;
 
 ### Reversibility
 
@@ -194,7 +219,7 @@ telephony is still a series of technically reversible developments.
 
 What is not reversible are the economic and political effects that rode
 alongside those technical developments. There are hosts of books written
-on the general irreversibility of any centralisation of power[^5]. There
+on the general irreversibility of any centralisation of power[^power]. There
 is no necessary relationship between technology and power, even though
 the two are very often inextricable. And yet as soon as any new
 technological development bestows power on those who control it, that
@@ -202,6 +227,13 @@ power will generally be used to [amass further
 power](https://scholarship.law.columbia.edu/books/176/). That is a
 process of centralisation, and centralisations of power are far less
 reversible that centralisations of technology.
+
+[^power]: Including the countless books inspired by de Tocqueville, Hayek,
+    and the masses who came after, even if most of them consider
+    irreversibility more through the effect of centralisation being
+    ineluctable. More nuanced and contextually relevant consideration is
+    given in Tim Wu’s *The Master Switch: The Rise and Fall of
+    Information Empires*, linked directly below.
 
 This suggests an immediate and glaring problem. Most technological
 developments are inherently reversible. And most people directly
@@ -214,7 +246,13 @@ power gatherers sit outside the centres of innovation, and merely act as
 organisers, managers, or parasites, drawing upon the innovation of
 others to amass their own power. And any people in such positions have a
 vested interest in preventing any developments from being reversed, and
-very generally wouldn’t know how to do so anyway[^6].
+very generally wouldn’t know how to do so anyway[^hierarchy].
+
+[^hierarchy]: There is possibly some kind of relationship between hierarchy and
+    reversibility here, which I know others have thought about far more
+    than I have. Hierarchy entrenches institutional knowledge, so that
+    every extra layer of management becomes an extra degree of
+    irreversibility.
 
 So reversibility becomes disconnected from development. Perhaps even
 worse, recent technological developments often arise within systems
@@ -293,11 +331,16 @@ The end result in the case of GitHub is [GitHub
 actions](https://github.com/features/actions). An “action” is a file
 with a highly GitHub-specific format that tells its machine what to do
 with your software. These files are meaningless in any context other
-than GitHub’s machines[^7]. The bits that remain independent of the
+than GitHub’s machines[^machines]. The bits that remain independent of the
 dictates and requirements of GitHub are the original bits that were
 centralised through them building these increasingly arcane interfaces.
 Your software as input, and your published website or whatever else as
 output.
+
+[^machines]: You can also configure your own computer to become an exact clone
+    of one of these machines, enabling you to use your computer instead
+    of one of GitHub’s. But even then, you’re still entirely constrained
+    by the way that GitHub has designed their own machines to work.
 
 These interfaces are arcane because they are centralised. In attempting
 to be as generalisable as possible across as many kinds of inputs and
@@ -311,8 +354,16 @@ centralised system. The end result is that you can have all of your
 stuff on GitHub, but the more stuff you put there, the more complicated
 it gets to maintain interfaces between all the parts. GitHub could of
 course strive for solutions to this problem of increasing interface
-complexity, but it doesn’t even have any direct leadership[^8] at
+complexity, but it doesn’t even have any direct leadership[^leadership] at
 present, so that’s unlikely to happen.
+
+[^leadership]: No “CEO” as people love to say, and I’m really looking forward to
+    a future time where we all laugh at how ridiculous all of these
+    obfuscatory acronyms sound. “Boss” is a fabulous English word with a
+    host of connotations, many of which are still eminently applicable.
+    All this talk of “C-levels” and “C-suites” is nothing other than
+    neologism with the sole intent of making it impossible to use these
+    acronyms as verbs. ’‘*I’ve been totally C-levelled around!*’’
 
 <div class="info-block">
 
@@ -328,7 +379,7 @@ interface “thickness” should ultimately be self-defeating.
 
 </div>
 
-\*
+&ast;
 
 ## De-centralising
 
@@ -370,54 +421,3 @@ precondition to counter any processes of economic or political
 centralisation.
 
 </div>
-
-[^1]: The way this site is now built has changed a lot since that
-    original post, so much of it is now inaccurate.
-
-[^2]: Almost all so-called “economies of scale” can be more accurately
-    viewed as economies of centralisation. And yet generations of
-    economists still learn about “economies of scale” rather than
-    exploring the complexities of what really happens to produce an
-    effect that makes it seem like the clearly perversely simplistic
-    axiom “bigger is better.”
-
-[^3]: Starting points that many people are fond of citing range from
-    Alexis de Tocqueville’s *Democracy in America* (1835-1840) to
-    Frederich Hayek’s anti-centralisation rant, *The road to serfdom*
-    (1944).
-
-[^4]: Continuing from two footnotes prior, if economies of scale really
-    worked as proposed, then economies of innovation should also exist
-    and work in the same way. Yet with innovation almost the exact
-    opposite happens. Innovation may increase over enormous scales of
-    entire urban conglomerates, but where that does happen, it is
-    through much better understood mechanisms of network aggregation.
-    There has never been any economy of innovation within any single
-    organisation or company. Continued emphasis on “economies of scale”
-    is, in that context, wilful ignorance.
-
-[^5]: Including the countless books inspired by de Tocqueville, Hayek,
-    and the masses who came after, even if most of them consider
-    irreversibility more through the effect of centralisation being
-    ineluctable. More nuanced and contextually relevant consideration is
-    given in Tim Wu’s *The Master Switch: The Rise and Fall of
-    Information Empires*, linked directly below.
-
-[^6]: There is possibly some kind of relationship between hierarchy and
-    reversibility here, which I know others have thought about far more
-    than I have. Hierarchy entrenches institutional knowledge, so that
-    every extra layer of management becomes an extra degree of
-    irreversibility.
-
-[^7]: You can also configure your own computer to become an exact clone
-    of one of these machines, enabling you to use your computer instead
-    of one of GitHub’s. But even then, you’re still entirely constrained
-    by the way that GitHub has designed their own machines to work.
-
-[^8]: No “CEO” as people love to say, and I’m really looking forward to
-    a future time where we all laugh at how ridiculous all of these
-    obfuscatory acronyms sound. “Boss” is a fabulous English word with a
-    host of connotations, many of which are still eminently applicable.
-    All this talk of “C-levels” and “C-suites” is nothing other than
-    neologism with the sole intent of making it impossible to use these
-    acronyms as verbs. ’‘*I’ve been totally C-levelled around!*’’
