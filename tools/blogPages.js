@@ -65,8 +65,8 @@ export function blogPages(PATHS) {
 
   function loadLinkSummaries(mdPath) {
     const rmdPath = mdPath.replace(/\.md$/, '.Rmd');
-    if (!fs.existsSync(rmdPath)) return {};
-    const raw = fs.readFileSync(rmdPath, 'utf8');
+    const srcPath = fs.existsSync(rmdPath) ? rmdPath : mdPath;
+    const raw = fs.readFileSync(srcPath, 'utf8');
     const match = raw.match(/^---\n([\s\S]*?)\n---/);
     if (!match) return {};
     const fm = yaml.load(match[1]);
@@ -79,7 +79,8 @@ export function blogPages(PATHS) {
   }
 
   function buildPage(mdContent, dateStr, updatedStr, mastodonUrl, linkSummaries, description, pageUrl) {
-    const { content, sidenotesHtml } = processFootnotes(mdContent);
+    const yamlStripped = mdContent.replace(/^---\n[\s\S]*?\n---\n/, '');
+    const { content, sidenotesHtml } = processFootnotes(yamlStripped);
 
     const headings = [];
     let nextDropcap = false;
@@ -156,9 +157,9 @@ export function blogPages(PATHS) {
       return `<li><a href="#${h.id}" style="color:#111111;font-size:${size};padding-left:${indent}">${h.text}</a></li>`;
     }).join('\n');
 
-    const pageTitle = extractTitle(mdContent);
+    const pageTitle = extractTitle(yamlStripped);
     const escapedDesc = description ? description.replace(/"/g, '&quot;') : '';
-    const imgMatch = mdContent.match(/!\[.*?\]\(([^)]+)\)/);
+    const imgMatch = yamlStripped.match(/!\[.*?\]\(([^)]+)\)/);
     const ogImage = imgMatch ? imgMatch[1] : '';
     const frontMatter = pageTitle
       ? `---\ntitle: "${pageTitle}"\nsitetitle: mp\n${escapedDesc ? `description: "${escapedDesc}"\n` : ''}${pageUrl ? `pageurl: "${pageUrl}"\n` : ''}${ogImage ? `ogimage: "${ogImage}"\n` : ''}---\n`
