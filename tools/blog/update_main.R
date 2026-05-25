@@ -58,7 +58,11 @@ format_blog_yaml <- function (fdat, add_blog_prefix = FALSE)
 
 order_blog_files <- function (blog_dir, sort_date = "modified")
 {
-    lf <- list.files (blog_dir, pattern = "\\.Rmd$", full.names = TRUE)
+    rmd_files <- list.files (blog_dir, pattern = "[0-9]{4}.*\\.Rmd$", full.names = TRUE)
+    rmd_bases <- sub ("\\.Rmd$", "", basename (rmd_files))
+    md_files  <- list.files (blog_dir, pattern = "[0-9]{4}.*\\.md$", full.names = TRUE)
+    md_only   <- md_files [!(sub ("\\.md$", "", basename (md_files)) %in% rmd_bases)]
+    lf        <- c (rmd_files, md_only)
     if (sort_date == "modified")
         lf [order (file.info (lf)$mtime, decreasing = TRUE)]
     else {
