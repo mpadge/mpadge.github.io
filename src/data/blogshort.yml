@@ -1,4 +1,10 @@
 -
+    title: "Our goodpractice Package Has New Superpowers"
+    description: We have worked hard over the past few months on major upgrades to our goodpractice package. Checks are now grouped into categories, making it easier to control which checks are run. The biggest change has been adding over 100 new checks, from new lints to many new CRAN checks.
+    created: 05 Jun 26
+    tags: code, ai
+    link: blog/goodpractice.html
+-
     title: Centralisation, reversibility, and restarting
     description: 'Technical progress tends toward centralisation: telephone multiplexing made calls easier and centralised the entire telephone industry; GitHub made coding easier and centralised the world of software development. Technical centralisation is mostly reversible. The economic and political centralisation that rides alongside it is not. The real binding force is neither the technology nor the data but the interfaces imposed to make it all work together. One of the best ways to ensure centralising tendencies can be reversed is to find ways to keep those interfaces simple.'
     created: 22 May 26
@@ -30,9 +36,3 @@
     updated: 12 Mar 21
     tags: code
     link: blog/allcontributors.html
--
-    title: The troubles with getting help files in R
-    description: A primer on ways to extract the actual content of help files. Because one day people will hopefully start text-mining these things, and show us all sorts of things we never knew about the people who make R packages. When they do, this entry will hopefully help.
-    created: 29 Sep 20
-    tags: code
-    link: blog/r-help-files.html
