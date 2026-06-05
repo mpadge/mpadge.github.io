@@ -1,5 +1,5 @@
 #!/bin/bash
-# Integration tests: src/data generation and Rmd YAML front-matter parsing
+# Integration tests: src/data generation and Rmd/md YAML front-matter parsing
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/common.sh"
@@ -10,67 +10,73 @@ DATA_DIR="$PROJECT_ROOT/src/data"
 DIST_BLOG="$PROJECT_ROOT/dist/blog"
 
 # -------------------------------------------------------------------------
-# Rmd YAML front-matter: structural validity
+# Canonical source files: .Rmd preferred; .md used when no .Rmd exists
 # -------------------------------------------------------------------------
 
-RMD_FILES=$(find "$BLOG_SRC" -name "*.Rmd" | sort)
-RMD_COUNT=$(echo "$RMD_FILES" | wc -l)
-[ "$RMD_COUNT" -ge 1 ]
-test_result $? "Found $RMD_COUNT Rmd blog files"
+SRC_FILES=$(
+    for f in $(find "$BLOG_SRC" \( -name "*.Rmd" -o -name "*.md" \) | sort); do
+        stem="${f%.*}"
+        [[ "$f" == *.md ]] && [ -f "${stem}.Rmd" ] && continue
+        echo "$f"
+    done
+)
+SRC_COUNT=$(echo "$SRC_FILES" | wc -l)
+[ "$SRC_COUNT" -ge 1 ]
+test_result $? "Found $SRC_COUNT canonical blog source files"
 
-# Every Rmd has a YAML block (at least two --- delimiters)
+# Every source file has a YAML block (at least two --- delimiters)
 MISSING_YAML=0
-for f in $RMD_FILES; do
+for f in $SRC_FILES; do
     count=$(grep -c '^---$' "$f" 2>/dev/null || echo 0)
     [ "$count" -ge 2 ] || MISSING_YAML=$((MISSING_YAML + 1))
 done
 [ "$MISSING_YAML" -eq 0 ]
-test_result $? "All Rmd files have YAML front-matter delimiters"
+test_result $? "All source files have YAML front-matter delimiters"
 
-# Every Rmd has title:, date:, and link: fields in its YAML block
+# Every source file has title:, date:, and link: fields in its YAML block
 MISSING_FIELDS=0
-for f in $RMD_FILES; do
+for f in $SRC_FILES; do
     block=$(awk '/^---$/{n++; if(n==2) exit} n==1' "$f")
     echo "$block" | grep -q '^title:'       || MISSING_FIELDS=$((MISSING_FIELDS + 1))
     echo "$block" | grep -q '^date:'        || MISSING_FIELDS=$((MISSING_FIELDS + 1))
     echo "$block" | grep -q '^link:'        || MISSING_FIELDS=$((MISSING_FIELDS + 1))
 done
 [ "$MISSING_FIELDS" -eq 0 ]
-test_result $? "All Rmd files have title, date, and link fields"
+test_result $? "All source files have title, date, and link fields"
 
 # Date fields are parseable — accepted formats:
 DATE_DMY='^[0-9]{1,2}/[0-9]{2}/[0-9]{4}$'          # DD/MM/YYYY  e.g. 06/05/2019
 DATE_WORD='^[0-9]{1,2} [A-Za-z]+ [0-9]{4}$'         # D Mon YYYY  e.g. 7 May 2019
 DATE_ISO='^[0-9]{4}-[0-9]{2}-[0-9]{2}$'             # YYYY-MM-DD  e.g. 2026-04-21
 INVALID_DATES=0
-for f in $RMD_FILES; do
+for f in $SRC_FILES; do
     block=$(awk '/^---$/{n++; if(n==2) exit} n==1' "$f")
     date_val=$(echo "$block" | grep '^date:' | sed 's/^date: *//')
     echo "$date_val" | grep -qE "${DATE_DMY}|${DATE_WORD}|${DATE_ISO}" \
         || INVALID_DATES=$((INVALID_DATES + 1))
 done
 [ "$INVALID_DATES" -eq 0 ]
-test_result $? "All Rmd date fields match expected formats"
+test_result $? "All source date fields match expected formats"
 
 # link: fields end in .html and use new slug names (no old blog0xx pattern)
 BAD_LINKS=0
-for f in $RMD_FILES; do
+for f in $SRC_FILES; do
     block=$(awk '/^---$/{n++; if(n==2) exit} n==1' "$f")
     link_val=$(echo "$block" | grep '^link:' | sed 's/^link: *//')
     echo "$link_val" | grep -q '\.html$'          || BAD_LINKS=$((BAD_LINKS + 1))
     echo "$link_val" | grep -qE '^blog[0-9]+\.html' && BAD_LINKS=$((BAD_LINKS + 1))
 done
 [ "$BAD_LINKS" -eq 0 ]
-test_result $? "All Rmd link fields use slug names (no old blog0xx.html)"
+test_result $? "All source link fields use slug names (no old blog0xx.html)"
 
-# Filenames follow YYYY-MM-DD-slug pattern
+# Filenames follow YYYY-MM-DD-slug pattern with .Rmd or .md extension
 BAD_NAMES=0
-for f in $RMD_FILES; do
-    basename "$f" | grep -qE '^[0-9]{4}-[0-9]{2}-[0-9]{2}-.+\.Rmd$' \
+for f in $SRC_FILES; do
+    basename "$f" | grep -qE '^[0-9]{4}-[0-9]{2}-[0-9]{2}-.+\.(Rmd|md)$' \
         || BAD_NAMES=$((BAD_NAMES + 1))
 done
 [ "$BAD_NAMES" -eq 0 ]
-test_result $? "All Rmd filenames follow YYYY-MM-DD-slug.Rmd pattern"
+test_result $? "All source filenames follow YYYY-MM-DD-slug.(Rmd|md) pattern"
 
 # -------------------------------------------------------------------------
 # blog.yml: structure and content
@@ -80,8 +86,8 @@ test_result $? "All Rmd filenames follow YYYY-MM-DD-slug.Rmd pattern"
 test_result $? "src/data/blog.yml exists"
 
 ENTRY_COUNT=$(grep -c '^-$' "$DATA_DIR/blog.yml" 2>/dev/null || echo 0)
-[ "$ENTRY_COUNT" -eq "$RMD_COUNT" ]
-test_result $? "blog.yml has $ENTRY_COUNT entries (matches $RMD_COUNT Rmd files)"
+[ "$ENTRY_COUNT" -eq "$SRC_COUNT" ]
+test_result $? "blog.yml has $ENTRY_COUNT entries (matches $SRC_COUNT source files)"
 
 # Every entry has title, description, created, link — count each field; each must equal entry count
 TITLE_COUNT=$(grep -c '^ *title:'       "$DATA_DIR/blog.yml" || echo 0)
@@ -126,14 +132,18 @@ test_result $? "blogshort.yml links carry blog/ prefix"
 # updated: field propagation
 # -------------------------------------------------------------------------
 
-# Collect Rmd files that have an updated: field
-UPDATED_RMDS=$(grep -rl '^updated:' "$BLOG_SRC" --include='*.Rmd' | sort)
-UPDATED_COUNT=$(echo "$UPDATED_RMDS" | grep -c '.' 2>/dev/null || echo 0)
+# Collect canonical source files that have an updated: field
+UPDATED_SRCS=$(
+    for f in $SRC_FILES; do
+        grep -ql '^updated:' "$f" && echo "$f"
+    done | sort
+)
+UPDATED_COUNT=$(echo "$UPDATED_SRCS" | grep -c '.' 2>/dev/null || echo 0)
 
 if [ "$UPDATED_COUNT" -gt 0 ]; then
-    # Each such Rmd has its updated: value in blog.yml
+    # Each such source file has its updated: value in blog.yml
     MISSING_UPD=0
-    for f in $UPDATED_RMDS; do
+    for f in $UPDATED_SRCS; do
         block=$(awk '/^---$/{n++; if(n==2) exit} n==1' "$f")
         link_val=$(echo "$block" | grep '^link:' | sed 's/^link: *//')
         # Find the blog.yml block for this link and check for updated:
@@ -145,11 +155,11 @@ if [ "$UPDATED_COUNT" -gt 0 ]; then
         ' "$DATA_DIR/blog.yml" | grep -q 'updated:' || MISSING_UPD=$((MISSING_UPD + 1))
     done
     [ "$MISSING_UPD" -eq 0 ]
-    test_result $? "Rmd files with updated: field have it propagated to blog.yml"
+    test_result $? "Source files with updated: field have it propagated to blog.yml"
 
-    # Built HTML for each updated Rmd contains the blog-updated span with arrow
+    # Built HTML for each updated source file contains the blog-updated span with arrow
     MISSING_SPAN=0
-    for f in $UPDATED_RMDS; do
+    for f in $UPDATED_SRCS; do
         block=$(awk '/^---$/{n++; if(n==2) exit} n==1' "$f")
         link_val=$(echo "$block" | grep '^link:' | sed 's/^link: *//')
         html_file="$DIST_BLOG/$link_val"
@@ -161,7 +171,7 @@ if [ "$UPDATED_COUNT" -gt 0 ]; then
 
     # The arrow character (&#x27F6; or ⟶) is present in those HTML files
     MISSING_ARROW=0
-    for f in $UPDATED_RMDS; do
+    for f in $UPDATED_SRCS; do
         block=$(awk '/^---$/{n++; if(n==2) exit} n==1' "$f")
         link_val=$(echo "$block" | grep '^link:' | sed 's/^link: *//')
         html_file="$DIST_BLOG/$link_val"
@@ -171,13 +181,17 @@ if [ "$UPDATED_COUNT" -gt 0 ]; then
     [ "$MISSING_ARROW" -eq 0 ]
     test_result $? "Updated posts contain long-arrow character in built HTML"
 else
-    test_result 0 "No Rmd files with updated: field (skipped propagation checks)"
+    test_result 0 "No source files with updated: field (skipped propagation checks)"
 fi
 
-# Rmd files without updated: produce no blog-updated span in their HTML
-NO_UPD_RMDS=$(grep -rL '^updated:' "$BLOG_SRC" --include='*.Rmd' | sort)
+# Source files without updated: produce no blog-updated span in their HTML
+NO_UPD_SRCS=$(
+    for f in $SRC_FILES; do
+        grep -ql '^updated:' "$f" || echo "$f"
+    done | sort
+)
 SPURIOUS_SPAN=0
-for f in $NO_UPD_RMDS; do
+for f in $NO_UPD_SRCS; do
     block=$(awk '/^---$/{n++; if(n==2) exit} n==1' "$f")
     link_val=$(echo "$block" | grep '^link:' | sed 's/^link: *//')
     html_file="$DIST_BLOG/$link_val"
