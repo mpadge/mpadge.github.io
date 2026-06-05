@@ -115,6 +115,10 @@ print(x, "namespace")
 
 ### From Mo (Athanasia)
 
+<div class="use-dropcap">
+
+</div>
+
 I'll be honest with you: a lot of this contribution was done with an AI assistant (Claude Code using Opus 4.5) at my elbow. 
 I want to say something about that, because I think the honest version is more useful than the marketing version.
 The way Mark approached reviewing this work was very thoughtful and helpful. 
@@ -164,6 +168,10 @@ And one thing Claude always does better than me: writing good commit messages.
 I have found myself writing my own code, but asking Claude to commit them (making it look like Claude wrote the code, but I don't care) because the commit messages are just so much better than what I write.
 
 ### From Mark
+
+<div class="use-dropcap">
+
+</div>
 
 The entire idea for this major update was initiated and driven by Mo.
 It was also my first real foray into using generative AI tools directly in rOpenSci packages, and I learnt a lot.
