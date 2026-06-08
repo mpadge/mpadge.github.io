@@ -1,9 +1,9 @@
 ---
 title: "Purposeful joy"
-description: The current purpose for many is to help computer programs replace
-  the purposeful labour of a generation of uniquely idiosyncratic human beings.
-  Yet purpose for the replaced is categorically indistinguishable from the
-  purpose of those doing the replacing. The end point of any logic of
+description: The current purpose for a select few is to help computer programs
+  replace the purposeful labour of a generation of uniquely idiosyncratic human
+  beings. Yet purpose for the replaced is categorically indistinguishable from
+  the purpose of those doing the replacing. The end point of any logic of
   AI-replaceability is hierarchical collapse, the auto-CEO, and economic death.
   The saving grace is that, unlike purpose, joy steadfastly resists
   hierarchicalisation. So if you're looking for a strategyi against the
@@ -14,6 +14,8 @@ date: 2026-06-08
 tags: code, ai
 link: purposeful-joy.html
 links:
+  https://www.owenmcgrann.com/p/the-dead-economy-theory: |
+    '_The Dead Economy Theory_', blog post by Owen McGrann, 1st May, 2026.
   https://www.anthropic.com/institute/recursive-self-improvement: |
     '_When AI builds itself_', Anthropic Institute page issued without date (but first make public start of June 2026).
   https://www.vatican.va/content/leo-xiv/en/encyclicals/documents/20260515-magnifica-humanitas.html: |
@@ -31,15 +33,16 @@ links:
 
 <div class="summary-block">
 
-The current purpose for many is to help computer programs replace the
+The current purpose for a select few is to help computer programs replace the
 purposeful labour of a generation of uniquely idiosyncratic human beings. Yet
 purpose for the replaced is categorically indistinguishable from the purpose of
 those doing the replacing. The end point of any logic of AI-replaceability is
-hierarchical collapse, the auto-CEO, and economic death. The saving grace is
-that, unlike purpose, joy steadfastly resists hierarchicalisation. So if you're
-looking for a strategyi against the incoming age of trillionaires, orienting
-yourself toward joy isn't just self-help fluff, it's arguably one of the most
-important non-capturable resources left.                                                                                                                 
+hierarchical collapse, the auto-CEO, and [economic
+death](https://www.owenmcgrann.com/p/the-dead-economy-theory). The saving grace
+is that, unlike purpose, joy steadfastly resists hierarchicalisation. So if
+you're looking for a strategyi against the incoming age of trillionaires,
+orienting yourself toward joy isn't just self-help fluff, it's arguably one of
+the most important non-capturable resources left.
 
 </div>
 
@@ -62,11 +65,11 @@ two companies for the ostensible convenience of having expertise delivered via
 an API. Delivered cleanly, without friction, in irresistibly self-affirming
 ways.
 
-And delivered in a vacuum. Expertise used to socially constructed, negotiated,
-validated. Expertise was never a given. And yet now it's just there for any and
-every body. Different levels dependent on how much people can or are willing to
-pay, but nevertheless expertise on tap, entirely devoid of any background,
-context, or friction.
+And delivered in a vacuum. Expertise used to be socially constructed,
+negotiated, validated. Expertise was never a given. And yet now it's just there
+for any and every body. Different levels dependent on how much people can or
+are willing to pay, but nevertheless expertise on tap, entirely devoid of any
+background, context, or friction.
 
 I am no longer any more of an expert than you in any of the domains which I
 used to joyfully explore. Where does that leave my joy? I honestly don't know,
@@ -105,8 +108,8 @@ read, neither can a computer program. Both books and computer programs are
 [^1]: Analogous comparisons have also been made between generative AI programs
     and Microsoft Word documents by [Ted Chiang](https://www.theatlantic.com/philosophy/2026/06/no-artificial-intelligence-is-not-conscious/687378/).
 
-A book may be a cause; a computer program may be a cause. But no book holds
-within itself neither aim nor purpose, and nor do computer programs.
+A book may be a cause; a computer program may be a cause. But books hold
+within themselves neither aim nor purpose, and nor do computer programs.
 
 To consider why this might matter, let's take the typical cliche of a notional
 "manager" reducing a collective of human coders to one or two, so they can
@@ -163,16 +166,20 @@ any attempts to distinguish categories of replaceable versus not replaceable on
 the basis of purpose are moot. Any attempt to justify some kind of
 replaceability gradient must be judged alongside these kinds of narratives as
 transient at best, and likely unstable or irrelevant in the face of any of
-these kinds of anticipated future developments.
+these kinds of anticipated future developments[^future-dev].
 
-Coupled with endless narratives of need for speed, for pre-empting future
-trajectories, for leading and not following, all argue for pushing any notional
-gradient further along or up or out towards higher levels of replacability. At
-the top of anything like that usually sit managers. For publicly listed
-companies, they generally have a singular and precisely-defined purpose. And
-that purpose is entirely extrinsic; it in no way inheres in any individual
-manager, and so they are also as AI-substitutable as all others. Which leads
-directly to OpenClaw auto-CEOs, and the death of everything.
+[^future-dev]: Almost none of which are made alongside any plausible arguments
+  for the likelihood of these futures, absent which they should be treated as
+  the inherently fictive constructions that they are.
+
+The relentless narratives of need for speed, for pre-empting future
+trajectories, for leading and not following, all serve as arguments for pushing
+any notional gradient further along or up or out towards higher levels of
+replacability. At the top of anything like that usually sit managers. For
+publicly listed companies, they generally have a singular and precisely-defined
+purpose. And that purpose is entirely extrinsic; it in no way inheres in any
+individual manager, and so they are also as AI-substitutable as all others.
+Which leads directly to OpenClaw auto-CEOs, and the death of everything.
 
 And so we come to a conundrum: Any argument of the replaceability of labour by
 AI at any "sufficiently" low hierarchical level can not be categorically
@@ -193,14 +200,13 @@ The kind of thought experiment above can easily be applied to many words and
 situations. What happens to art? What happens to societies? What happens to
 democracies? What I want to consider first is, _What happens to purpose?_
 
-Purpose is as impossible to define as consciousness. And definitions are
-definitively subjective, dynamically variable, and bound to our human
-condition. Much of human struggle can be seen as striving for broader
-ascriptions of purpose. That history is still enacted every time words like
-"enigmatic" are ascribed to powerful figures. That word is rarely used to
-describe those forced to hold lower places in social hierarchies. The word
-"enigmatic" is used to disguise a belief in purpose in cases where purpose can
-not be discerned.
+Purpose is as impossible to define as consciousness, and just as subjective,
+dynamically, and bound to our human condition. Much of human struggle can be
+seen as striving for broader ascriptions of purpose. Those histories are still
+enacted every time words like "enigmatic" are ascribed to powerful figures.
+That word is rarely used to describe those forced to hold lower places in
+social hierarchies. The word "enigmatic" is used to disguise a belief in
+purpose in cases where purpose can not be discerned.
 
 Purpose is merely more likely to be ascribed to those in perceived higher
 hierarchical levels. Such ascriptions are nothing other than a manifestation of
@@ -235,11 +241,11 @@ particular class of hierarchical level, and far more something likely to have
 been recorded for posterity as distributed throughout all societies largely
 regardless of otherwise mitigating factors. What happens to joy?
 
-Joy is also related to purpose. And much of the power-war 20th century into
+Joy is also related to purpose. And much of the post-war 20th century into
 this current century has arguably seen an increased narrowing of the divergence
 between labour and purpose. With that must also be presumed an increased
 entwining of labour, purpose, and joy. The effects described above are likely
-going to sever much of that, manifesting an aggregation diminution in joy.
+to further strengthen the coupling of purpose to labour.
 
 But the exacerbation of pre-inscribed and in-trained hierarchical bias in
 purpose will be unlikely to apply in any similar way to joy. And so joy will be
@@ -257,7 +263,7 @@ refocus, to move elsewhere. I suspect and hope the same will be true of others.
 As an interesting aside, Anthropic co-founder Chris Olah was invited to speak
 alongside Pope Leo XIV on the release of Leo's [_Magnifica Humanitas_
 encyclical](https://www.vatican.va/content/leo-xiv/en/encyclicals/documents/20260515-magnifica-humanitas.html).
-And Chris Olah
+And Olah
 [claimed](https://www.anthropic.com/news/chris-olah-pope-leo-encyclical#:~:text=joy)
 in regard to Anthropic's generative AI models that,
 <blockquote>
@@ -272,9 +278,12 @@ troubling, the [original Anthropic
 publication](https://www.anthropic.com/research/introspection) that must be
 taken as the only definitive public source for these claims makes no mention at
 all of "functional mirroring" or any similar concepts, nor of what any alleged
-internal "states" might be, or might translate to. Pope-baiting?
+internal "states" might be, or might translate to. Pope Leo obviously does his
+homework. Does Olah? Or does he even care?
 
 </div>
+
+&ast;
 
 ## Joy, purpose, and economic necessity
 
@@ -298,7 +307,7 @@ who are, or ultimately will be, responsible for centralised AI infrastructure
 to think about anything other than becoming even more insanely rich at the
 expense of everybody else. Thinking about joy and purpose will be a task for
 everybody else. And it will have to be done absent any fabled golden age of
-human prosperity, which sure won't came while we're sharing our one world with
+human prosperity, which sure won't came while we're sharing our only world with
 trillionaires.
 
 We have three points of a triangle, and three edges. Economic necessity could
@@ -316,24 +325,29 @@ that decouple both from economic productivity.
 
 And yet the advent of centralised AI infrastructure enhances this view in one
 important way. It's not just Neo-Liberals versus Marxists on opposites ends of
-some notionally level playing field. I argued here that centralised AI
-infrastructure will exert a similarly centralising force on understandings of
-purpose, or at least on judgements of the value of purpose. The value of
-purpose increases with hierarchical level, while the value of joy remains
-joyfully oblivious and independent of hierarchical level.
+some notionally level playing field. I have argued here that centralised AI
+infrastructure will exert a similarly centralising force on understandings, or
+at least the manifest value, of purpose. The value of purpose increases with
+hierarchical level, while the value of joy remains joyfully oblivious and
+independent.
 
-So the playing field is not level. As this system evolves from its current
-state, it seems unavoidable that the value of purpose will become increasingly
-narrowly defined. Purpose for all will be enacted by decreasingly few.
-Conversely, the value of joy will remain approximately universal, and therefore
-overwhelmingly in the hands of the many.
+So the playing field is not level. As this notional system evolves from its
+current state, it seems unavoidable that the value of purpose will become
+increasingly narrowly defined. Purpose for all will be enacted by decreasingly
+few. Conversely, the value of joy will remain approximately universal, and
+therefore overwhelmingly in the hands of the many.
 
 So once again it is maybe no different to an eternity of the money and power of
 the few versus the numeric majority. But merely identifying those things which
-must remain overwhelmingly in control of the majority surely helps? If you are
-seeking clarity amidst the current chaos wrought by centralised AI
-infrastructure, strive for joy! Seek it out, ask where it lies for you, and
-orient yourself there. There more we can collectively pull purpose back towards
-joy, regardless of how its relation to economic necessity may evolve, the more
-we will ensure that our collective future benefits the many over the few. Bring
-the joy!
+must remain overwhelmingly in control of the majority surely helps?
+
+<div class="conclusion-block">
+
+If you are seeking clarity amidst the current chaos wrought by centralised AI
+infrastructure, strive for joy over purpose! Seek it out, ask where it lies for
+you, and orient yourself there. There more we can collectively pull purpose
+back towards joy, regardless of how its relation to economic necessity may
+evolve, the more we will ensure that our collective future benefits the many
+over the few. Bring the joy!
+
+</div>
