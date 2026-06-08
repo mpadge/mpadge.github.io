@@ -9,7 +9,7 @@ description: The current purpose for a select few is to help computer programs
   hierarchicalisation. So if you're looking for a strategyi against the
   incoming age of trillionaires, orienting yourself toward joy isn't just
   self-help fluff, it's arguably one of the most important non-capturable
-  resources left.                                                                                                                 
+  resources left.
 date: 2026-06-08
 tags: code, ai
 link: purposeful-joy.html
@@ -106,7 +106,8 @@ read, neither can a computer program. Both books and computer programs are
 (mere) manifestations of authorial purpose[^1].
 
 [^1]: Analogous comparisons have also been made between generative AI programs
-    and Microsoft Word documents by [Ted Chiang](https://www.theatlantic.com/philosophy/2026/06/no-artificial-intelligence-is-not-conscious/687378/).
+    and Microsoft Word documents by [Ted
+    Chiang](https://www.theatlantic.com/philosophy/2026/06/no-artificial-intelligence-is-not-conscious/687378/).
 
 A book may be a cause; a computer program may be a cause. But books hold
 within themselves neither aim nor purpose, and nor do computer programs.
