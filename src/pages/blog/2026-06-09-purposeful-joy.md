@@ -8,7 +8,7 @@ description: The current purpose for a select few is to help computer programs
   collapse, the auto-CEO, and economic death. The saving grace is that, unlike
   purpose, joy steadfastly resists hierarchical direction. And that makes joy
   arguably one of the most important non-capturable resources left.
-date: 2026-06-08
+date: 2026-06-09
 tags: code, ai
 link: purposeful-joy.html
 links:
