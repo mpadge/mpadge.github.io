@@ -106,6 +106,11 @@
     height: 30px;
 }
 
+.fi-social-bluesky {
+    width: 30px;
+    height: 30px;
+}
+
 .fi-social-codeberg {
     width: 28px;
     height: 28px;
@@ -166,6 +171,10 @@
         }
 
         .fi-social-mastodon,
+        .fi-social-bluesky {
+            width: clamp(20px, 5.5vw, 28px);
+            height: clamp(20px, 5.5vw, 28px);
+        }
         .fi-social-codeberg {
             width: clamp(20px, 5.5vw, 28px);
             height: clamp(20px, 5.5vw, 28px);
@@ -313,6 +322,10 @@ code, pre {
 }
 
 [data-theme="dark"] .fi-social-mastodon {
+    filter: invert(0.8);
+}
+
+[data-theme="dark"] .fi-social-bluesky {
     filter: invert(0.8);
 }
 
