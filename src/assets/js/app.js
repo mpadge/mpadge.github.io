@@ -68,7 +68,7 @@ $(document).foundation();
                 notes.forEach(function (n) { n.classList.remove('active'); });
             }
             hideTimer = null;
-        }, 150);
+        }, 1000);
     }
 
     // --- narrow-screen: floating popup ---
