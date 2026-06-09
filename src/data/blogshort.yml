@@ -1,4 +1,10 @@
 -
+    title: "Purposeful joy"
+    description: The current purpose for a select few is to help computer programs replace the purposeful labour of a generation of uniquely idiosyncratic human beings. Yet the relationship of those being replaced to their own intrinsic purpose is categorically indistinguishable to that of those people doing the replacing. The end point of any logic of AI-replaceability is hierarchical collapse, the auto-CEO, and economic death. The saving grace is that, unlike purpose, joy steadfastly resists hierarchical direction. And that makes joy arguably one of the most important non-capturable resources left.
+    created: 09 Jun 26
+    tags: code, ai
+    link: blog/purposeful-joy.html
+-
     title: "Our goodpractice Package Has New Superpowers"
     description: We have worked hard over the past few months on major upgrades to our goodpractice package. Checks are now grouped into categories, making it easier to control which checks are run. The biggest change has been adding over 100 new checks, from new lints to many new CRAN checks.
     created: 05 Jun 26
@@ -29,10 +35,3 @@
     created: 27 Oct 21
     tags: code, github
     link: blog/github-terminal-notifications.html
--
-    title: The allcontributors package
-    description: An alternative implementation in R of the original 'allcontributors.org' to acknowledge all contributors in your 'README' (or elsewhere). The original is intended to help acknowledge all contributions including those beyond the contents of an actual repository, such as community or other or less-tangible organisational contributions. This version only acknowledges tangible contributions to a repository, but automates that task to a single function call, in the hope that such simplicity will spur greater usage.
-    created: 10 Mar 21
-    updated: 12 Mar 21
-    tags: code
-    link: blog/allcontributors.html
