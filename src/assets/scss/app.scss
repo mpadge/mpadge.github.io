@@ -576,6 +576,29 @@ code, pre {
     }
 }
 
+// Matches the min-width: 640px breakpoint at which .blog-figure swaps in the
+// wide (grid) image over the narrow (stacked) one, so wording referring to
+// panel position stays consistent with the image actually shown. Pair
+// .wide-only and .narrow-only spans to swap in alternative wording, or use
+// .wide-only alone to simply omit a word/phrase on narrow screens.
+.wide-only {
+    display: none;
+}
+
+.narrow-only {
+    display: inline;
+}
+
+@media print, screen and (min-width: 640px) {
+    .wide-only {
+        display: inline;
+    }
+
+    .narrow-only {
+        display: none;
+    }
+}
+
 .info-block {
     position: relative;
     margin: 1.5rem 0;

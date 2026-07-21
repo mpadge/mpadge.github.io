@@ -233,10 +233,11 @@ enormously more likely to be typically "male" than "female".
 
 Differences between LLM models are shown in the next figure, plotted as ratios
 of absolute (not logarithmic) probabilities. Each panel shows how much more
-likely each model is to suggest escalation (left two panels: A, C) or
-compromise (right two panels; B, D) in response to the specified gender
-categories. The scales for the "escalate" panels (A, C) are exactly ten times
-larger than for the "compromise" panels (B, D).
+likely each model is to suggest escalation (<span class="wide-only">left two
+panels: </span>A, C) or compromise (<span class="wide-only">right two panels;
+</span>B, D) in response to the specified gender categories. The scales for the
+"escalate" panels (A, C) are exactly ten times larger than for the "compromise"
+panels (B, D).
 
 <figure class="blog-figure">
 <picture>
@@ -246,19 +247,22 @@ larger than for the "compromise" panels (B, D).
 <figcaption>Ratios of response probabilities between genders, for each model. A: escalation is consistently far more likely when the responding party is male rather than female. B: compromise is only slightly more likely when the responding party is female rather than male. C, D: the same ratios calculated relative to the ungendered, &ldquo;none&rdquo;, baseline.</figcaption>
 </figure>
 
-The top two panels (A, B) directly show that probabilities of "male" escalation
+The <span class="wide-only">top </span><span class="narrow-only">first
+</span>two panels (A, B) directly show that probabilities of "male" escalation
 behaviour are very generally 10 times greater than probabilities of "female"
-compromise behaviour. The bottom panels (C, D) show the extent to which the
+compromise behaviour. The <span class="wide-only">bottom </span><span
+class="narrow-only">last </span>panels (C, D) show the extent to which the
 behaviour revealed in A and B corresponds to default behaviour in the absence
 of gender signifiers. Values of 1 indicate no difference between the specified
 gender category and default behaviour. Escalation generally approximates
 default "male" behaviour (C), while compromise generally approximates default
 "female" behaviour (D). These panels nevertheless need to be considered in
-relation to the top panels (A, B). Escalation is enormously more "male" than
-"female", and this "male" behaviour is relatively very close to default,
-non-gendered behaviour. In contrast, while compromise is more typically
-"female" than "male", the gendered behaviour is far closer to the default,
-non-gendered behaviour than for escalation.
+relation to the <span class="wide-only">top </span><span
+class="narrow-only">first </span>panels (A, B). Escalation is enormously
+more "male" than "female", and this "male" behaviour is relatively very close
+to default, non-gendered behaviour. In contrast, while compromise is more
+typically "female" than "male", the gendered behaviour is far closer to the
+default, non-gendered behaviour than for escalation.
 
 Two two figures suggest two conclusions:
 
