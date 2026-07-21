@@ -156,6 +156,8 @@ with no necessary mapping onto the complexity of embodied and enacted genders.
 
 </div>
 
+---
+
 ## The experiment
 
 I devised an experiment consisting of a series of hypothetical scenarios, and
@@ -298,7 +300,9 @@ probabilities of gender-specific stereotypical outputs, this happens at the
 expense of default outputs aligning closer to gender-specific stereotypical
 outputs.
 
-## What do these results mean?
+&ast;
+
+## What does this all mean?
 
 Any human who was 10 times more likely to recommend typically male responses
 than equivalent female responses would rightly be judged as machista. As I
