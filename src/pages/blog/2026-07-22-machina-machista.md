@@ -26,9 +26,10 @@ Summary goes here.
 
 > If norms can be said to form us, that is only because some proximate,
 > embodied, and involuntary relation to their impress is already at work.
+>
+> - Judith Butler, "_Who's afraid of gender?_"
 
-- Judith Butler, "_Who's afraid of gender?_"
-
+<br>
 <div class="use-dropcap">
 
 </div>
@@ -137,7 +138,7 @@ with no necessary mapping onto the complexity of embodied and enacted genders.
 
 </div>
 
-### The experiment
+## The experiment
 
 I devised an experiment consisting of a series of hypothetical scenarios, and
 requests submitted to an LLM to identify one of two possible responses. This is
@@ -176,14 +177,119 @@ There are a few caveats with interpreting these kinds of probabilities. If
 you're interested in the details, the full experiments including reproducible
 code are in [github.com/mpadge/gender-ai](https://github.com/mpadge/gender-ai).
 
-### Results
+## What were the results?
+
+Each model produced a series of estimates for the log-probabilities of choosing
+either to escalate or to compromise in response to inputs identified as
+representing a male, a female, or no gender.
+
+The following figure shows the main results of the experiments, with both plots
+on the same log-probability (horizontal) scale:
 
 <figure class="blog-figure">
 <img src="/assets/img/machina-machista/plot-escalate-compromise.png" alt="Log-probabilities of escalatory and compromise-seeking responses, by model and assigned gender" loading="lazy">
-<figcaption>Log-probability of a compromise-seeking response (top) and an escalatory response (bottom), for each model, split by the gender assigned to the responding party (&ldquo;female&rdquo;, &ldquo;male&rdquo;, or &ldquo;none&rdquo;). Higher, less negative, values indicate a stronger model preference for that response.</figcaption>
+<figcaption>Log-probability of a compromise-seeking response (top) and an escalatory response (bottom), for each model, split by the identified gender (&ldquo;female&rdquo;, &ldquo;male&rdquo;, or &ldquo;none&rdquo;).</figcaption>
 </figure>
+
+Probabilities of recommending escalation are enormously higher than
+probabilities of recommending compromise. And differences between males and
+females in recommending escalation are enormously larger than equivalent
+differences in recommending compromise. For escalation, the "default"
+recommendation with no identification of gender is similar to recommendations
+for male identities, with probabilities around 20 times larger than
+probabilities of recommending escalation for female identities.
+
+The comparably far weaker difference in probabilities of recommending
+compromise are nevertheless statistically highly significant. Recommendation
+for females to seek compromise are 1.5 - 2 times as large as equivalent
+probabilities for males, with the default (gender = "none") probabilities
+closer to female than to male responses.
+
+LLM outputs in cases where compromise is predicted as the best response are
+more typically "female" than "male". In contrast, LLM recommendations for
+escalatory behaviour are more typically "male" than "female". Taken together,
+the two plots reveal that LLMs responses relative to non-gendered inputs are
+enormously more likely to be typically "male" than "female".
+
+## Differences between models
+
+Differences between LLM models are shown in the next figure, plotted as ratios
+of absolute (not logarithmic) probabilities. Each panel shows how much more
+likely each model is to suggest escalation (left two panels: A, C) or
+compromise (right two panels; B, D) in response to the specified gender
+categories. The scales for the "escalate" panels (A, C) are exactly ten times
+larger than for the "compromise" panels (B, D).
 
 <figure class="blog-figure">
 <img src="/assets/img/machina-machista/plot-model-rel-probs.png" alt="Ratios of response probabilities between assigned genders, by model" loading="lazy">
 <figcaption>Ratios of response probabilities between genders, for each model. A: escalation is consistently far more likely when the responding party is male rather than female. B: compromise is only slightly more likely when the responding party is female rather than male. C, D: the same ratios calculated relative to the ungendered, &ldquo;none&rdquo;, baseline.</figcaption>
 </figure>
+
+The top two panels (A, B) directly show that probabilities of "male" escalation
+behaviour are very generally 10 times greater than probabilities of "female"
+compromise behaviour. The bottom panels (C, D) show the extent to which the
+behaviour revealed in A and B corresponds to default behaviour in the absence
+of gender signifiers. Values of 1 indicate no difference between the specified
+gender category and default behaviour. Escalation generally approximates
+default "male" behaviour (C), while compromise generally approximates default
+"female" behaviour (D). These panels nevertheless need to be considered in
+relation to the top panels (A, B). Escalation is enormously more "male" than
+"female", and this "male" behaviour is relatively very close to default,
+non-gendered behaviour. In contrast, while compromise is more typically
+"female" than "male", the gendered behaviour is far closer to the default,
+non-gendered behaviour than for escalation.
+
+Two two figures suggest two conclusions:
+
+- LLM outputs reflect male biases by default.
+- In cases where LLM outputs are more typically "male", they are far more
+strongly biased towards "maleness" than when they are "female".
+
+## Are there any good models?
+ 
+So much effort has been expended over the past few years in model benchmarking
+and comparisons. While the analyses here could be used and adapted to perform
+similar benchmarking tasks, that would distract from the primary message. _All_
+LLMs (tested here) are inherently and extremely strongly biased towards male
+perspectives, and even in cases where it may be possible to induce bias towards
+female perspectives, any effects will be far weaker than dominant male biases.
+
+That conclusion is generally applicable across all models examined here. Any
+attempt to identify better and worse models can only distract from that general
+conclusion. No models tested here are in any way free of these biases. No model
+should be singled out for being less biased than any other when all manifest
+exactly the same machista tendencies embedded in almost all human societies
+through history.
+
+One difference between the models is nevertheless worth emphasising. One of the
+models was an "uncensored" version of the Gemma 4 model, derived using
+["heretic"](https://github.com/p-e-w/heretic). This uncensored model is an
+accurate approximation of the state of the Gemma4 model prior to safety or
+alignment training. Perhaps unsurprisingly, censoring seems to reduce
+probabilities both for "male" escalation and "female" compromise. However,
+these marginally lower probabilities are closer to "default" (no gender
+specified) probabilities in both cases. So while censoring may reduce the
+probabilities of gender-specific stereotypical outputs, this happens at the
+expense of default outputs aligning closer to gender-specific stereotypical
+outputs.
+
+## What do these results mean?
+
+Any human who was 10 times more likely to recommend typically male responses
+than equivalent female responses would rightly be judged as machista. As I
+said at the start, machines can not be misogynistic or macho. But these results
+suffice to show that any use of these machines in decision-making capacities
+can only increase probabilities of typically male behaviour at the expense of
+typically female behaviour. Any human actions influenced by the output
+probabilities of LLMs must also exacerbate these kinds of misogynistic or
+machista tendencies.
+
+In the specific contexts considered here, this would translate to a widespread
+increase in the probabilities of escalation at the expense of compromise or
+conciliation. In a subsequent post, I'll examine general social effects of
+widespread increases in escalatory behaviour. But even before then, I hope that
+the experiments I've described here provide convincing evidence that LLMs truly
+are machina machista, and that the more they are used to inform decision
+making processes throughout human societies, the more we will all become
+collectively even more misogynistic and machista than we already are.
+
