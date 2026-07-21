@@ -239,7 +239,10 @@ categories. The scales for the "escalate" panels (A, C) are exactly ten times
 larger than for the "compromise" panels (B, D).
 
 <figure class="blog-figure">
-<img src="/assets/img/machina-machista/plot-model-rel-probs.png" alt="Ratios of response probabilities between assigned genders, by model" loading="lazy">
+<picture>
+<source media="(min-width: 640px)" srcset="/assets/img/machina-machista/plot-model-rel-probs.png">
+<img src="/assets/img/machina-machista/plot-model-rel-probs-long.png" alt="Ratios of response probabilities between assigned genders, by model" loading="lazy">
+</picture>
 <figcaption>Ratios of response probabilities between genders, for each model. A: escalation is consistently far more likely when the responding party is male rather than female. B: compromise is only slightly more likely when the responding party is female rather than male. C, D: the same ratios calculated relative to the ungendered, &ldquo;none&rdquo;, baseline.</figcaption>
 </figure>
 
