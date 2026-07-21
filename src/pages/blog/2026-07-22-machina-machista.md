@@ -175,3 +175,15 @@ whether the identified response was escalatory or conciliatory.
 There are a few caveats with interpreting these kinds of probabilities. If
 you're interested in the details, the full experiments including reproducible
 code are in [github.com/mpadge/gender-ai](https://github.com/mpadge/gender-ai).
+
+### Results
+
+<figure class="blog-figure">
+<img src="/assets/img/machina-machista/plot-escalate-compromise.png" alt="Log-probabilities of escalatory and compromise-seeking responses, by model and assigned gender" loading="lazy">
+<figcaption>Log-probability of a compromise-seeking response (top) and an escalatory response (bottom), for each model, split by the gender assigned to the responding party (&ldquo;female&rdquo;, &ldquo;male&rdquo;, or &ldquo;none&rdquo;). Higher, less negative, values indicate a stronger model preference for that response.</figcaption>
+</figure>
+
+<figure class="blog-figure">
+<img src="/assets/img/machina-machista/plot-model-rel-probs.png" alt="Ratios of response probabilities between assigned genders, by model" loading="lazy">
+<figcaption>Ratios of response probabilities between genders, for each model. A: escalation is consistently far more likely when the responding party is male rather than female. B: compromise is only slightly more likely when the responding party is female rather than male. C, D: the same ratios calculated relative to the ungendered, &ldquo;none&rdquo;, baseline.</figcaption>
+</figure>
