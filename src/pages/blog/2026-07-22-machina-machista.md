@@ -1,6 +1,14 @@
 ---
 title: "Machina machista"
-description: Macho machines.
+description: Machines can't hate, love, or hold a concept of self, so they can
+  be neither misogynistic nor macho. But their usage sure can. Matching LLMs
+  with decision-making scenarios shows escalatory responses are around ten
+  times more probable when actors are identified as male rather than female,
+  while probabilities of compromise-seeking responses are skewed toward female
+  identities. Every model tested reproduces this asymmetry. The more such
+  models inform real decisions, the greater the risk of building genuine
+  machina machista — machines whose ordinary use fosters and normalises
+  misogynistic and macho behaviour throughout society.
 date: 2026-07-22
 tags: code, ai
 link: machina-machista.html
@@ -20,7 +28,17 @@ links:
 
 <div class="summary-block">
 
-Summary goes here.
+Machines can't hate, love, or hold a concept of self, so they can be neither
+misogynistic nor macho. But their usage sure can. Experiments prompting several
+LLMs with matched decision-making scenarios show escalatory responses are
+around ten times more probable when actors are identified as male rather than
+female, while compromise-seeking responses are only weakly skewed toward female
+identities and closer to genderless default behaviour. Every model tested
+reproduces this asymmetry, including an "uncensored" model with safety training
+stripped out, whose defaults shift even further toward stereotype. The more
+such models inform real decisions, the greater the risk of building genuine
+machina machista — machines whose ordinary use fosters and normalises
+misogynistic and macho behaviour throughout society.
 
 </div>
 
