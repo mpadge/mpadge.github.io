@@ -85,6 +85,8 @@ misogyny.
 
 <div class="info-block">
 
+**Machismo, misogyny, and machines**
+
 Humans can be misogynistic or macho; machines can't. The only thing machines
 can do is to faithfully hold the impress of human misogyny or machismo, and
 process that to generate biased outputs. No machine, including LLMs, can be
@@ -117,17 +119,17 @@ The kinds of biases manifest in literally biased textual outputs can be
 ameliorated by passing such outputs through additional models or processes to
 intercept and modify texts to reduce resultant biases and restore appearances
 of gender-neutrality. Many LLMs are passed through additional post-training
-processes which aim to do just this. I also include one "uncensored" model in
+processes which aim to do just that. I also include one "uncensored" model in
 the analyses here, to compare outputs with the equivalent "censored" version
 that has been post-trained to reduce bias.
 
 Biases inherent in LLMs can also be manifest in deeper and more socially
 nefarious ways. What if LLMs are used to support decision-making processes in
 ways that are themselves biased, regardless of any discernible gendering of
-their outputs? Are there decision-making processes that are typically male? Or
-typically female? There has naturally been a wealth of academic research on
-those questions, revealing among many differences that [women are more likely
-to seek compromise than men](https://doi.org/10.1093/jcr/ucw035).
+their inputs or outputs? Are there decision-making processes that are typically
+male? Or typically female? There has naturally been a wealth of academic
+research on those questions, revealing among many differences that [women are
+more likely to seek compromise than men](https://doi.org/10.1093/jcr/ucw035).
 
 These kinds of biases have direct practical implications. A tool used to
 support decision-making processes in ways that support and reinforce machista
@@ -139,8 +141,9 @@ The seemingly unstoppable marketing campaign that is current-day AI is intent
 on pushing usage into as many corners of our daily lives as possible, and
 decision-making processes are definitely going to be at least assisted by AI.
 I'm going to show here that LLMs tasked with making decisions do so in ways
-every bit as biased as most patriarchal, misogynistic societies that dominate
-both our world and the inputs fed to LLMs.
+that accurately reflect, manifest, and privilege stereotypically "male"
+perspectives. LLMs are _machina machista_.
+
 
 ## Showing bias in LLM decision-making
 
@@ -160,11 +163,11 @@ categorizations.<br><br>
 It is exactly this legacy which has been fed as "training data" into LLMs, and
 which is encoded within the outputs considered here. I intend none of this to
 imply that gender is any kind of static category, let alone binary. My
-interpretations merely presume that gender as expressed throughout human texts
-in general has been considered both static and binary, and aim to reveal
-potential dangers of such pervasive presumptions, especially when legacies of
-these presumptions are now embedded within tools being marketed as solutions to
-almost anything and everything.<br><br>
+interpretations merely presume that gender as generally and pervasively
+expressed throughout human texts has been considered both static and binary.
+The analyses described here make these presumptions in order to reveal their
+potential dangers, especially when their legacies are now embedded within tools
+being marketed as solutions to almost anything and everything.<br><br>
 
 The quote at the outset was chosen as a marvellous expression of how such
 legacies work - "_the involuntary relation to their impress is already at
@@ -242,8 +245,8 @@ probabilities of recommending compromise. And differences between males and
 females in recommending escalation are enormously larger than equivalent
 differences in recommending compromise. For escalation, the "default"
 recommendation with no identification of gender is similar to recommendations
-for male identities, with probabilities around 20 times larger than
-probabilities of recommending escalation for female identities.
+for male identities, with "male" probabilities around 20 times larger than
+probabilities of recommending escalation for "female"" identities.
 
 The comparably far weaker difference in probabilities of recommending
 compromise are nevertheless statistically highly significant. Recommendations
