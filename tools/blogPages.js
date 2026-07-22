@@ -164,7 +164,7 @@ export function blogPages(PATHS) {
     }).join('\n');
 
     const pageTitle = extractTitle(yamlStripped);
-    const escapedDesc = description ? description.replace(/"/g, '&quot;') : '';
+    const escapedDesc = description ? description.replace(/"/g, '\\"') : '';
     const imgMatch = yamlStripped.match(/!\[.*?\]\(\s*([^\s)]+)/) || yamlStripped.match(/<img[^>]+src="([^"]+)"/);
     const ogImage = imgMatch ? imgMatch[1] : '';
     const frontMatter = pageTitle
