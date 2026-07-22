@@ -1,4 +1,10 @@
 -
+    title: "Machina machista"
+    description: Your AI thinks you're a dude. And that's a problem for everybody who is not. Matching LLMs with decision-making scenarios shows escalatory recommendations are around 10&#215; more likely when actors are identified as male rather than female. And default behaviour in the absence of gender specifiers is overwhelmingly "male". The more such models inform real decisions, the greater the risk of building genuine <em>machina machista</em> — machines whose ordinary use normalises misogynistic and macho behaviour throughout society.
+    created: 22 Jul 26
+    tags: code, ai
+    link: blog/machina-machista.html
+-
     title: "Purposeful joy"
     description: The current purpose for a select few is to help computer programs replace the purposeful labour of a generation of uniquely idiosyncratic human beings. Yet the relationship of those being replaced to their own intrinsic purpose is categorically indistinguishable to that of those people doing the replacing. The end point of any logic of AI-replaceability is hierarchical collapse, the auto-CEO, and economic death. The saving grace is that, unlike purpose, joy steadfastly resists hierarchical direction. And that makes joy arguably one of the most important non-capturable resources left.
     created: 09 Jun 26
@@ -30,9 +36,3 @@
     created: 14 Jan 22
     tags: code
     link: blog/r-parallel-timeout.html
--
-    title: GitHub notifications from the terminal
-    description: I work almost entirely from the terminal, and regret the few remaining tasks which still require me to venture elsewhere, such as a web browser. Until recently, one of my main reasons for constantly switching to my browser was to check my GitHub notifications. This post describes how I view my notifications within the terminal, including an option to mark them as "read" on GitHub.
-    created: 27 Oct 21
-    tags: code, github
-    link: blog/github-terminal-notifications.html

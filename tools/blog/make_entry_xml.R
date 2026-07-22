@@ -40,6 +40,11 @@ format_rfc822_date <- function (date_str)
     format (parse_date (date_str), "%a, %d %b %Y 00:00:00 +0000")
 }
 
+strip_tags <- function (x)
+{
+    gsub ("<[^>]+>", "", x)
+}
+
 generate_rss_feed <- function (blog_data, blog_dir, output_file = "feed.xml")
 {
     blog_data <- blog_data [order (
@@ -65,7 +70,7 @@ generate_rss_feed <- function (blog_data, blog_dir, output_file = "feed.xml")
       <title>', b$title, '</title>
       <link>https://mpadge.eu/blog/', b$link, '</link>
       <guid>https://mpadge.eu/blog/', b$link, '</guid>
-      <description>', b$description, '</description>
+      <description>', strip_tags (b$description), '</description>
       <content:encoded><![CDATA[', content, ']]></content:encoded>
       <pubDate>', format_rfc822_date (b$created), '</pubDate>
     </item>')

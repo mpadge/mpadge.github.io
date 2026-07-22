@@ -12,6 +12,7 @@ import { INFO_CORNER_SVG,
 
 export function blogPages(PATHS) {
   const marked = require('marked');
+  marked.setOptions({ smartypants: true });
 
   // Build slug → created map from blog.yml
   function loadDateMap() {
@@ -92,7 +93,12 @@ export function blogPages(PATHS) {
         return '';
       }
       if (html.includes('info-block')) {
-        return html.replace(/(<div[^>]*class="info-block"[^>]*>)/, '$1' + INFO_CORNER_SVG);
+        const titleRe = /^(<div[^>]*class="info-block"[^>]*>)\s*<strong>([\s\S]*?)<\/strong>(?:<br>)?\s*/;
+        const titleMatch = html.match(titleRe);
+        const withTitle = titleMatch
+          ? titleMatch[1] + `<p class="info-block-title">${titleMatch[2]}</p>` + html.slice(titleMatch[0].length)
+          : html;
+        return withTitle.replace(/(<div[^>]*class="info-block"[^>]*>)/, '$1' + INFO_CORNER_SVG);
       }
       if (html.includes('summary-block')) {
         return html.replace(/(<div[^>]*class="summary-block"[^>]*>)/, '$1' + SUMMARY_FRAME_SVG);
@@ -159,7 +165,7 @@ export function blogPages(PATHS) {
 
     const pageTitle = extractTitle(yamlStripped);
     const escapedDesc = description ? description.replace(/"/g, '&quot;') : '';
-    const imgMatch = yamlStripped.match(/!\[.*?\]\(([^)]+)\)/);
+    const imgMatch = yamlStripped.match(/!\[.*?\]\(\s*([^\s)]+)/) || yamlStripped.match(/<img[^>]+src="([^"]+)"/);
     const ogImage = imgMatch ? imgMatch[1] : '';
     const frontMatter = pageTitle
       ? `---\ntitle: "${pageTitle}"\nsitetitle: mp\n${escapedDesc ? `description: "${escapedDesc}"\n` : ''}${pageUrl ? `pageurl: "${pageUrl}"\n` : ''}${ogImage ? `ogimage: "${ogImage}"\n` : ''}---\n`
