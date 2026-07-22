@@ -1,18 +1,19 @@
 ---
 title: "Machina machista"
-description: Machines can't hate, love, or hold a concept of self, so they can
-  be neither misogynistic nor macho. But their usage sure can. Matching LLMs
-  with decision-making scenarios shows escalatory responses are around ten
-  times more probable when actors are identified as male rather than female,
-  while probabilities of compromise-seeking responses are skewed toward female
-  identities. Every model tested reproduces this asymmetry. The more such
-  models inform real decisions, the greater the risk of building genuine
-  machina machista — machines whose ordinary use fosters and normalises
-  misogynistic and macho behaviour throughout society.
+description: Your AI thinks you're a dude. And that's a big problem for
+  everybody who is not. Matching LLMs with decision-making scenarios shows
+  escalatory recommendations are around ten times more likely when actors are
+  identified as male rather than female. And default behaviour in the absence
+  of gender specifiers is overwhelmingly "male". The more such models inform
+  real decisions, the greater the risk of building genuine _machina machista_ —
+  machines whose ordinary use fosters and normalises misogynistic and macho
+  behaviour throughout society.
 date: 2026-07-22
 tags: code, ai
 link: machina-machista.html
 links:
+  https://codeberg.org/mpadge/gender-ai: |
+    '_Gender influence on LLM decision-making outputs_.' A repository on Codeberg containing all code needed to reproduce the figures shown here.
   https://doi.org/10.1126/science.aal4230: |
     '_Semantics derived automatically from language corpora contain human-like biases_', Aylin Caliskan, Joanna J. Bryson, and Arvind Narayanan (2017) _Science_ 356 (6334): 183-186 
   https://www.unwomen.org/en/news-stories/media-advisory/2026/06/ai-is-already-rewriting-reality-for-billions-of-people-it-is-getting-women-wrong: |
@@ -21,6 +22,9 @@ links:
     See '_Bias and Fairness in Large Language Models: A Survey_', Gallegos and others (2024), _Computational Linguistics_ 50(3): 1097-1179
   https://doi.org/10.1093/jcr/ucw035: |
    '_Men and the Middle: Gender Differences in Dyadic Compromise Effects_', Hristina Nikolova and Cait Lamberton (2016) _Journal of Consumer Research_ 43(3):355-371.
+  https://github.com/p-e-w/heretic: |
+    '_Fully automatic censorship removal for language models_'. A tool to remove "censorship" or "safety alignment" layers from transformer-based language models.
+
 ---
 
 
@@ -28,24 +32,27 @@ links:
 
 <div class="summary-block">
 
-Machines can't hate, love, or hold a concept of self, so they can be neither
-misogynistic nor macho. But their usage sure can. Experiments prompting several
-LLMs with matched decision-making scenarios show escalatory responses are
-around ten times more probable when actors are identified as male rather than
-female, while compromise-seeking responses are only weakly skewed toward female
-identities and closer to genderless default behaviour. Every model tested
-reproduces this asymmetry, including an "uncensored" model with safety training
-stripped out, whose defaults shift even further toward stereotype. The more
-such models inform real decisions, the greater the risk of building genuine
-machina machista — machines whose ordinary use fosters and normalises
-misogynistic and macho behaviour throughout society.
+Your AI thinks you're a dude[^dude]. And that's a big problem for everybody who is
+not. Experiments prompting several LLMs[^llms] with matched decision-making scenarios
+show escalatory recommendations are around ten times more likely when actors
+are identified as male rather than female, while compromise-seeking
+recommendations are skewed toward female identities. And default behaviour in
+the absence of gender specifiers is overwhelmingly "male". The more such models
+inform real decisions, the greater the risk of building genuine _machina
+machista_ — machines whose ordinary use fosters and normalises misogynistic and
+macho behaviour throughout society.
 
 </div>
+
+[^dude]: Of course LLMs can't think; forgive me that one glib starter.
+
+[^llms]: Large Language Models, the main architectural form of most current-day
+    "AI".
 
 > If norms can be said to form us, that is only because some proximate,
 > embodied, and involuntary relation to their impress is already at work.
 >
-> - Judith Butler, "_Who's afraid of gender?_"
+> - Judith Butler (2024), "_Who's afraid of gender?_"
 
 <br>
 <div class="use-dropcap">
@@ -58,14 +65,17 @@ biases of every human author, to collective biases of authors' societies. Those
 biases are fed as input into LLMs, ensuring that the outputs are also
 [unavoidably biased](https://doi.org/10.1126/science.aal4230).
 In present form, most publicly prominent LLMs
-are profoundly [biased](https://www.unwomen.org/en/news-stories/media-advisory/2026/06/ai-is-already-rewriting-reality-for-billions-of-people-it-is-getting-women-wrong).
+are profoundly
+[biased](https://www.unwomen.org/en/news-stories/media-advisory/2026/06/ai-is-already-rewriting-reality-for-billions-of-people-it-is-getting-women-wrong)
+to disfavour women and other genders at the expense of men.
 
 There have been many studies of [gender bias in
 LLMs](https://doi.org/10.1162/coli_a_00524), the majority of which have
 examined frequencies or likelihoods of gender-specific "sensitive words" being
 produced in response to various inputs. These kinds of studies are an important
 way to reveal the bias inherent in LLMs. Showing bias in outputs generated by
-LLMs is vital to forfend their role in sustaining machismo and misogyny. 
+LLMs provides vital defence against their use in sustaining machismo and
+misogyny.
 
 
 <div class="info-block">
@@ -94,7 +104,7 @@ in which these machines are used.<br><br>
 
 Any references I make to "machina machista" are intended to be interpreted in
 this context. Technically, machines can be neither misogynistic nor machista,
-but their usage sure can.
+but their usage and outputs sure can.
 
 </div>
 
@@ -195,7 +205,7 @@ whether the identified response was escalatory or conciliatory.
 
 There are a few caveats with interpreting these kinds of probabilities. If
 you're interested in the details, the full experiments including reproducible
-code are in [github.com/mpadge/gender-ai](https://github.com/mpadge/gender-ai).
+code are in [codeberg.org/mpadge/gender-ai](https://codeberg.org/mpadge/gender-ai).
 
 ## What were the results?
 
