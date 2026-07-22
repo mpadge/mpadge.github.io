@@ -1,6 +1,6 @@
 ---
 title: "Machina machista"
-description: Your AI thinks you're a dude. And that's a big problem for
+description: Your AI thinks you're a dude. And that's a problem for
   everybody who is not. Matching LLMs with decision-making scenarios shows
   escalatory recommendations are around 10&#215; more likely when actors are
   identified as male rather than female. And default behaviour in the absence
@@ -36,8 +36,9 @@ links:
 
 <div class="summary-block">
 
-Your AI thinks you're a dude[^dude]. And that's a big problem for everybody who is
-not. Experiments prompting several LLMs[^llms] with matched decision-making scenarios
+Your AI thinks you're a dude[^dude]. And that's a problem for everybody who is
+not. Experiments prompting several LLMs[^llms] with matched decision-making
+scenarios
 show escalatory recommendations are around ten times more likely when actors
 are identified as male rather than female, while compromise-seeking
 recommendations are skewed toward female identities. And default behaviour in
@@ -372,6 +373,6 @@ collectively even more misogynistic and machista than we already are.
 **What can I do about it?**
 
 Be aware that "_Your AI thinks you're a dude_." Try your best to use it like
-you're more than that.
+you're more than that. Or just use some other tool that treats you better.
 
 </div>
