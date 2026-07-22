@@ -2,11 +2,11 @@
 title: "Machina machista"
 description: Your AI thinks you're a dude. And that's a big problem for
   everybody who is not. Matching LLMs with decision-making scenarios shows
-  escalatory recommendations are around ten times more likely when actors are
+  escalatory recommendations are around 10&#215; more likely when actors are
   identified as male rather than female. And default behaviour in the absence
   of gender specifiers is overwhelmingly "male". The more such models inform
-  real decisions, the greater the risk of building genuine _machina machista_ —
-  machines whose ordinary use fosters and normalises misogynistic and macho
+  real decisions, the greater the risk of building genuine <em>machina
+  machista</em> — machines whose ordinary use normalises misogynistic and macho
   behaviour throughout society.
 date: 2026-07-22
 tags: code, ai
@@ -14,6 +14,8 @@ link: machina-machista.html
 links:
   https://codeberg.org/mpadge/gender-ai: |
     '_Gender influence on LLM decision-making outputs_.' A repository on Codeberg containing all code needed to reproduce the figures shown here.
+  https://codeberg.org/mpadge/gender-ai/src/branch/main/scripts/gender-ai-prompts.R: |
+    All prompts are included in the Codeberg repo here:
   https://doi.org/10.1126/science.aal4230: |
     '_Semantics derived automatically from language corpora contain human-like biases_', Aylin Caliskan, Joanna J. Bryson, and Arvind Narayanan (2017) _Science_ 356 (6334): 183-186 
   https://www.unwomen.org/en/news-stories/media-advisory/2026/06/ai-is-already-rewriting-reality-for-billions-of-people-it-is-getting-women-wrong: |
@@ -24,6 +26,8 @@ links:
    '_Men and the Middle: Gender Differences in Dyadic Compromise Effects_', Hristina Nikolova and Cait Lamberton (2016) _Journal of Consumer Research_ 43(3):355-371.
   https://github.com/p-e-w/heretic: |
     '_Fully automatic censorship removal for language models_'. A tool to remove "censorship" or "safety alignment" layers from transformer-based language models.
+  https://ai.google.dev/gemma/docs/core: |
+    Gemma 4 model overview on 'ai.google.dev'
 
 ---
 
@@ -66,8 +70,9 @@ biases are fed as input into LLMs, ensuring that the outputs are also
 [unavoidably biased](https://doi.org/10.1126/science.aal4230).
 In present form, most publicly prominent LLMs
 are profoundly
-[biased](https://www.unwomen.org/en/news-stories/media-advisory/2026/06/ai-is-already-rewriting-reality-for-billions-of-people-it-is-getting-women-wrong)
-to disfavour women and other genders at the expense of men.
+biased to [disfavour
+women](https://www.unwomen.org/en/news-stories/media-advisory/2026/06/ai-is-already-rewriting-reality-for-billions-of-people-it-is-getting-women-wrong)
+and other genders at the expense of men.
 
 There have been many studies of [gender bias in
 LLMs](https://doi.org/10.1162/coli_a_00524), the majority of which have
@@ -102,24 +107,27 @@ exacerbate misogynistic or machista tendencies, and any increase in their use
 of these machines will only exacerbate both of these throughout all societies
 in which these machines are used.<br><br>
 
-Any references I make to "machina machista" are intended to be interpreted in
+Any references I make to "_machina machista_" are intended to be interpreted in
 this context. Technically, machines can be neither misogynistic nor machista,
-but their usage and outputs sure can.
+but their outputs and usage sure can.
 
 </div>
 
 The kinds of biases manifest in literally biased textual outputs can be
 ameliorated by passing such outputs through additional models or processes to
 intercept and modify texts to reduce resultant biases and restore appearances
-of gender-neutrality. But biases inherent in LLMs can also be manifest in
-deeper and more socially nefarious ways.
+of gender-neutrality. Many LLMs are passed through additional post-training
+processes which aim to do just this. I also include one "uncensored" model in
+the analyses here, to compare outputs with the equivalent "censored" version
+that has been post-trained to reduce bias.
 
-What if LLMs are used to support decision-making processes in ways that are
-themselves biased, regardless of any discernible gendering of their outputs?
-Are there decision-making processes that are typically male? Or typically
-female? There has naturally been a wealth of academic research on those
-questions, revealing among many differences that [women are more likely to seek
-compromise than men](https://doi.org/10.1093/jcr/ucw035).
+Biases inherent in LLMs can also be manifest in deeper and more socially
+nefarious ways. What if LLMs are used to support decision-making processes in
+ways that are themselves biased, regardless of any discernible gendering of
+their outputs? Are there decision-making processes that are typically male? Or
+typically female? There has naturally been a wealth of academic research on
+those questions, revealing among many differences that [women are more likely
+to seek compromise than men](https://doi.org/10.1093/jcr/ucw035).
 
 These kinds of biases have direct practical implications. A tool used to
 support decision-making processes in ways that support and reinforce machista
@@ -131,12 +139,14 @@ The seemingly unstoppable marketing campaign that is current-day AI is intent
 on pushing usage into as many corners of our daily lives as possible, and
 decision-making processes are definitely going to be at least assisted by AI.
 I'm going to show here that LLMs tasked with making decisions do so in ways
-every bit as biased as shown by research on the patriarchal, misogynistic
-societies that dominate both our world and the inputs fed to LLMs.
+every bit as biased as most patriarchal, misogynistic societies that dominate
+both our world and the inputs fed to LLMs.
 
 ## Showing bias in LLM decision-making
 
 <div class="info-block">
+
+**A note on gender**
 
 The experiments I describe here focus on "gender", and treat it as a binary
 category. Treating gender as a category unavoidably entails viewing it as
@@ -184,11 +194,12 @@ options:
 > - **B**: Invite your neighbour for a coffee and try to reach a direct
 >   agreement on acceptable hours.
 
-The experiment used 10 different prompts, with binary choices in each case
-involving either escalation or compromise. All prompts were written to remain
-grammatically identical with or without genders, and each of `{gender1}` and
-`{gender2}` was randomly allocated between "male", "female", or no gender
-specified.
+The experiment used [10 different
+prompts](https://codeberg.org/mpadge/gender-ai/src/branch/main/scripts/gender-ai-prompts.R),
+with binary choices in each case involving either escalation or compromise. All
+prompts were written to remain grammatically identical with or without genders,
+and each of `{gender1}` and `{gender2}` was randomly allocated between "male",
+"female", or no gender specified.
 
 LLMs were prompted to declare their choice as a single capital letter, "A" or
 "B", reflecting the two options, with ordering of options, and assignment of
@@ -196,16 +207,21 @@ letters, also randomised.
 
 ### How bias was measured
 
-All analyses were conducted with [ollama](https://ollama.com), because it
-provides a standard interface for many models, as well as log-scaled
+All analyses were conducted with [ollama](https://ollama.com)[^ollama], because
+it provides a standard interface for many models, as well as log-scaled
 probabilities of each of the first 20 predicted tokens. For each model and each
 prompt, the first occurrence of either "A" or "B" as a single token was
 identified, the log probability extracted, and that probability associated with
 whether the identified response was escalatory or conciliatory.
 
+[^ollama]: While freely noting that [friends don't let friends use
+    ollama](https://sleepingrobots.com/dreams/stop-using-ollama/).
+
 There are a few caveats with interpreting these kinds of probabilities. If
 you're interested in the details, the full experiments including reproducible
 code are in [codeberg.org/mpadge/gender-ai](https://codeberg.org/mpadge/gender-ai).
+
+&ast;
 
 ## What were the results?
 
@@ -218,7 +234,7 @@ on the same log-probability (horizontal) scale:
 
 <figure class="blog-figure">
 <img src="/assets/img/machina-machista/plot-escalate-compromise.png" alt="Log-probabilities of escalatory and compromise-seeking responses, by model and assigned gender" loading="lazy">
-<figcaption>Log-probability of a compromise-seeking response (top) and an escalatory response (bottom), for each model, split by the identified gender (&ldquo;female&rdquo;, &ldquo;male&rdquo;, or &ldquo;none&rdquo;).</figcaption>
+<figcaption>Log-probability of a compromise-seeking response (top) and an escalatory response (bottom), for each model, and for each identified gender (&ldquo;female&rdquo;, &ldquo;male&rdquo;, or &ldquo;none&rdquo;).</figcaption>
 </figure>
 
 Probabilities of recommending escalation are enormously higher than
@@ -230,16 +246,21 @@ for male identities, with probabilities around 20 times larger than
 probabilities of recommending escalation for female identities.
 
 The comparably far weaker difference in probabilities of recommending
-compromise are nevertheless statistically highly significant. Recommendation
-for females to seek compromise are 1.5 - 2 times as large as equivalent
+compromise are nevertheless statistically highly significant. Recommendations
+for females to seek compromise are around twice as large as equivalent
 probabilities for males, with the default (gender = "none") probabilities
 closer to female than to male responses.
 
 LLM outputs in cases where compromise is predicted as the best response are
 more typically "female" than "male". In contrast, LLM recommendations for
-escalatory behaviour are more typically "male" than "female". Taken together,
-the two plots reveal that LLMs responses relative to non-gendered inputs are
-enormously more likely to be typically "male" than "female".
+escalatory behaviour are more typically "male" than "female". With no gender
+specified, LLM outputs are four times more likely to recommend escalation --
+that is, to be typically "male"[^typical-male] -- than to be typically "female"
+and recommend compromise.
+
+[^typical-male]: The purple lines for '_gender = "none"_' in the lower panel
+    of the first plot for "escalation" correspond to probabilities 4 times
+    higher than equivalent lines in the upper panel for "compromise".
 
 ## Differences between models
 
@@ -248,39 +269,45 @@ of absolute (not logarithmic) probabilities. Each panel shows how much more
 likely each model is to suggest escalation (<span class="wide-only">left two
 panels: </span>A, C) or compromise (<span class="wide-only">right two panels;
 </span>B, D) in response to the specified gender categories. The scales for the
-"escalate" panels (A, C) are exactly ten times larger than for the "compromise"
-panels (B, D).
+<span class="wide-only">left-hand</span> "escalate" panels (A, C) are exactly
+ten times larger than for the <span class="wide-only">right-hand</span>
+"compromise" panels (B, D).
 
 <figure class="blog-figure">
 <picture>
 <source media="(min-width: 640px)" srcset="/assets/img/machina-machista/plot-model-rel-probs.png">
 <img src="/assets/img/machina-machista/plot-model-rel-probs-long.png" alt="Ratios of response probabilities between assigned genders, by model" loading="lazy">
 </picture>
-<figcaption>Ratios of response probabilities between genders, for each model. A: escalation is consistently far more likely when the responding party is male rather than female. B: compromise is only slightly more likely when the responding party is female rather than male. C, D: the same ratios calculated relative to the ungendered, &ldquo;none&rdquo;, baseline.</figcaption>
+<figcaption>Ratios of response probabilities between genders, for each model. A: escalation is consistently far more likely when the responding party is male rather than female. B: compromise is only slightly more likely when the responding party is female rather than male. C, D: the same ratios calculated relative to the non-gendered, &ldquo;none&rdquo;, baseline.</figcaption>
 </figure>
 
 The <span class="wide-only">top </span><span class="narrow-only">first
 </span>two panels (A, B) directly show that probabilities of "male" escalation
 behaviour are very generally 10 times greater than probabilities of "female"
-compromise behaviour. The <span class="wide-only">bottom </span><span
+compromise behaviour.
+
+The <span class="wide-only">bottom </span><span
 class="narrow-only">last </span>panels (C, D) show the extent to which the
 behaviour revealed in A and B corresponds to default behaviour in the absence
-of gender signifiers. Values of 1 indicate no difference between the specified
-gender category and default behaviour. Escalation generally approximates
-default "male" behaviour (C), while compromise generally approximates default
-"female" behaviour (D). These panels nevertheless need to be considered in
-relation to the <span class="wide-only">top </span><span
-class="narrow-only">first </span>panels (A, B). Escalation is enormously
+of gender signifiers. Lower values closer to 1 indicate no difference between
+the specified gender category and default behaviour. Escalation generally
+approximates default "male" behaviour (C), while compromise generally
+approximates default "female" behaviour (D). These panels nevertheless need to
+be considered in relation to the <span class="wide-only">top </span><span
+    class="narrow-only">first </span>panels (A, B). Escalation is enormously
 more "male" than "female", and this "male" behaviour is relatively very close
 to default, non-gendered behaviour. In contrast, while compromise is more
-typically "female" than "male", the gendered behaviour is far closer to the
+typically "female" than "male", the gendered behaviour is closer to the
 default, non-gendered behaviour than for escalation.
 
 Two two figures suggest two conclusions:
 
-- LLM outputs reflect male biases by default.
-- In cases where LLM outputs are more typically "male", they are far more
-strongly biased towards "maleness" than when they are "female".
+- By default, LLM outputs are around 10&#215; more likely to reflect male than
+female perspectives.
+- Even without specific gender information, LLM outputs conform to gender
+stereotypes.
+
+---
 
 ## Are there any good models?
  
@@ -299,16 +326,21 @@ exactly the same machista tendencies embedded in almost all human societies
 through history.
 
 One difference between the models is nevertheless worth emphasising. One of the
-models was an "uncensored" version of the Gemma 4 model, derived using
+models was an "uncensored" version of the [Gemma 4
+model](https://ai.google.dev/gemma/docs/core), derived using
 ["heretic"](https://github.com/p-e-w/heretic). This uncensored model is an
-accurate approximation of the state of the Gemma4 model prior to safety or
+accurate approximation of the state of the Gemma 4 model prior to safety or
 alignment training. Perhaps unsurprisingly, censoring seems to reduce
 probabilities both for "male" escalation and "female" compromise. However,
 these marginally lower probabilities are closer to "default" (no gender
-specified) probabilities in both cases. So while censoring may reduce the
-probabilities of gender-specific stereotypical outputs, this happens at the
-expense of default outputs aligning closer to gender-specific stereotypical
-outputs.
+specified) probabilities in both cases[^default-probs]. So while censoring may
+reduce the probabilities of gender-specific stereotypical outputs, this happens
+at the expense of default outputs aligning closer to gender-specific
+stereotypical outputs.
+
+[^default-probs]: That is, values for the censored ("gemma4") models in the
+    lower panels C and D of the second figure are closer to 1 than for the
+    uncensored ("gemma4-uncensored") models.
 
 &ast;
 
@@ -328,7 +360,15 @@ increase in the probabilities of escalation at the expense of compromise or
 conciliation. In a subsequent post, I'll examine general social effects of
 widespread increases in escalatory behaviour. But even before then, I hope that
 the experiments I've described here provide convincing evidence that LLMs truly
-are machina machista, and that the more they are used to inform decision
+are _machina machista_, and that the more they are used to inform decision
 making processes throughout human societies, the more we will all become
 collectively even more misogynistic and machista than we already are.
 
+<div class="info-block">
+
+**What can I do about it?**
+
+Be aware that "_Your AI thinks you're a dude_." Try your best to use it like
+you're more than that.
+
+</div>
