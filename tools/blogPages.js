@@ -79,6 +79,18 @@ export function blogPages(PATHS) {
     return match ? match[1].trim() : '';
   }
 
+  // Reads width/height straight from a PNG's IHDR chunk (no image-parsing
+  // dependency needed for this one format).
+  function getPngDimensions(imgPath) {
+    try {
+      const buf = fs.readFileSync(imgPath);
+      if (buf.length >= 24 && buf.toString('ascii', 12, 16) === 'IHDR') {
+        return { width: buf.readUInt32BE(16), height: buf.readUInt32BE(20) };
+      }
+    } catch (e) {}
+    return null;
+  }
+
   function buildPage(mdContent, dateStr, updatedStr, mastodonUrl, linkSummaries, description, pageUrl) {
     const yamlStripped = mdContent.replace(/^---\n[\s\S]*?\n---\n/, '');
     const { content, sidenotesHtml } = processFootnotes(yamlStripped);
@@ -166,7 +178,16 @@ export function blogPages(PATHS) {
     const pageTitle = extractTitle(yamlStripped);
     const escapedDesc = description ? description.replace(/"/g, '\\"') : '';
     const imgMatch = yamlStripped.match(/!\[.*?\]\(\s*([^\s)]+)/) || yamlStripped.match(/<img[^>]+src="([^"]+)"/);
-    const ogImage = imgMatch ? imgMatch[1] : '';
+    let ogImage = imgMatch ? imgMatch[1] : '';
+    if (ogImage) {
+      const dims = getPngDimensions(path.join('src', ogImage.replace(/^\//, '')));
+      // Bluesky (and other link-card renderers) force-crop preview images
+      // into a landscape frame, which mangles portrait figures - fall back
+      // to the site default image instead of picking one of those.
+      if (dims && dims.height > dims.width) {
+        ogImage = '';
+      }
+    }
     const frontMatter = pageTitle
       ? `---\ntitle: "${pageTitle}"\nsitetitle: mp\n${escapedDesc ? `description: "${escapedDesc}"\n` : ''}${pageUrl ? `pageurl: "${pageUrl}"\n` : ''}${ogImage ? `ogimage: "${ogImage}"\n` : ''}---\n`
       : '';

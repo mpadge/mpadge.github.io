@@ -12,7 +12,7 @@
     <meta property="og:site_name" content="mpadge" />
     <meta property="og:title" content="{{#if sitetitle}}{{sitetitle}}{{else}}mpadge{{/if}}{{#if title}} | {{title}}{{/if}}" />
     <meta property="og:description" content="{{#if description}}{{stripTags description}}{{else}}Opinions on technology in the world, on open-source software, on cities, and sometimes on bicycles.{{/if}}" />
-    {{#if pageurl}}{{#if ogimage}}<meta property="og:image" content="https://mpadge.eu{{ogimage}}" />{{/if}}{{else}}<meta property="og:image" content="https://mpadge.eu/assets/img/mpadge.png" />{{/if}}
+    {{#if ogimage}}<meta property="og:image" content="https://mpadge.eu{{ogimage}}" />{{else}}<meta property="og:image" content="https://mpadge.eu/assets/img/mpadge.png" />{{/if}}
     <meta property="og:url" content="{{#if pageurl}}{{pageurl}}{{else}}https://mpadge.eu/{{/if}}" />
 <link rel="alternate" type="application/rss+xml" title="mpadge blog" href="{{root}}feed.xml" />
     <link rel="stylesheet" href="{{root}}assets/css/app.css" />
