@@ -2,7 +2,7 @@
 title: "Machina machista"
 description: Your AI thinks you're a dude. And that's a problem for
   everybody who is not. Matching LLMs with decision-making scenarios shows
-  escalatory recommendations are around 10&#215; more likely when actors are
+  escalatory recommendations are around 10× more likely when actors are
   identified as male rather than female. And default behaviour in the absence
   of gender specifiers is overwhelmingly "male". The more such models inform
   real decisions, the greater the risk of building genuine <em>machina
