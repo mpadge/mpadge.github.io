@@ -12,6 +12,7 @@ import { INFO_CORNER_SVG,
 
 export function blogPages(PATHS) {
   const marked = require('marked');
+  marked.setOptions({ smartypants: true });
 
   // Build slug → created map from blog.yml
   function loadDateMap() {
