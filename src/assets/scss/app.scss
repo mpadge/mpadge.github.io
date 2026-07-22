@@ -619,6 +619,15 @@ code, pre {
         pointer-events: none;
         color: #5588aa;
     }
+
+    .info-block-title {
+        margin: 0 0 0.5em;
+        font-weight: bold;
+        font-size: 1.05em;
+        color: #5588aa;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+    }
 }
 
 // Summary block (opening abstract)
@@ -890,6 +899,10 @@ code, pre {
     color: #bbbbbb;
 
     svg.info-corner {
+        color: #88bbdd;
+    }
+
+    .info-block-title {
         color: #88bbdd;
     }
 }
